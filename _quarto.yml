@@ -11,6 +11,8 @@ website:
         text: Overview
       - href: reports/feasibility-audit.qmd
         text: Data Audit
+      - href: reports/date-recovery.qmd
+        text: Date Investigation
       - href: reports/eda-report.qmd
         text: Analysis
     right:

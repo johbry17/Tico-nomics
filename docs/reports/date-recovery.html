@@ -1,0 +1,1433 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.20">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2026-10-31">
+
+<title>Missing Date Investigation – Tico-nomics</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-17888a1159294d3eb470f19f6f52f5a5.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-92404dd89b1444827012a9e3a58cda88.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="../site_libs/kePrint-0.0.1/kePrint.js"></script>
+
+<link href="../site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+
+
+<link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../index.html">
+    <span class="navbar-title">Tico-nomics</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../index.html"> 
+<span class="menu-text">Overview</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../reports/feasibility-audit.html"> 
+<span class="menu-text">Data Audit</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../reports/date-recovery.html" aria-current="page"> 
+<span class="menu-text">Date Investigation</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../reports/eda-report.html"> 
+<span class="menu-text">Analysis</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/johbry17/Tico-nomics"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text"></span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#baseline-the-16-missing-date-projects" id="toc-baseline-the-16-missing-date-projects" class="nav-link active" data-scroll-target="#baseline-the-16-missing-date-projects">1. Baseline: the 16 missing-date projects</a></li>
+  <li><a href="#date-recovery-method" id="toc-date-recovery-method" class="nav-link" data-scroll-target="#date-recovery-method">2. Date recovery method</a>
+  <ul class="collapse">
+  <li><a href="#what-was-tried" id="toc-what-was-tried" class="nav-link" data-scroll-target="#what-was-tried">What was tried</a></li>
+  <li><a href="#source-reliability" id="toc-source-reliability" class="nav-link" data-scroll-target="#source-reliability">Source reliability</a></li>
+  </ul></li>
+  <li><a href="#recovery-results" id="toc-recovery-results" class="nav-link" data-scroll-target="#recovery-results">3. Recovery results</a></li>
+  <li><a href="#three-scenario-comparison" id="toc-three-scenario-comparison" class="nav-link" data-scroll-target="#three-scenario-comparison">4. Three-scenario comparison</a></li>
+  <li><a href="#the-20132019-gap-assessment" id="toc-the-20132019-gap-assessment" class="nav-link" data-scroll-target="#the-20132019-gap-assessment">5. The 2013–2019 gap: assessment</a>
+  <ul class="collapse">
+  <li><a href="#verdict" id="toc-verdict" class="nav-link" data-scroll-target="#verdict">Verdict</a></li>
+  <li><a href="#recommendation" id="toc-recommendation" class="nav-link" data-scroll-target="#recommendation">Recommendation</a></li>
+  </ul></li>
+  <li><a href="#implications-for-the-analysis" id="toc-implications-for-the-analysis" class="nav-link" data-scroll-target="#implications-for-the-analysis">6. Implications for the analysis</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Missing Date Investigation</h1>
+<p class="subtitle lead">Recovering Board Approval Dates for 16 World Bank Costa Rica Projects</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 31, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<blockquote class="blockquote">
+<p><strong>Objective:</strong> 16 of 72 World Bank Costa Rica project records had missing <code>boardapprovaldate</code> values in the original V2 API pull. This report documents the investigation, the recovery method, the results, and their implications for the timeline analysis.</p>
+</blockquote>
+<hr>
+<section id="baseline-the-16-missing-date-projects" class="level2">
+<h2 class="anchored" data-anchor-id="baseline-the-16-missing-date-projects">1. Baseline: the 16 missing-date projects</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-striped table-condensed caption-top table-sm small">
+<caption>The 16 projects with missing boardapprovaldate in the original V2 API response</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Project ID</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Project name</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Commitment</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Status</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Instrument</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Sector 1</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Close date</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">P122265</td>
+<td style="text-align: left;">Innovations to Enhance Performance of Health Care Networks in Costa Rica</td>
+<td style="text-align: left;">$200M</td>
+<td style="text-align: left;">Dropped</td>
+<td style="text-align: left;">Adaptable Program Loan</td>
+<td style="text-align: left;">Health</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">P082974</td>
+<td style="text-align: left;">DROPPED-CR-Water &amp; Sanit Sctr Modern</td>
+<td style="text-align: left;">$60M</td>
+<td style="text-align: left;">Dropped</td>
+<td style="text-align: left;">Specific Investment Loan</td>
+<td style="text-align: left;">Water Supply</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">P508347</td>
+<td style="text-align: left;">CRI FM GreenGro</td>
+<td style="text-align: left;">Zero</td>
+<td style="text-align: left;">Pipeline</td>
+<td style="text-align: left;">Development Policy Lending</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">P160368</td>
+<td style="text-align: left;">Costa Rica REDD+ Emission Reductions Program</td>
+<td style="text-align: left;">Zero</td>
+<td style="text-align: left;">Active</td>
+<td style="text-align: left;">Investment Project Financing</td>
+<td style="text-align: left;">Forestry</td>
+<td style="text-align: left;">2025-12-31</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">P006930</td>
+<td style="text-align: left;">SITES &amp; SERVICES</td>
+<td style="text-align: left;">Zero</td>
+<td style="text-align: left;">Closed</td>
+<td style="text-align: left;">Specific Investment Loan</td>
+<td style="text-align: left;">(Historic)Urban development adjustment</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">P006951</td>
+<td style="text-align: left;">Forestry and Natural Resources Conservation Project</td>
+<td style="text-align: left;">$15M</td>
+<td style="text-align: left;">Dropped</td>
+<td style="text-align: left;">Specific Investment Loan</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">P169724</td>
+<td style="text-align: left;">Learning for All in Costa Rica</td>
+<td style="text-align: left;">$100M</td>
+<td style="text-align: left;">Dropped</td>
+<td style="text-align: left;">Investment Project Financing</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">P167926</td>
+<td style="text-align: left;">Strengthening Statistical Capacity in the Ministry of Public Education</td>
+<td style="text-align: left;">Zero</td>
+<td style="text-align: left;">Dropped</td>
+<td style="text-align: left;">Investment Project Financing</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">P163431</td>
+<td style="text-align: left;">Costa Rica Integrated System of Household Surveys</td>
+<td style="text-align: left;">Zero</td>
+<td style="text-align: left;">Closed</td>
+<td style="text-align: left;">Investment Project Financing</td>
+<td style="text-align: left;">Central Government (Central Agencies)</td>
+<td style="text-align: left;">2020-04-03</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">P179757</td>
+<td style="text-align: left;">EnABLE Costa Rica Country Project Supporting Social Inclusion in FCPF Emission Reductions Program</td>
+<td style="text-align: left;">Zero</td>
+<td style="text-align: left;">Pipeline</td>
+<td style="text-align: left;">Investment Project Financing</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">P122111</td>
+<td style="text-align: left;">CR Port regional'ion &amp; hinterland access</td>
+<td style="text-align: left;">Zero</td>
+<td style="text-align: left;">Active</td>
+<td style="text-align: left;">Technical Assistance Loan</td>
+<td style="text-align: left;">Sub-National Government</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">P006950</td>
+<td style="text-align: left;">Interest Support Loan Project</td>
+<td style="text-align: left;">$25M</td>
+<td style="text-align: left;">Dropped</td>
+<td style="text-align: left;">Debt and Debt Service Reduction Loan</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">P061314</td>
+<td style="text-align: left;">Ecomarkets Project</td>
+<td style="text-align: left;">Zero</td>
+<td style="text-align: left;">Closed</td>
+<td style="text-align: left;">Specific Investment Loan</td>
+<td style="text-align: left;">Forestry</td>
+<td style="text-align: left;">2006-09-30</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">P101718</td>
+<td style="text-align: left;">Telecom Sector Modernization</td>
+<td style="text-align: left;">$13M</td>
+<td style="text-align: left;">Dropped</td>
+<td style="text-align: left;">Specific Investment Loan</td>
+<td style="text-align: left;">ICT Infrastructure</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">P504033</td>
+<td style="text-align: left;">Program for Sustainable and Competitive Agriculture in Costa Rica</td>
+<td style="text-align: left;">$150M</td>
+<td style="text-align: left;">Pipeline</td>
+<td style="text-align: left;">Program-for-Results Financing</td>
+<td style="text-align: left;">NA</td>
+<td style="text-align: left;">NA</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">P103476</td>
+<td style="text-align: left;">Costa Rica E-Government Modernization</td>
+<td style="text-align: left;">$15M</td>
+<td style="text-align: left;">Dropped</td>
+<td style="text-align: left;">Technical Assistance Loan</td>
+<td style="text-align: left;">Other Public Administration</td>
+<td style="text-align: left;">NA</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-striped table-condensed caption-top table-sm small">
+<caption>Cross-tabulation: approval date availability × financing status</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Date availability</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Positive</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Zero</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Has date</td>
+<td style="text-align: right;">49</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Missing date</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">8</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p><strong>Financing at stake in missing-date projects:</strong></p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-striped table-condensed caption-top table-sm small">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Metric</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Missing-date projects with positive commitment</td>
+<td style="text-align: left;">8</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Missing-date projects with zero commitment</td>
+<td style="text-align: left;">8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Total positive financing in undated projects (nominal USD)</td>
+<td style="text-align: left;">$578M</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Total positive financing in all 72 projects (nominal USD)</td>
+<td style="text-align: left;">$4.5B</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Undated projects' share of total positive financing</td>
+<td style="text-align: left;">12.9%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<hr>
+</section>
+<section id="date-recovery-method" class="level2">
+<h2 class="anchored" data-anchor-id="date-recovery-method">2. Date recovery method</h2>
+<section id="what-was-tried" class="level3">
+<h3 class="anchored" data-anchor-id="what-was-tried">What was tried</h3>
+<p>The original data used the <strong>World Bank Projects Search API V2</strong> (<code>search.worldbank.org/api/v2/projects</code>), which returns <code>boardapprovaldate</code> as null for these 16 projects.</p>
+<p>Three additional sources were checked in sequence:</p>
+<ol type="1">
+<li><p><strong>WB Project Detail Pages</strong> (<code>projects.worldbank.org/en/projects-operations/project-detail/{id}</code>) — These are JavaScript single-page applications (SPAs). The raw HTML does not contain the project data; it is loaded by Angular components from the API. Not suitable for scraping.</p></li>
+<li><p><strong>WB Document API</strong> (<code>search.worldbank.org/api/v2/wds</code>) — Returns document metadata with document disclosure dates (<code>docdt</code>), not board approval dates. Used to estimate approximate preparation periods but not to recover specific dates.</p></li>
+<li><p><strong>WB Projects API V3</strong> (<code>search.worldbank.org/api/v3/projects</code>) and <strong>WB Bulk Excel Download</strong> (<code>search.worldbank.org/api/v3/projects/all.xlsx</code>, downloaded 2026-10-30) — <strong>Both V3 and Excel contained <code>boardapprovaldate</code> for 15 of the 16 projects.</strong> V3 API and Excel agreed on all 15 dates with zero discrepancies.</p></li>
+</ol>
+</section>
+<section id="source-reliability" class="level3">
+<h3 class="anchored" data-anchor-id="source-reliability">Source reliability</h3>
+<ul>
+<li><strong>V3 API and bulk Excel (2026-10-30)</strong> are two delivery channels of the same World Bank database.</li>
+<li>Agreement across both independent output channels for all 15 recovered dates gives <strong>high confidence</strong> that these are the WB’s authoritative board approval dates for those projects.</li>
+<li>Three dates fall on <strong>June 30</strong> (fiscal year end): P006930, P006950, P006951. These are a common WB convention for projects without a precise approval date recorded in the system. The year is likely correct; the June 30 date is a fiscal year approximation.</li>
+<li><strong>P169724</strong> (Learning for All, $100M, Dropped) has no date in either V3 or Excel. This is the only genuinely unresolvable case.</li>
+</ul>
+<hr>
+</section>
+</section>
+<section id="recovery-results" class="level2">
+<h2 class="anchored" data-anchor-id="recovery-results">3. Recovery results</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-striped table-condensed caption-top table-sm small">
+<caption>Recovered board approval dates for 16 missing-date projects (Sources: WB V3 API and bulk Excel, cross-validated)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Project ID</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Project name</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Recovered date</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Year</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Confidence</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Commitment</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Status</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">P006930</td>
+<td style="text-align: left;">SITES &amp; SERVICES</td>
+<td style="text-align: left;">1980-06-30</td>
+<td style="text-align: right;">1980</td>
+<td style="text-align: left;">Med (FY proxy)</td>
+<td style="text-align: left;">$0</td>
+<td style="text-align: left;">Closed</td>
+<td style="text-align: left;">1980-06-30: pre-1990, excluded from primary analysis</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">P006950</td>
+<td style="text-align: left;">Interest Support Loan Project</td>
+<td style="text-align: left;">1991-06-30</td>
+<td style="text-align: right;">1991</td>
+<td style="text-align: left;">Med (FY proxy)</td>
+<td style="text-align: left;">$25M</td>
+<td style="text-align: left;">Dropped</td>
+<td style="text-align: left;">1991-06-30: June 30 is WB FY-end; exact date within FY1991 unverifiable</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">P006951</td>
+<td style="text-align: left;">Forestry and Natural Resources Conservation Project</td>
+<td style="text-align: left;">1998-06-30</td>
+<td style="text-align: right;">1998</td>
+<td style="text-align: left;">Med (FY proxy)</td>
+<td style="text-align: left;">$15M</td>
+<td style="text-align: left;">Dropped</td>
+<td style="text-align: left;">1998-06-30: June 30 is WB FY-end; exact date within FY1998 unverifiable</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">P061314</td>
+<td style="text-align: left;">Ecomarkets Project</td>
+<td style="text-align: left;">2000-06-06</td>
+<td style="text-align: right;">2000</td>
+<td style="text-align: left;">High</td>
+<td style="text-align: left;">$0</td>
+<td style="text-align: left;">Closed</td>
+<td style="text-align: left;">Date confirmed by V3 API and bulk Excel (downloaded 2026-10-30)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">P082974</td>
+<td style="text-align: left;">DROPPED-CR-Water &amp; Sanit Sctr Modern</td>
+<td style="text-align: left;">2007-06-07</td>
+<td style="text-align: right;">2007</td>
+<td style="text-align: left;">High</td>
+<td style="text-align: left;">$60M</td>
+<td style="text-align: left;">Dropped</td>
+<td style="text-align: left;">Date confirmed by V3 API and bulk Excel (downloaded 2026-10-30)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">P122111</td>
+<td style="text-align: left;">CR Port regional'ion &amp; hinterland access</td>
+<td style="text-align: left;">2010-01-12</td>
+<td style="text-align: right;">2010</td>
+<td style="text-align: left;">High</td>
+<td style="text-align: left;">$0</td>
+<td style="text-align: left;">Active</td>
+<td style="text-align: left;">Date confirmed by V3 API and bulk Excel (downloaded 2026-10-30)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">P101718</td>
+<td style="text-align: left;">Telecom Sector Modernization</td>
+<td style="text-align: left;">2010-03-18</td>
+<td style="text-align: right;">2010</td>
+<td style="text-align: left;">High</td>
+<td style="text-align: left;">$13M</td>
+<td style="text-align: left;">Dropped</td>
+<td style="text-align: left;">Date confirmed by V3 API and bulk Excel (downloaded 2026-10-30)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">P103476</td>
+<td style="text-align: left;">Costa Rica E-Government Modernization</td>
+<td style="text-align: left;">2011-07-29</td>
+<td style="text-align: right;">2011</td>
+<td style="text-align: left;">High</td>
+<td style="text-align: left;">$15M</td>
+<td style="text-align: left;">Dropped</td>
+<td style="text-align: left;">Date confirmed by V3 API and bulk Excel (downloaded 2026-10-30)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">P122265</td>
+<td style="text-align: left;">Innovations to Enhance Performance of Health Care Networks in Costa Rica</td>
+<td style="text-align: left;">2014-07-03</td>
+<td style="text-align: right;">2014</td>
+<td style="text-align: left;">High</td>
+<td style="text-align: left;">$200M</td>
+<td style="text-align: left;">Dropped</td>
+<td style="text-align: left;">Date confirmed by V3 API and bulk Excel (downloaded 2026-10-30)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">P167926</td>
+<td style="text-align: left;">Strengthening Statistical Capacity in the Ministry of Public Education</td>
+<td style="text-align: left;">2018-11-16</td>
+<td style="text-align: right;">2018</td>
+<td style="text-align: left;">High</td>
+<td style="text-align: left;">$0</td>
+<td style="text-align: left;">Dropped</td>
+<td style="text-align: left;">Date confirmed by V3 API and bulk Excel (downloaded 2026-10-30)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">P163431</td>
+<td style="text-align: left;">Costa Rica Integrated System of Household Surveys</td>
+<td style="text-align: left;">2018-02-02</td>
+<td style="text-align: right;">2018</td>
+<td style="text-align: left;">High</td>
+<td style="text-align: left;">$0</td>
+<td style="text-align: left;">Closed</td>
+<td style="text-align: left;">Date confirmed by V3 API and bulk Excel (downloaded 2026-10-30)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">P160368</td>
+<td style="text-align: left;">Costa Rica REDD+ Emission Reductions Program</td>
+<td style="text-align: left;">2020-12-08</td>
+<td style="text-align: right;">2020</td>
+<td style="text-align: left;">High</td>
+<td style="text-align: left;">$0</td>
+<td style="text-align: left;">Active</td>
+<td style="text-align: left;">Date confirmed by V3 API and bulk Excel (downloaded 2026-10-30)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">P508347</td>
+<td style="text-align: left;">CRI FM GreenGro</td>
+<td style="text-align: left;">2025-09-30</td>
+<td style="text-align: right;">2025</td>
+<td style="text-align: left;">High</td>
+<td style="text-align: left;">$0</td>
+<td style="text-align: left;">Pipeline</td>
+<td style="text-align: left;">2025-09-30: approved after the 1990–2024 analysis window</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">P179757</td>
+<td style="text-align: left;">EnABLE Costa Rica Country Project Supporting Social Inclusion in FCPF Emission Reductions Program</td>
+<td style="text-align: left;">2025-08-11</td>
+<td style="text-align: right;">2025</td>
+<td style="text-align: left;">High</td>
+<td style="text-align: left;">$0</td>
+<td style="text-align: left;">Pipeline</td>
+<td style="text-align: left;">2025-08-11: approved after the 1990–2024 analysis window</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">P504033</td>
+<td style="text-align: left;">Program for Sustainable and Competitive Agriculture in Costa Rica</td>
+<td style="text-align: left;">2025-05-02</td>
+<td style="text-align: right;">2025</td>
+<td style="text-align: left;">High</td>
+<td style="text-align: left;">$150M</td>
+<td style="text-align: left;">Pipeline</td>
+<td style="text-align: left;">2025-05-02: approved after the 1990–2024 analysis window</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">P169724</td>
+<td style="text-align: left;">Learning for All in Costa Rica</td>
+<td style="text-align: left;">—</td>
+<td style="text-align: right;">NA</td>
+<td style="text-align: left;">Not recovered</td>
+<td style="text-align: left;">$100M</td>
+<td style="text-align: left;">Dropped</td>
+<td style="text-align: left;">No date in either V3 API or bulk Excel; project was likely dropped before board approval</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../figures/fig10_recovery_detail.png" class="img-fluid figure-img" width="1152"></p>
+<figcaption>The 16 missing-date projects placed on a timeline. Point size proportional to commitment amount. Projects outside the 1990–2024 window are greyed out or shown in amber.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Recovery summary:</strong></p>
+<ul>
+<li>15 of 16 dates recovered</li>
+<li>12 at <strong>high confidence</strong> (specific non-FY-end dates, confirmed by V3 API and Excel)</li>
+<li>3 at <strong>medium confidence</strong> (June 30 fiscal year-end proxies — year likely correct, exact date approximate)</li>
+<li>1 <strong>not recovered</strong> (P169724)</li>
+</ul>
+<hr>
+</section>
+<section id="three-scenario-comparison" class="level2">
+<h2 class="anchored" data-anchor-id="three-scenario-comparison">4. Three-scenario comparison</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../figures/fig9_scenario_comparison.png" class="img-fluid figure-img" width="1056"></p>
+<figcaption>Scenario A uses only dates available in the original V2 API. Scenario B adds dates recovered from V3 API and bulk Excel. The only substantive difference in the 1990–2024 window is the addition of P122265 ($200M) in 2014.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-striped table-hover caption-top table-sm small">
+<caption>Three-scenario summary (all amounts nominal USD)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Scenario</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Description</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Projects (1990–2024)</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Pos. fin. projects</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Total commitments</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">% in 2020–2024</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Projects in 2013–2019</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Remaining gap years</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">A</td>
+<td style="text-align: left;">Original V2 API dates only</td>
+<td style="text-align: left;">25</td>
+<td style="text-align: left;">18</td>
+<td style="text-align: left;">$3.3B</td>
+<td style="text-align: left;">71.4%</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">2013–2019 all empty</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">B</td>
+<td style="text-align: left;">Original + recovered dates (V3/Excel)</td>
+<td style="text-align: left;">36</td>
+<td style="text-align: left;">24</td>
+<td style="text-align: left;">$3.6B</td>
+<td style="text-align: left;">64.9%</td>
+<td style="text-align: left;">3 ($200M in 2014, $0 in 2018×2)</td>
+<td style="text-align: left;">2013, 2015–2017, 2019</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">C</td>
+<td style="text-align: left;">Positive financing only, V2 dates confirmed</td>
+<td style="text-align: left;">18</td>
+<td style="text-align: left;">18</td>
+<td style="text-align: left;">$3.3B</td>
+<td style="text-align: left;">71.4%</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">2013–2019 all empty</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="../figures/fig1b_portfolio_enriched.png" class="img-fluid figure-img" width="1056"></p>
+<figcaption>Enriched timeline (Scenario B). Amber bars indicate projects whose dates were recovered from the V3 API. The 2014 bar reflects P122265, the $200M Health Networks APL approved July 2014.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Key differences between Scenario A and B:</strong></p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-striped table-condensed caption-top table-sm small">
+<caption>Projects added to Scenario B (had missing dates in Scenario A, recovered dates within 1990–2024)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th">Project ID</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Project name</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">Year (recovered)</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Commitment</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Confidence</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Status</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">Instrument</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">P006950</td>
+<td style="text-align: left;">Interest Support Loan Project</td>
+<td style="text-align: right;">1991</td>
+<td style="text-align: left;">$25M</td>
+<td style="text-align: left;">Medium — FY year-end proxy (June 30)</td>
+<td style="text-align: left;">Dropped</td>
+<td style="text-align: left;">Debt and Debt Service Reduction Loan</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">P006951</td>
+<td style="text-align: left;">Forestry and Natural Resources Conservation Project</td>
+<td style="text-align: right;">1998</td>
+<td style="text-align: left;">$15M</td>
+<td style="text-align: left;">Medium — FY year-end proxy (June 30)</td>
+<td style="text-align: left;">Dropped</td>
+<td style="text-align: left;">Specific Investment Loan</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">P061314</td>
+<td style="text-align: left;">Ecomarkets Project</td>
+<td style="text-align: right;">2000</td>
+<td style="text-align: left;">$0</td>
+<td style="text-align: left;">High — specific date confirmed by V3 API and Excel</td>
+<td style="text-align: left;">Closed</td>
+<td style="text-align: left;">Specific Investment Loan</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">P082974</td>
+<td style="text-align: left;">DROPPED-CR-Water &amp; Sanit Sctr Modern</td>
+<td style="text-align: right;">2007</td>
+<td style="text-align: left;">$60M</td>
+<td style="text-align: left;">High — specific date confirmed by V3 API and Excel</td>
+<td style="text-align: left;">Dropped</td>
+<td style="text-align: left;">Specific Investment Loan</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">P122111</td>
+<td style="text-align: left;">CR Port regional'ion &amp; hinterland access</td>
+<td style="text-align: right;">2010</td>
+<td style="text-align: left;">$0</td>
+<td style="text-align: left;">High — specific date confirmed by V3 API and Excel</td>
+<td style="text-align: left;">Active</td>
+<td style="text-align: left;">Technical Assistance Loan</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">P101718</td>
+<td style="text-align: left;">Telecom Sector Modernization</td>
+<td style="text-align: right;">2010</td>
+<td style="text-align: left;">$13M</td>
+<td style="text-align: left;">High — specific date confirmed by V3 API and Excel</td>
+<td style="text-align: left;">Dropped</td>
+<td style="text-align: left;">Specific Investment Loan</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">P103476</td>
+<td style="text-align: left;">Costa Rica E-Government Modernization</td>
+<td style="text-align: right;">2011</td>
+<td style="text-align: left;">$15M</td>
+<td style="text-align: left;">High — specific date confirmed by V3 API and Excel</td>
+<td style="text-align: left;">Dropped</td>
+<td style="text-align: left;">Technical Assistance Loan</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">P122265</td>
+<td style="text-align: left;">Innovations to Enhance Performance of Health Care Networks in Costa Rica</td>
+<td style="text-align: right;">2014</td>
+<td style="text-align: left;">$200M</td>
+<td style="text-align: left;">High — specific date confirmed by V3 API and Excel</td>
+<td style="text-align: left;">Dropped</td>
+<td style="text-align: left;">Adaptable Program Loan</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">P167926</td>
+<td style="text-align: left;">Strengthening Statistical Capacity in the Ministry of Public Education</td>
+<td style="text-align: right;">2018</td>
+<td style="text-align: left;">$0</td>
+<td style="text-align: left;">High — specific date confirmed by V3 API and Excel</td>
+<td style="text-align: left;">Dropped</td>
+<td style="text-align: left;">Investment Project Financing</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">P163431</td>
+<td style="text-align: left;">Costa Rica Integrated System of Household Surveys</td>
+<td style="text-align: right;">2018</td>
+<td style="text-align: left;">$0</td>
+<td style="text-align: left;">High — specific date confirmed by V3 API and Excel</td>
+<td style="text-align: left;">Closed</td>
+<td style="text-align: left;">Investment Project Financing</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">P160368</td>
+<td style="text-align: left;">Costa Rica REDD+ Emission Reductions Program</td>
+<td style="text-align: right;">2020</td>
+<td style="text-align: left;">$0</td>
+<td style="text-align: left;">High — specific date confirmed by V3 API and Excel</td>
+<td style="text-align: left;">Active</td>
+<td style="text-align: left;">Investment Project Financing</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<hr>
+</section>
+<section id="the-20132019-gap-assessment" class="level2">
+<h2 class="anchored" data-anchor-id="the-20132019-gap-assessment">5. The 2013–2019 gap: assessment</h2>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-striped table-condensed caption-top table-sm small">
+<caption>Annual portfolio data 2010–2024 (Scenarios A and B)</caption>
+<thead>
+<tr class="header">
+<th style="text-align: right;" data-quarto-table-cell-role="th">Year</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">A: Projects</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">B: Projects</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">A: Commitments</th>
+<th style="text-align: left;" data-quarto-table-cell-role="th">B: Commitments</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">2012</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">$200M</td>
+<td style="text-align: left;">$200M</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2020</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">$532M</td>
+<td style="text-align: left;">$532M</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2021</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">$300M</td>
+<td style="text-align: left;">$300M</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2022</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">$120M</td>
+<td style="text-align: left;">$120M</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2023</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">$660M</td>
+<td style="text-align: left;">$660M</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2024</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">$750M</td>
+<td style="text-align: left;">$750M</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2010</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">$0M</td>
+<td style="text-align: left;">$13M</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2011</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">$0M</td>
+<td style="text-align: left;">$15M</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; background-color: rgba(254, 249, 236, 255) !important;">2013</td>
+<td style="text-align: right; background-color: rgba(254, 249, 236, 255) !important;">0</td>
+<td style="text-align: right; background-color: rgba(254, 249, 236, 255) !important;">0</td>
+<td style="text-align: left; background-color: rgba(254, 249, 236, 255) !important;">$0M</td>
+<td style="text-align: left; background-color: rgba(254, 249, 236, 255) !important;">$0M</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; background-color: rgba(254, 249, 236, 255) !important;">2014</td>
+<td style="text-align: right; background-color: rgba(254, 249, 236, 255) !important;">0</td>
+<td style="text-align: right; background-color: rgba(254, 249, 236, 255) !important;">1</td>
+<td style="text-align: left; background-color: rgba(254, 249, 236, 255) !important;">$0M</td>
+<td style="text-align: left; background-color: rgba(254, 249, 236, 255) !important;">$200M</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; background-color: rgba(254, 249, 236, 255) !important;">2015</td>
+<td style="text-align: right; background-color: rgba(254, 249, 236, 255) !important;">0</td>
+<td style="text-align: right; background-color: rgba(254, 249, 236, 255) !important;">0</td>
+<td style="text-align: left; background-color: rgba(254, 249, 236, 255) !important;">$0M</td>
+<td style="text-align: left; background-color: rgba(254, 249, 236, 255) !important;">$0M</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; background-color: rgba(254, 249, 236, 255) !important;">2016</td>
+<td style="text-align: right; background-color: rgba(254, 249, 236, 255) !important;">0</td>
+<td style="text-align: right; background-color: rgba(254, 249, 236, 255) !important;">0</td>
+<td style="text-align: left; background-color: rgba(254, 249, 236, 255) !important;">$0M</td>
+<td style="text-align: left; background-color: rgba(254, 249, 236, 255) !important;">$0M</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; background-color: rgba(254, 249, 236, 255) !important;">2017</td>
+<td style="text-align: right; background-color: rgba(254, 249, 236, 255) !important;">0</td>
+<td style="text-align: right; background-color: rgba(254, 249, 236, 255) !important;">0</td>
+<td style="text-align: left; background-color: rgba(254, 249, 236, 255) !important;">$0M</td>
+<td style="text-align: left; background-color: rgba(254, 249, 236, 255) !important;">$0M</td>
+</tr>
+<tr class="even">
+<td style="text-align: right; background-color: rgba(254, 249, 236, 255) !important;">2018</td>
+<td style="text-align: right; background-color: rgba(254, 249, 236, 255) !important;">0</td>
+<td style="text-align: right; background-color: rgba(254, 249, 236, 255) !important;">0</td>
+<td style="text-align: left; background-color: rgba(254, 249, 236, 255) !important;">$0M</td>
+<td style="text-align: left; background-color: rgba(254, 249, 236, 255) !important;">$0M</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right; background-color: rgba(254, 249, 236, 255) !important;">2019</td>
+<td style="text-align: right; background-color: rgba(254, 249, 236, 255) !important;">0</td>
+<td style="text-align: right; background-color: rgba(254, 249, 236, 255) !important;">0</td>
+<td style="text-align: left; background-color: rgba(254, 249, 236, 255) !important;">$0M</td>
+<td style="text-align: left; background-color: rgba(254, 249, 236, 255) !important;">$0M</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<section id="verdict" class="level3">
+<h3 class="anchored" data-anchor-id="verdict">Verdict</h3>
+<p>The apparent 2013–2019 gap is <strong>both a partial artifact and a real pattern</strong>:</p>
+<p><strong>It is partly a missing-data artifact:</strong> - P122265 ($200M, Health Networks APL) was approved <strong>2014-07-03</strong> and simply lacked a date in the V2 API. Adding it places a substantial commitment in 2014. - P163431 ($0) and P167926 ($0) fill 2018 with two genuine project approvals — though neither had positive IBRD financing.</p>
+<p><strong>It is also a real pattern:</strong> - Even with all recovered dates, <strong>2013, 2015, 2016, 2017, and 2019</strong> still show no confirmed positive IBRD financing commitments. - P169724 ($100M Learning for All, Dropped) remains unresolved. If it was approved in 2015–2019, it would fill part of the remaining gap. Its document evidence (preparation docs from 2019–2020) suggests it may have been Dropped before the board, meaning no approval date exists. - The <strong>2015–2019 financing gap appears real</strong>: Costa Rica did not receive substantial new IBRD investment loans during this period. The evidence is consistent with lower Bank engagement during Costa Rica’s fiscal deterioration (deficit widening from ~3% to ~8% GDP, 2015–2019).</p>
+</section>
+<section id="recommendation" class="level3">
+<h3 class="anchored" data-anchor-id="recommendation">Recommendation</h3>
+<p>The 2013–2019 gap can be presented as follows:</p>
+<blockquote class="blockquote">
+<p>“World Bank lending to Costa Rica was sparse between 2013 and 2019 by both project count and financing volume. The $200M Health Networks APL (2014) was board-approved during this period but was subsequently dropped; no large investment or policy loans were committed between 2015 and 2019. The pattern is consistent with lower Bank engagement during Costa Rica’s pre-reform fiscal stress, though the evidence does not allow a causal claim.”</p>
+</blockquote>
+<p>This framing: - Acknowledges the one meaningful project in 2014 (now visible with recovered dates) - Accurately reports the 2015–2019 financing absence - Avoids asserting causation while noting the fiscal context as potentially relevant - Notes the $100M unresolved project without manufacturing a conclusion</p>
+<hr>
+</section>
+</section>
+<section id="implications-for-the-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="implications-for-the-analysis">6. Implications for the analysis</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 40%">
+<col style="width: 60%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Impact</th>
+<th>Assessment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Financing totals</td>
+<td>Scenario B adds $328M to confirmed in-scope commitments ($3.3B → $3.6B). Six projects with positive financing were missing from the original timeline.</td>
+</tr>
+<tr class="even">
+<td>2020–2024 concentration</td>
+<td>Drops slightly: 71.4% → 64.9% (still dominant). The shift reflects recovered commitments in 2007, 2010, 2011, and 2014, not new 2020+ projects.</td>
+</tr>
+<tr class="odd">
+<td>The 2013–2019 gap</td>
+<td>2014 now has $200M (P122265). 2018 has two $0 projects. The 2015–2019 financing gap remains.</td>
+</tr>
+<tr class="even">
+<td>Sector analysis</td>
+<td>No change: none of the recovered projects had sector percentages that would affect the sector allocation charts.</td>
+</tr>
+<tr class="odd">
+<td>Text analysis</td>
+<td>No change: abstract availability was independent of date recovery.</td>
+</tr>
+<tr class="even">
+<td>Original figures 1–8</td>
+<td>Still valid for Scenario A. New figures 9, 10, and 1b show the enriched view.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Methodology note:</strong> The V2 API (<code>boardapprovaldate</code> NULL) and the V3 API / Excel (<code>boardapprovaldate</code> populated) are two output channels of the same World Bank database. The discrepancy is a known API version difference, not a data quality issue with the underlying records. The V3/Excel dates are authoritative.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

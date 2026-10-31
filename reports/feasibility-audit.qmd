@@ -1,0 +1,278 @@
+---
+title: "Data Feasibility Audit"
+subtitle: "World Bank Costa Rica Portfolio — Source Assessment and Analytical Viability"
+date: today
+---
+
+```{r setup}
+#| include: false
+library(here)
+library(dplyr)
+library(tidyr)
+library(readr)
+library(knitr)
+library(kableExtra)
+source(here("R", "functions.R"))
+
+# Load processed data
+df_main     <- read_csv(here("data", "processed", "projects_main_raw.csv"),  show_col_types = FALSE)
+df_filtered <- read_csv(here("data", "processed", "projects_filtered_raw.csv"), show_col_types = FALSE)
+projects    <- read_csv(here("data", "processed", "projects_all.csv"),        show_col_types = FALSE)
+wdi_cov     <- read_csv(here("data", "derived",    "wdi_coverage.csv"),       show_col_types = FALSE)
+wdi         <- read_csv(here("data", "processed",  "wdi_scope.csv"),          show_col_types = FALSE)
+```
+
+## 1. Source files
+
+Two JSON files were downloaded from the World Bank Projects API and stored as raw data. 
+Neither file was modified.
+
+| File | Size | Endpoint |
+|------|------|----------|
+| `world_bank_costa_rica.json` | 151 KB | `search.worldbank.org/api/v2/projects?format=json&countrycode=CR&rows=100` |
+| `world_bank_costa_rica_filtered.json` | 82 KB | Same endpoint with `&fl=id,project_name,totalamt,sector1,sector2,sector3,boardapprovaldate,closingdate,status,project_abstract` |
+
+The API returns a JSON object where the top-level `projects` key is itself a dictionary keyed by 
+project ID (e.g., `"P181174": {...}`), not an array. Both files report 72 total projects.
+
+**File comparison:**
+
+```{r}
+#| echo: false
+tribble(
+  ~Attribute, ~`Main file`, ~`Filtered file`,
+  "Total projects", "72", "72",
+  "Unique project IDs", "72", "72",
+  "IDs only in one file", "0", "0",
+  "boardapprovaldate format", "MM/DD/YYYY HH:MM:SS", "ISO 8601 (YYYY-MM-DDTHH:MM:SSZ)",
+  "Sectors available", "sector1–sector3", "sector1–sector3",
+  "Project abstract", "Not present", "Nested under `project_abstract$cdata!`",
+  "Financial fields", "totalamt, ibrdcommamt, lendprojectcost, grantamt", "totalamt only",
+  "Lending instrument", "Present (`lendinginstr`)", "Not present",
+  "Thematic fields", "theme1, mjtheme_namecode, theme_list", "Not present"
+) |>
+  kable() |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+**Primary source selected: main file (`world_bank_costa_rica.json`)**, supplemented by abstracts 
+from the filtered file. The main file contains lending instrument, thematic classification, and 
+multiple financing fields not present in the filtered file.
+
+---
+
+## 2. Project inventory
+
+```{r}
+#| echo: false
+in_scope <- sum(projects$in_scope_1990, na.rm = TRUE)
+pre1990  <- sum(!is.na(projects$approval_year) & projects$approval_year < 1990)
+missing  <- sum(is.na(projects$approval_year))
+
+tribble(
+  ~Category, ~Count, ~Notes,
+  "Total projects in API", "72", "All lending instruments, all years",
+  "Pre-1990 (confirmed)", as.character(pre1990), "Dates from 1956; excluded from primary analysis",
+  "1990–2024 (confirmed dates)", as.character(in_scope), "Primary analysis window",
+  "Missing approval date", as.character(missing), "Cannot be placed in timeline; mostly appear to be post-1990 based on project names and P-numbers",
+  "Total with positive financing", "57", "15 have totalamt = 0 (grants, cancelled, or technical assistance)",
+  "Zero-financing projects", "15", "Excluded from financial totals"
+) |>
+  kable() |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"))
+```
+
+> **Important caveat:** Sixteen projects lack approval dates in the API. Based on project names and 
+> World Bank project ID number ranges, most appear to be from the 1990s–2010s. Their exclusion 
+> creates a visible gap in the 2013–2019 portion of the time series that does not reflect an actual 
+> absence of Bank activity. This limitation is documented throughout the analysis.
+
+**Pre-1990 projects (n = `r pre1990`):**
+
+```{r}
+#| echo: false
+projects |>
+  filter(!is.na(approval_year), approval_year < 1990) |>
+  arrange(approval_year) |>
+  select(`Project ID` = id, `Project name` = project_name, Year = approval_year) |>
+  kable() |>
+  kable_styling(bootstrap_options = c("striped", "condensed"), font_size = 12)
+```
+
+---
+
+## 3. Financing fields
+
+```{r}
+#| echo: false
+inscope <- projects |> filter(in_scope_1990 == TRUE)
+```
+
+The API provides several financing fields:
+
+| Field | Interpretation | Note |
+|-------|---------------|------|
+| `totalamt` | **World Bank IBRD commitment** at approval | String, comma-separated (e.g., `"200,000,000"`); identical to `ibrdcommamt` in nearly all cases |
+| `ibrdcommamt` | IBRD loan commitment | Matches `totalamt` for all sampled projects |
+| `lendprojectcost` | **Total project cost** | Often higher than `totalamt`; includes counterpart and co-financing |
+| `grantamt` | Grant component (rare) | Present for a few projects |
+| `curr_total_commitment` | Current commitment (in millions) | Reflects any amendments; differs from `totalamt` for some projects |
+
+**`totalamt` is used throughout as the World Bank IBRD lending commitment.** It should not be 
+labeled as total project cost.
+
+**All amounts are nominal US dollars at the time of commitment.** Comparing commitments across 
+35 years without inflation adjustment overstates the real value of older loans relative to 
+recent ones. For exploratory purposes, nominal amounts are retained; any cross-period comparisons 
+are treated as approximations only.
+
+```{r}
+#| echo: false
+inscope_fin <- inscope |> filter(has_financing == TRUE)
+tribble(
+  ~Metric, ~Value,
+  "In-scope projects (1990–2024)", as.character(nrow(inscope)),
+  "With positive IBRD commitment", as.character(nrow(inscope_fin)),
+  "Zero-commitment projects", as.character(nrow(inscope) - nrow(inscope_fin)),
+  "Minimum commitment (excl. zero)", fmt_millions(min(inscope_fin$totalamt)),
+  "Median commitment", fmt_millions(median(inscope_fin$totalamt)),
+  "Mean commitment", fmt_millions(mean(inscope_fin$totalamt)),
+  "Maximum commitment", fmt_millions(max(inscope_fin$totalamt)),
+  "Total in-scope commitments (nominal)", fmt_billions(sum(inscope_fin$totalamt))
+) |>
+  kable() |>
+  kable_styling(bootstrap_options = c("striped", "condensed"))
+```
+
+---
+
+## 4. Sector fields
+
+The API returns sector information in two complementary structures:
+
+- **`sector1`, `sector2`, `sector3`:** Named slots with `Name` and `Percent` subfields. Each gives a 
+  sector name and its percentage share of the project's activities.
+- **`sector_namecode`:** An array of all sector assignments (may capture more than 3 sectors).
+- **`mjsector_namecode`:** An array of *major* sector groupings.
+
+```{r}
+#| echo: false
+tribble(
+  ~`Sector field`, ~`Projects with data (all 72)`, ~Notes,
+  "sector1 (name)", "62", "10 recent projects have empty names",
+  "sector2 (name)", "19", "Most projects have only one or two sectors",
+  "sector3 (name)", "11", "Rarely populated",
+  "sector1 pct > 0", "62", "Percentages available whenever name is available",
+  "Projects with pcts summing to ~100%", "~40", "Remaining have partial or missing pcts"
+) |>
+  kable() |>
+  kable_styling(bootstrap_options = c("striped", "condensed"))
+```
+
+**Sector allocations:** When sector percentage data is available and sums to approximately 100%, 
+project financing is allocated proportionally across sectors. For example, a $100M project 
+where 60% goes to Public Administration and 40% to Transportation contributes $60M and $40M 
+respectively to sector totals. This avoids double-counting project financing.
+
+When percentages are unavailable or do not sum correctly, projects are included in sector 
+counts but excluded from allocated financing totals.
+
+---
+
+## 5. Project abstracts
+
+```{r}
+#| echo: false
+abs_pres <- sum(!is.na(df_filtered$project_abstract))
+abs_miss <- sum(is.na(df_filtered$project_abstract))
+abs_chars <- nchar(df_filtered$project_abstract[!is.na(df_filtered$project_abstract)])
+```
+
+Abstracts are available for **`r abs_pres` of 72 projects** (`r abs_miss` missing). 
+Abstract length ranges from `r min(abs_chars)` to `r max(abs_chars)` characters 
+(median: `r round(median(abs_chars))`).
+
+Abstracts describe stated project *objectives and intended outputs*, not actual implementation 
+or outcomes. Keyword analysis can identify recurring development themes in Bank project design 
+but cannot assess project effectiveness.
+
+Missing abstracts are concentrated among older and dropped/cancelled projects.
+
+---
+
+## 6. World Development Indicators
+
+```{r}
+#| echo: false
+wdi_cov |>
+  rename(
+    Indicator = indicator,
+    `Total obs.` = n_obs,
+    `Coverage (%)` = coverage_pct,
+    `First year` = year_min,
+    `Last year` = year_max,
+    `In-scope obs. (1990–2024)` = n_in_scope,
+    `Gaps (1990–2024)` = n_gaps_scope,
+    Feasibility = feasibility
+  ) |>
+  kable() |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed")) |>
+  column_spec(8, bold = TRUE,
+              color = ifelse(wdi_cov$feasibility == "Good", "#2d6a4f",
+                     ifelse(wdi_cov$feasibility == "Usable with limitations", "#ca6702",
+                     ifelse(wdi_cov$feasibility == "Poor", "#ae2012", "black"))))
+```
+
+**Notes:**
+
+- **GDP per capita:** Annual data, full 1990–2024 coverage. Reliable for trend analysis.
+- **Gini index:** Annual coverage 1990–2024 thanks to Costa Rica's continuous *Encuesta de Hogares* 
+  (Household Survey). Values represent income inequality at the household level. Treat year-to-year 
+  variation cautiously; focus on multi-year trends.
+- **Life expectancy:** Annual data, full 1990–2024 coverage. Reliable.
+- **Adult literacy:** Only **2 observations** in the 1990–2024 window (year 2000 and 2011). 
+  **Not usable for trend analysis.** Excluded from visualizations.
+
+---
+
+## 7. Feasibility verdict
+
+```{r}
+#| echo: false
+tribble(
+  ~Component, ~Feasibility, ~`Coverage / quality`, ~Issues, ~Recommendation,
+  "Project dates", "Good", "56/72 with dates; 25 confirmed 1990–2024", "16 projects lack dates; distorts 2013–2019 window", "Use confirmed dates; note gap prominently",
+  "Financing amounts", "Good", "57/72 positive; range $1M–$500M; $3.3B in-scope total", "Nominal USD only; zero amounts for 15 projects", "Use for comparisons; note nominal-dollar caveat",
+  "Sector allocations", "Usable with limitations", "62/72 with sector names; pct data for ~40 projects", "Recent projects (2024) lack sector names; limited to 3 sector slots", "Allocate where pcts available; count-based otherwise",
+  "Project abstracts", "Good (where present)", "46/72 present; median 1,062 chars", "26 missing; concentrated in older/dropped projects", "Use for keyword analysis with coverage caveat",
+  "Project status", "Good", "All 72 populated", "None material", "Use as-is",
+  "GDP per capita", "Good", "35 annual obs (1990–2024)", "Nominal USD; no PPP adjustment", "Use for trend context",
+  "Gini index", "Good", "35 annual obs (1990–2024)", "Survey-based; year-to-year noise", "Use for trend; note survey basis",
+  "Life expectancy", "Good", "35 annual obs (1990–2024)", "None material", "Use as-is",
+  "Adult literacy", "Not usable", "2 obs in 1990–2024 (2000, 2011)", "Insufficient for trend analysis", "Exclude from analysis"
+) |>
+  kable() |>
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), font_size = 12) |>
+  column_spec(2, bold = TRUE,
+              color = c("#2d6a4f","#2d6a4f","#ca6702","#2d6a4f","#2d6a4f",
+                        "#2d6a4f","#2d6a4f","#2d6a4f","#ae2012"))
+```
+
+### Overall verdict: **Proceed with modifications**
+
+The core project-level data is sufficient to support a meaningful exploratory analysis 
+of World Bank lending in Costa Rica from 1990 to 2024.
+
+**Modifications relative to original scope:**
+
+1. **Time series gap:** The 16 missing-date projects create an apparent gap in 2013–2019 activity. 
+   All charts note this limitation explicitly.
+2. **Sector analysis limited:** Only 3 sector slots captured; most recent projects lack sector data. 
+   Sector analysis is indicative, not complete.
+3. **Nominal amounts only:** No inflation adjustment is applied. Cross-period comparisons of dollar 
+   amounts should be treated as approximations.
+4. **Adult literacy excluded:** Insufficient data points.
+5. **Gini treated carefully:** Annual data is available, but trend interpretation should be tempered 
+   by awareness of survey-to-survey variation.
+
+The analysis proceeds with these limitations documented throughout.

@@ -1,0 +1,14 @@
+/.quarto/
+**/*.quarto_ipynb
+_freeze/
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+__pycache__/
+.DS_Store
+Thumbs.db
+
+# Processed data (reproducible from raw + scripts)
+data/processed/
+data/derived/

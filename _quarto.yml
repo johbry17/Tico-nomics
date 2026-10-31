@@ -1,0 +1,38 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Tico-nomics"
+  description: "The World Bank in Costa Rica: Development Finance, Sectoral Priorities, and Economic Change, 1990–2024"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Overview
+      - href: reports/feasibility-audit.qmd
+        text: Data Audit
+      - href: reports/eda-report.qmd
+        text: Analysis
+    right:
+      - icon: github
+        href: https://github.com/johbry17/Tico-nomics
+
+format:
+  html:
+    theme:
+      light: flatly
+    css: styles.css
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    code-summary: "Show code"
+    fig-width: 10
+    fig-height: 6.5
+    fig-dpi: 150
+    embed-resources: false
+
+execute:
+  echo: false
+  warning: false
+  message: false
+  freeze: auto

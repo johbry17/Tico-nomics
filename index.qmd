@@ -1,0 +1,61 @@
+---
+title: "The World Bank in Costa Rica"
+subtitle: "Development Finance, Sectoral Priorities, and Economic Change, 1990–2024"
+---
+
+```{r}
+#| include: false
+library(here)
+library(dplyr)
+library(readr)
+library(scales)
+source(here("R", "functions.R"))
+
+projects <- read_csv(here("data", "processed", "projects_inscope.csv"),
+                     show_col_types = FALSE)
+```
+
+## Overview
+
+From 1990 to 2024, the World Bank approved **`r nrow(projects)` projects** in Costa Rica, 
+committing approximately **`r fmt_billions(sum(projects$totalamt[projects$has_financing==TRUE], na.rm=TRUE))`** 
+in IBRD lending (nominal US dollars at time of commitment).
+
+This portfolio traces a country navigating structural adjustment, infrastructure investment, fiscal 
+reform, environmental leadership, and pandemic response — all while maintaining one of Latin America's 
+strongest human development records.
+
+This site presents an exploratory, descriptive analysis of that portfolio. It is not a causal study.
+
+---
+
+### Research Questions
+
+**Primary:** How has the sectoral and thematic distribution of World Bank lending to Costa Rica changed 
+from 1990 to 2024, and what do these patterns reveal about evolving development priorities?
+
+**Secondary:** How do changes in development financing relate chronologically to Costa Rica's broader 
+economic and social trajectory?
+
+---
+
+### Data Sources
+
+| Source | Description | Coverage |
+|--------|-------------|----------|
+| World Bank Projects API | Project-level lending records | 72 projects, 1956–2024 |
+| World Development Indicators (`wbstats`) | GDP per capita, Gini, life expectancy, literacy | Costa Rica, 1960–2024 |
+
+**Analysis period:** 1990–2024 (25 projects with confirmed approval dates; 16 additional projects 
+lack approval dates in the API and cannot be placed in the timeline).
+
+---
+
+### Navigation
+
+- **[Data Audit](reports/feasibility-audit.qmd)** — Assessment of data quality, completeness, and analytical feasibility
+- **[Analysis](reports/eda-report.qmd)** — Exploratory data analysis and findings
+
+---
+
+*Analysis by [Bryan Johns](https://github.com/johbry17). Data: World Bank Projects API and World Development Indicators.*

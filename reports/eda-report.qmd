@@ -1,0 +1,334 @@
+---
+title: "Exploratory Data Analysis"
+subtitle: "World Bank Lending in Costa Rica, 1990–2024"
+date: today
+---
+
+```{r setup}
+#| include: false
+library(here)
+library(dplyr)
+library(tidyr)
+library(readr)
+library(ggplot2)
+library(scales)
+library(forcats)
+library(stringr)
+library(patchwork)
+library(knitr)
+library(kableExtra)
+source(here("R", "functions.R"))
+
+projects     <- read_csv(here("data", "processed", "projects_inscope.csv"),   show_col_types = FALSE)
+sector_long  <- read_csv(here("data", "processed", "sector_long.csv"),         show_col_types = FALSE)
+annual_sum   <- read_csv(here("data", "derived",   "annual_summary.csv"),      show_col_types = FALSE)
+sec_period   <- read_csv(here("data", "derived",   "sector_by_period.csv"),    show_col_types = FALSE)
+theme_pres   <- read_csv(here("data", "derived",   "theme_presence.csv"),      show_col_types = FALSE)
+word_counts  <- read_csv(here("data", "derived",   "word_counts.csv"),         show_col_types = FALSE)
+wdi          <- read_csv(here("data", "processed", "wdi_scope.csv"),           show_col_types = FALSE)
+by_period    <- read_csv(here("data", "derived",   "portfolio_by_period.csv"), show_col_types = FALSE)
+instr_mix    <- read_csv(here("data", "derived",   "instrument_mix.csv"),      show_col_types = FALSE)
+top_proj     <- read_csv(here("data", "derived",   "top_projects.csv"),        show_col_types = FALSE)
+
+period_levels <- c("1990–1999","2000–2009","2010–2019","2020–2024")
+projects  <- projects  |> mutate(period = factor(period, levels = period_levels))
+sec_period <- sec_period |> filter(period %in% period_levels) |>
+              mutate(period = factor(period, levels = period_levels))
+theme_pres <- theme_pres |> filter(period %in% period_levels) |>
+              mutate(period = factor(period, levels = period_levels))
+```
+
+> **Data note:** 25 of 72 World Bank Costa Rica projects have confirmed approval dates in the 1990–2024 
+> window. An additional 16 projects lack approval dates in the API; most appear to be post-1990 based 
+> on their names, but cannot be placed in the timeline. All figures note where this gap affects the 
+> analysis. See the [Data Audit](feasibility-audit.qmd) for full details.
+
+---
+
+## A. Portfolio overview
+
+```{r portfolio-fig}
+#| fig-cap: "Annual IBRD commitments and project approvals, 1990–2024. The apparent gap in 2013–2019 reflects 16 projects with missing dates in the API, not an absence of Bank activity."
+knitr::include_graphics(here("figures", "fig1_portfolio_over_time.png"))
+```
+
+```{r period-table}
+#| echo: false
+by_period |>
+  mutate(
+    total_usd   = fmt_billions(total_usd),
+    mean_usd    = fmt_millions(mean_usd),
+    median_usd  = fmt_millions(median_usd)
+  ) |>
+  rename(
+    Period = period,
+    Projects = n_projects,
+    `Total commitments` = total_usd,
+    `Mean project` = mean_usd,
+    `Median project` = median_usd,
+    `DPL count` = n_dpl,
+    `IPF count` = n_ipf,
+    `% of total` = pct_of_total
+  ) |>
+  kable(caption = "IBRD commitments by approval period (nominal USD; confirmed dates only)") |>
+  kable_styling(bootstrap_options = c("striped", "condensed"))
+```
+
+**Key observations:**
+
+- **`r by_period |> filter(pct_of_total == max(pct_of_total)) |> pull(period)` accounts for the largest share** 
+  of confirmed in-scope commitments by dollar value.
+- **Project scale increased dramatically** from small loans in the 1990s–2000s to $200–500M 
+  operations after 2020.
+- The surge after 2020 includes the three Fiscal and Decarbonization DPL series, COVID-19 vaccines, 
+  and the Climate Resilient Recovery project — a cluster reflecting the pandemic crisis and 
+  Costa Rica's fiscal reform agenda.
+
+---
+
+## B. Instrument mix
+
+```{r instr-fig}
+#| fig-cap: "IBRD commitments by lending instrument. Development Policy Loans (DPLs) provide direct budget support and are typically associated with policy reform conditions."
+knitr::include_graphics(here("figures", "fig7_instrument_mix.png"))
+```
+
+```{r instr-table}
+#| echo: false
+instr_mix |>
+  mutate(total_usd = fmt_billions(total_usd)) |>
+  rename(
+    `Instrument type` = instrument_type,
+    `# Projects` = n,
+    `Total commitments` = total_usd,
+    `% by count` = pct_n,
+    `% by value` = pct_usd
+  ) |>
+  kable() |>
+  kable_styling(bootstrap_options = c("striped", "condensed"))
+```
+
+**Development Policy Loans** (DPLs) are budget-support instruments that transfer funds directly to the 
+government's general treasury, conditional on policy actions. Their appearance in the portfolio 
+coincides with specific fiscal stress periods: the 2009 global financial crisis and the 2020–2023 
+COVID and fiscal consolidation period.
+
+---
+
+## C. Sectoral composition
+
+```{r sector-fig}
+#| fig-cap: "Sectoral share of allocated IBRD commitments by period. Based on sector percentage allocations from the Projects API; projects without sector percentages are excluded from allocation calculations."
+knitr::include_graphics(here("figures", "fig3_sector_composition.png"))
+```
+
+```{r sector-table}
+#| echo: false
+sec_period |>
+  filter(total_alloc > 0) |>
+  mutate(total_alloc = fmt_millions(total_alloc)) |>
+  arrange(period, desc(pct_of_period)) |>
+  rename(
+    Period = period,
+    Sector = sector_group,
+    `# Allocations` = n_allocs,
+    `Allocated USD` = total_alloc,
+    `% of period` = pct_of_period
+  ) |>
+  kable(caption = "Sector allocations by period (projects with sector % data available)") |>
+  kable_styling(bootstrap_options = c("striped", "condensed"), font_size = 12) |>
+  collapse_rows(columns = 1, valign = "top")
+```
+
+**Key sectoral patterns:**
+
+- **Transportation** dominated early lending, consistent with highway and infrastructure investment.
+- **Public Administration and Finance** grew substantially in the 2000s and accelerated further with 
+  the DPL-heavy post-2020 portfolio (fiscal management, competitiveness).
+- **Environment and natural resources** appear throughout the portfolio in different guises — 
+  from early biodiversity/payment-for-services projects to the Decarbonization DPL series.
+- **Education and health** appear as discrete investment projects across multiple periods.
+
+> **Limitation:** Only 3 sector slots are captured per project. Recent projects (2024 approvals) 
+> have no sector data in the API, which understates recent sector diversity.
+
+---
+
+## D. Largest projects
+
+```{r top-fig}
+#| fig-cap: "Top 12 projects by IBRD commitment at approval."
+knitr::include_graphics(here("figures", "fig4_top_projects.png"))
+```
+
+**The largest project** is the **`r top_proj |> arrange(desc(totalamt)) |> head(1) |> pull(project_name)`** 
+(`r top_proj |> arrange(desc(totalamt)) |> head(1) |> pull(totalamt_fmt)`, 
+`r top_proj |> arrange(desc(totalamt)) |> head(1) |> pull(approval_year)`). The top projects 
+are concentrated in DPLs and large infrastructure/competitiveness programs.
+
+---
+
+## E. Development priorities in project language
+
+```{r abstract-fig}
+#| fig-cap: "Share of projects per period with abstracts mentioning each thematic keyword cluster. Based on keyword search; does not measure implementation intensity."
+knitr::include_graphics(here("figures", "fig5_abstract_themes.png"))
+```
+
+**Most frequent words across all abstracts:**
+
+```{r word-cloud-table}
+#| echo: false
+word_counts |>
+  head(25) |>
+  rename(Word = word, Frequency = n) |>
+  kable(caption = "Top 25 words in project abstracts (after removing stop words)") |>
+  kable_styling(bootstrap_options = c("striped", "condensed"), full_width = FALSE)
+```
+
+**Theme observations:**
+
+- **Infrastructure language** is strong in the 1990s–2000s, declining slightly as the portfolio 
+  shifts toward policy and fiscal operations.
+- **Environment and climate language** appears in every period — reflecting Costa Rica's well-known 
+  environmental identity — but intensifies in the 2010s and 2020s, particularly in the 
+  Decarbonization DPL series.
+- **Governance and fiscal language** surges in the 2020s, driven by the three Fiscal and 
+  Decarbonization DPLs and the Fiscal Management Improvement project.
+- **Disaster risk and resilience language** becomes visible only in the 2020s — the CAT DDOs and 
+  Climate Resilient Recovery project introduce this framing.
+
+---
+
+## F. Costa Rica's development trajectory
+
+```{r trajectory-fig}
+#| fig-cap: "Key macroeconomic and social indicators, 1990–2024. These are contextual comparisons, not evidence of causation."
+knitr::include_graphics(here("figures", "fig6_development_trajectory.png"))
+```
+
+```{r gdp-summary}
+#| echo: false
+gdp_1990 <- wdi |> filter(year == 1990) |> pull(gdp_per_capita)
+gdp_2024 <- wdi |> filter(year == 2024) |> pull(gdp_per_capita)
+le_1990  <- wdi |> filter(year == 1990) |> pull(life_expectancy)
+le_2024  <- wdi |> filter(year == 2022) |> pull(life_expectancy)
+```
+
+- **GDP per capita** grew from approximately 
+  **`r scales::dollar(gdp_1990, accuracy=100)`** (1990) to 
+  **`r scales::dollar(gdp_2024, accuracy=100)`** (2024), a 
+  `r round((gdp_2024/gdp_1990 - 1)*100, 0)`% increase in nominal terms.
+- **Life expectancy** improved from `r round(le_1990, 1)` years (1990) to 
+  `r round(le_2024, 1)` years (2022), among the highest in Latin America.
+- **Gini index** shows moderate inequality with some reduction over the 2010s, 
+  followed by a COVID-related spike around 2020–2021.
+
+```{r gdp-overlay-fig}
+#| fig-cap: "World Bank commitment volumes indexed against GDP per capita trajectory. Both series scaled to 0–100% of their respective 1990–2024 range. Not a direct comparison."
+knitr::include_graphics(here("figures", "fig8_commitments_vs_gdp.png"))
+```
+
+---
+
+## G. Findings and interpretation
+
+### Finding 1: The portfolio is highly concentrated in time and instrument type
+
+More than **`r round(by_period |> filter(period=="2020–2024") |> pull(pct_of_total), 0)`% of 
+confirmed 1990–2024 commitments** were approved in just 2020–2024. This reflects the emergence 
+of very large DPL series ($300–500M each) rather than a gradual escalation. The earlier portfolio 
+consisted primarily of Investment Project Financing in the $15–200M range.
+
+*Why it matters:* The recent shift toward large DPLs signals a change in the Bank-government 
+relationship — from project-by-project investment toward programmatic budget support tied to 
+policy reform. This warrants investigation into the fiscal context (Costa Rica entered a major 
+fiscal reform process after 2018).
+
+### Finding 2: Environmental themes appear consistently, but their framing changes
+
+Environmental and natural resource themes are present across all periods. In the 1990s–2000s, 
+this meant biodiversity conservation and payment-for-environmental-services projects 
+(Ecomarkets, GEF mainstreaming). By 2020–2024, the same environmental commitment is expressed 
+through the *Fiscal and Decarbonization* DPL series — linking fiscal reform directly to 
+decarbonization. 
+
+*Why it matters:* This suggests Costa Rica's environmental identity has been institutionalized 
+into its fiscal and macroeconomic policy framework, not just ring-fenced in project-level 
+investments. Whether the Bank is responding to Costa Rican government priorities or helping 
+shape them is a question worth investigating.
+
+### Finding 3: A notable gap in the 2013–2019 period (partially an artifact)
+
+The confirmed time series shows almost no projects between 2012 and 2020. Some of this gap 
+is real (World Bank may have had lower engagement during Costa Rica's pre-reform fiscal stress), 
+but some is an artifact of 16 projects with missing dates. Further investigation — via the WB 
+project website or a different API query — is needed to accurately populate this period.
+
+*Why it matters:* If Costa Rica was indeed under-served by Bank lending in 2013–2019, this 
+would coincide with the country's fiscal deterioration (deficits widened substantially from 
+~3% to ~8% of GDP over this period). The absence of Bank engagement, followed by a massive 
+surge in DPL budget support post-2020, would tell a coherent story about the Bank as a 
+lender-of-last-resort for fiscal adjustment.
+
+### Finding 4: Project scale has increased dramatically
+
+The median confirmed in-scope project commitment is 
+**`r fmt_millions(median(projects$totalamt[projects$has_financing==TRUE], na.rm=TRUE))`**. 
+But that median is pulled down by many small projects. The five largest projects are all 
+$200M+, all approved after 2009, and all either DPLs or large infrastructure operations.
+
+*Why it matters:* This mirrors a global trend in World Bank operations toward fewer but larger 
+operations. Smaller countries like Costa Rica may get fewer but costlier loans, concentrating 
+the policy leverage (and conditionality) in a smaller number of very large transactions.
+
+### Finding 5: Costa Rica's economic trajectory is largely independent of lending volume
+
+GDP per capita and life expectancy improved steadily throughout the period, regardless of 
+lending volume. The Gini index shows modest variation. The largest World Bank commitments 
+do not obviously coincide with turning points in development indicators.
+
+*Why it matters:* This is consistent with the Bank's role as a supplemental financier in a 
+middle-income country, not a transformative external actor. Costa Rica's development record 
+is predominantly domestically driven. The Bank's leverage is likely concentrated in specific 
+policy reform windows (2009, 2020–2023) rather than broad development outcomes.
+
+---
+
+## H. What the data tells us — and what it cannot
+
+**What the data tells us:**
+
+- The World Bank has committed approximately $3.3B to 25 confirmed 1990–2024 Costa Rica projects 
+  (more if missing-date projects are included).
+- The portfolio has shifted from project-level investments in transport, education, and environment 
+  to very large budget-support operations focused on fiscal management and decarbonization.
+- Environmental and climate themes are embedded across every lending period.
+- Disaster risk and resilience language is a recent addition to the portfolio vocabulary.
+
+**What the data cannot tell us:**
+
+- Whether World Bank projects achieved their stated objectives.
+- Whether Bank conditions influenced Costa Rican policy decisions.
+- The nature or magnitude of the 2013–2019 gap (missing-date problem).
+- How this portfolio compares to other middle-income IBRD borrowers.
+- Whether lending caused, responded to, or was independent of macroeconomic changes.
+
+---
+
+## I. Recommended next steps
+
+1. **Resolve missing-date projects:** Query the World Bank project website directly for the 16 
+   projects to recover approval dates and complete the timeline.
+2. **Investigate the 2013–2019 gap:** Research whether Costa Rica genuinely had a lean period 
+   with the Bank and understand the fiscal context (SAL-era debt, 2018 fiscal reform crisis).
+3. **Explore the Decarbonization DPL series in depth:** The three Fiscal and Decarbonization DPLs 
+   (2020–2023) are the dominant story of the recent portfolio. What policy conditions did they 
+   include? What has the fiscal reform achieved?
+4. **Add inflation adjustment:** Deflate nominal amounts using the US GDP deflator or CPI to 
+   enable more accurate cross-period comparisons.
+5. **Comparative context:** How does Costa Rica's portfolio composition compare to comparable 
+   IBRD borrowers (Panama, Dominican Republic, Colombia)? The World Bank API makes this comparison 
+   feasible.
+6. **Primary sources:** Supplement this quantitative portrait with project assessment reports 
+   (ICRs and ICRRs) from the World Bank's Operations Portal for the major projects.

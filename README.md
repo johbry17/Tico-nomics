@@ -10,6 +10,9 @@ This project uses the World Bank Projects API and World Development Indicators t
 
 ## Data
 
+- [IBRD Loans Summary by Status](https://financesone.worldbank.org/ibrd-loans-summary-by-status/DS01535)
+- [IBRD Statement of Loans and Guarantees - Latest Available Snapshot 10/31/26](https://financesone.worldbank.org/ibrd-statement-of-loans-and-guarantees-latest-available-snapshot/DS00047)
+- [World Bank Group Projects & Operations](https://projects.worldbank.org/en/projects-operations/projects-summary) - List of projects in Costa Rica
 - **World Bank Projects API:** 72 Costa Rica projects (all years); 25 confirmed in the 1990–2024 analysis window
   - Main: [all fields](https://search.worldbank.org/api/v2/projects?format=json&countrycode=CR&rows=100)
   - Filtered: [selected fields with abstracts](https://search.worldbank.org/api/v2/projects?format=json&countrycode=CR&rows=100&fl=id,project_name,totalamt,sector1,sector2,sector3,boardapprovaldate,closingdate,status,project_abstract)

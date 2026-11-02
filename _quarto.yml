@@ -10,11 +10,13 @@ website:
       - href: index.qmd
         text: Overview
       - href: reports/feasibility-audit.qmd
-        text: Data Audit
+        text: Feasibility Audit
       - href: reports/date-recovery.qmd
         text: Date Investigation
+      - href: reports/data-audit-reconciliation.qmd
+        text: Data Audit
       - href: reports/eda-report.qmd
-        text: Analysis
+        text: EDA
     right:
       - icon: github
         href: https://github.com/johbry17/Tico-nomics

@@ -1,0 +1,387 @@
+---
+title: "Data Audit and Source Reconciliation"
+subtitle: "Phase 1 — Establishing a Trustworthy Analytical Foundation"
+date: today
+---
+
+```{r setup}
+#| include: false
+library(here)
+library(dplyr)
+library(tidyr)
+library(readr)
+library(readxl)
+library(lubridate)
+library(knitr)
+library(kableExtra)
+library(scales)
+source(here("R", "functions.R"))
+
+# Load processed data
+source_inv  <- read_csv(here("data", "derived",    "source_inventory.csv"),          show_col_types = FALSE)
+recon       <- read_csv(here("data", "processed",  "project_source_reconciliation.csv"), show_col_types = FALSE)
+master      <- read_csv(here("data", "processed",  "projects_master.csv"),            show_col_types = FALSE)
+proj_fin    <- read_csv(here("data", "processed",  "project_finance_summary.csv"),    show_col_types = FALSE)
+loans       <- read_csv(here("data", "processed",  "loan_records_clean.csv"),         show_col_types = FALSE)
+fin_recon   <- read_csv(here("data", "derived",    "financial_reconciliation.csv"),   show_col_types = FALSE)
+scope       <- read_csv(here("data", "derived",    "wbg_scope_assessment.csv"),       show_col_types = FALSE)
+deflator    <- read_csv(here("data", "processed",  "us_gdp_deflator.csv"),            show_col_types = FALSE)
+unmatched   <- read_csv(here("data", "processed",  "unmatched_projects.csv"),         show_col_types = FALSE)
+```
+
+## 1. Research purpose and scope
+
+This audit establishes a reliable analytical foundation for investigating how the World Bank's financing relationship with Costa Rica has evolved since 1980.
+
+The research question is not simply the history of World Bank lending to Costa Rica. **Costa Rica is the case study; the subject is the evolution of international development finance and priorities.** The portfolio illuminates shifts in development thinking — from structural adjustment and infrastructure investment toward policy-based lending, fiscal reform, and climate integration — using Costa Rica as a well-documented, analytically tractable case.
+
+The analysis must distinguish:
+
+1. Changes in the Bank's own institutional strategies and priorities
+2. Changes specific to Costa Rica's development trajectory and financing needs
+3. Changes attributable to Costa Rica's creditworthiness and eligibility for different instruments
+
+Costa Rica is upper-middle-income, institutionally capable, and environmentally distinctive. It is **not** a representative developing country, and findings should not be generalised as if it were.
+
+The **proposed primary study period is 1980–2025**, with 2026 records retained separately as an incomplete period through the snapshot date. Pre-1980 records are preserved for audit purposes but excluded from primary analysis.
+
+---
+
+## 2. Source inventory
+
+Six raw data files are available. All are treated as immutable; no file was modified.
+
+```{r source-table}
+#| echo: false
+source_inv |>
+  select(file, format, rows, unit, geography, snapshot_date, primary_use) |>
+  kable(caption = "Source inventory: six raw data files") |>
+  kable_styling(bootstrap_options = c("striped","hover","condensed"), font_size = 11) |>
+  column_spec(1, width = "20em")
+```
+
+### Snapshot dates and reporting periods
+
+| Source | Snapshot date | Basis |
+|---|---|---|
+| IBRD Statement (CSV + JSON) | **09/30/2026** | `End of Period` field in every row |
+| Projects & Operations Excel | **11/01/2026** | Title row: "World Bank Projects, data as of 11/01/2026 09:32:01 AM" |
+| IBRD Loans Summary | 10/31/2026 (filename only) | No metadata field in file |
+| WB Projects API files | Unknown | API was queried on 10/31/2026 (filename); no response timestamp |
+
+The IBRD Statement snapshot date of **September 30, 2026** is the end of WB fiscal year 2026 Q1. It is not the approval date of any loan.
+
+### Observational units
+
+| Source | Unit | Record count |
+|---|---|---|
+| IBRD Statement | **Loan-level** (one row per loan instrument) | 68 CR rows out of 9,538 global |
+| Projects & Operations | **Project-level** (one row per project) | 115 CR projects |
+| WB Projects API (both files) | **Project-level** (keyed by project ID) | 72 CR projects |
+
+A project may have multiple loan instruments. Joining loan records to project records without aggregating first will inflate project rows and financial totals.
+
+---
+
+## 3. Project universe reconciliation
+
+### Three-way match summary
+
+```{r recon-summary}
+#| echo: false
+membership_summary <- recon |>
+  count(membership, name = "projects") |>
+  arrange(desc(projects))
+
+membership_summary |>
+  kable(caption = "Project universe reconciliation: where each project appears") |>
+  kable_styling(bootstrap_options = c("striped","condensed"))
+```
+
+```{r recon-detail}
+#| echo: false
+tribble(
+  ~`In xlsx`, ~`In API`, ~`In loans`, ~Count, ~Notes,
+  "Yes", "Yes", "Yes", 51, "Core portfolio: all three sources agree",
+  "Yes", "Yes", "No",  21, "Projects without IBRD loans — grants, GEF, cancelled proposals, pipeline",
+  "Yes", "No",  "Yes",  8, "IBRD loans missing from API extract — including the critical P148435",
+  "Yes", "No",  "No",  35, "Legacy and non-IBRD records in Excel but not indexed in V2 API",
+  "No",  "Yes", "No",   0, "API is a strict subset of Excel",
+  "No",  "No",  "Yes",  0, "All loan-project IDs found in Excel"
+) |>
+  kable(caption = "Three-way reconciliation by membership category") |>
+  kable_styling(bootstrap_options = c("striped","condensed"))
+```
+
+### The 72-vs-115 discrepancy explained
+
+The WB Projects API V2 (`countrycode=CR, rows=100`) returned **72 records**. The Projects & Operations Excel contains **115 records**. All 72 API records are confirmed subsets of the 115 Excel records. The 43 additional Excel records are explained by four categories:
+
+**Category A — Legacy pre-API records (19 projects):** P006xxx-numbered projects approved between 1985–1999, mostly fully repaid, that are not indexed in the V2 API search results. These include SAL III (1993), water supply (1993), basic education (1991), and several cancelled adjustment loans.
+
+**Category B — Grants and non-IBRD operations (6 projects):** GEF trust fund grants, carbon finance operations, and bilateral trust funds. These have `Financing Type = Grants` or `Other` in the Excel. They do not appear in the IBRD loan dataset and were not returned by the IBRD-focused API query.
+
+**Category C — Pre-1990 IBRD loans, fully repaid (18 projects):** The V2 API only returned records for projects with P-numbers assigned during the modern project-management system era (post-1985 approximately). Earlier projects with P006xxx numbers were included in the Excel but not the API.
+
+**Category D — Post-1990 IBRD loans missing from the API (the critical case):** Eight projects with `Financing Type = IBRD` that have loan records in the Statement, but were absent from the 72-record API extract. Seven are early-1990s projects that were apparently missed from the API's search index. The eighth — **P148435 ($420 million, 2016)** — is the most significant discovery of this audit.
+
+### Critical missing project: P148435
+
+```{r p148-detail}
+#| echo: false
+proj_fin |>
+  filter(project_id == "P148435") |>
+  mutate(
+    total_original_principal = fmt_millions(total_original_principal),
+    total_cancelled          = fmt_millions(total_cancelled),
+    total_disbursed          = fmt_millions(total_disbursed)
+  ) |>
+  select(project_id, project_name, approval_year, n_loans,
+         total_original_principal, total_cancelled, total_disbursed, loan_statuses) |>
+  kable(caption = "P148435 — Strengthening Universal Health Insurance in Costa Rica") |>
+  kable_styling(bootstrap_options = c("striped","condensed"))
+```
+
+**P148435** is a $420 million Investment Project Financing (Specific Investment Loan) for the Costa Rican Social Security Institute (CCSS), approved by the Board on **March 15, 2016**. It is:
+
+- Present in the Projects & Operations Excel
+- Present in the IBRD Statement of Loans (loan IBRD85930, Repaying status, fully disbursed)
+- **Absent from the 72-record V2 API extract**
+
+Its absence from the earlier analysis caused the incorrect conclusion that the 2015–2019 period had no substantial World Bank lending to Costa Rica. The $420M health insurance loan is the largest single IBRD commitment to Costa Rica in the entire 1980–2025 period.
+
+**Implication for earlier gap analysis:** The Phase 0/1 analysis (from `date-recovery.qmd`) concluded the "2015–2019 gap" was "a real pattern." That conclusion requires revision: **2016 had $420M in IBRD commitments**, making it one of the highest-volume years in the portfolio. The genuine gap years in 2013–2019 are 2013, 2015, 2017, and 2019 — not 2013–2019 as a whole.
+
+---
+
+## 4. Financial definitions
+
+### IBRD Statement field definitions
+
+The IBRD Statement of Loans and Guarantees is a **current-status snapshot** as of September 30, 2026. The financial fields represent cumulative balances, not annual flows.
+
+| Field | Definition | What it is NOT |
+|---|---|---|
+| `original_principal_amount` | Loan amount as approved by the Board in nominal USD at approval | Not money received; not disbursement |
+| `cancelled_amount` | Portions cancelled — unused balances at close, mid-project cancellations, or full cancellation of Terminated loans | Not the same as undisbursed |
+| `undisbursed_amount` | Remaining approved amount not yet drawn down | — |
+| `disbursed_amount` | Cumulative drawdowns since loan inception | Not an annual flow; do not assign to approval year |
+| `repaid_to_ibrd` | Cumulative principal repayments | — |
+| `due_to_ibrd` | Outstanding principal owed | — |
+| `loans_held` | IBRD's net exposure (disbursed − repaid − sold) | — |
+
+**Critical methodological constraint:** `disbursed_amount` is a cumulative balance as of 09/30/2026. It cannot be assigned to the approval year or presented as an annual disbursement flow. For annual trend analysis, `original_principal_amount` (commitment at board approval year) is the appropriate primary measure.
+
+### The net principal measure
+
+The derived measure `net_principal = original_principal_amount − cancelled_amount` is analytically useful but must be described precisely: it represents the original commitment **net of all cancellations recorded through 09/30/2026**. It is not "money received" or "money disbursed." For Terminated loans where the loan agreement was never signed, both original principal and cancelled amount are identical, and net principal equals zero.
+
+### Costa Rica IBRD portfolio: financial summary
+
+```{r fin-summary}
+#| echo: false
+proj_fin |>
+  filter(!is.na(approval_year)) |>
+  mutate(decade = paste0(10 * (approval_year %/% 10), "s")) |>
+  group_by(decade) |>
+  summarise(
+    `Projects` = n(),
+    `Original principal (US$M)` = round(sum(total_original_principal)/1e6, 0),
+    `Cancelled (US$M)` = round(sum(total_cancelled)/1e6, 0),
+    `Net principal (US$M)` = round(sum(net_principal)/1e6, 0),
+    `Disbursed cumulative (US$M)` = round(sum(total_disbursed)/1e6, 0),
+    .groups = "drop"
+  ) |>
+  kable(caption = "IBRD lending to Costa Rica by decade (all years, nominal USD)") |>
+  kable_styling(bootstrap_options = c("striped","condensed"))
+```
+
+> **All amounts are nominal US dollars at time of original commitment.** Comparing across decades without inflation adjustment understates the real value of older loans and overstates that of newer ones. See Section 8 for the proposed adjustment methodology.
+
+### Known discrepancies and their resolution
+
+```{r fin-recon}
+#| echo: false
+fin_recon |>
+  kable(caption = "Documented financial discrepancies and resolutions") |>
+  kable_styling(bootstrap_options = c("striped","condensed"), font_size = 11) |>
+  column_spec(2, width = "18em") |>
+  column_spec(3, width = "18em")
+```
+
+---
+
+## 5. The 35 xlsx-only projects (no API or loan match)
+
+```{r xlsx-only}
+#| echo: false
+unmatched |>
+  filter(!is.na(approval_year) | is.na(total_original_principal)) |>
+  filter(membership == "xlsx only") |>
+  select(project_id, project_name, approval_year, last_stage, financing_type) |>
+  arrange(approval_year) |>
+  kable(caption = "35 projects in Excel only (not in API or IBRD loan records)") |>
+  kable_styling(bootstrap_options = c("striped","condensed"), font_size = 11)
+```
+
+These 35 projects include:
+- **Concept-stage and dropped proposals** (no board approval): `Concept Review` or `NA` last stage
+- **Non-IBRD operations**: grants, GEF projects, carbon finance, cancelled APL phases
+- **Old SAL/adjustment precursor studies**: P006xxx projects from the late 1980s–1990s
+
+None of these have IBRD loan records. They should not be included in IBRD financial totals. They are retained in `projects_master.csv` with source flags for inspection.
+
+---
+
+## 6. IBRD versus World Bank versus World Bank Group
+
+```{r scope-table}
+#| echo: false
+scope |>
+  select(institution, role, cr_relevance, data_available, comparability, recommendation) |>
+  kable(caption = "World Bank Group institutional scope assessment") |>
+  kable_styling(bootstrap_options = c("striped","condensed"), font_size = 11) |>
+  column_spec(4, width = "14em") |>
+  column_spec(5, width = "10em")
+```
+
+### IDA
+Costa Rica crossed the IDA income threshold and graduated from IDA eligibility approximately in 1993–1994. The IBRD Statement does not show any IDA transactions for Costa Rica. IDA lending to Costa Rica in the 1980s is theoretically possible but appears absent from the dataset. The WB IDA Statement of Credits and Grants is available at [thedocs.worldbank.org](https://thedocs.worldbank.org/en/doc/statements/IDA-Statement-of-Credits-and-Grants) and could be checked if pre-1990 coverage requires verification.
+
+### IFC
+IFC operates actively in Costa Rica (private financial sector, sustainable agriculture, tourism). IFC project-level data is available from the [IFC project portal](https://disclosures.ifc.org/project-detail). However, IFC investment amounts (loans, equity, quasi-equity to private entities) are **not comparable** to IBRD sovereign loan principal and must not be summed into a single financing total. If IFC is included in Phase 2, it should be reported as a separate indicator.
+
+### MIGA
+MIGA issues political-risk guarantees to private investors, not sovereign loans. Its financial measure is "gross exposure" (face value of guarantees), not disbursed or committed loan amounts. MIGA data is available at [miga.org](https://www.miga.org/projects). Given Costa Rica's relatively stable investment environment, MIGA exposure is expected to be limited. Recommended as a scope note only.
+
+### What the current dataset covers and excludes
+
+The analysis **covers**: IBRD sovereign loans and guarantee instruments to the Republic of Costa Rica, as reported in the IBRD Statement of Loans and Guarantees.
+
+The analysis **excludes**: IDA (none for CR in the dataset), IFC private-sector investments, MIGA political-risk guarantees, bilateral aid flows, IMF programs, Inter-American Development Bank lending, and Costa Rica's domestic borrowing.
+
+---
+
+## 7. Study period and 2026 treatment
+
+| Period | Treatment | Rationale |
+|---|---|---|
+| Pre-1956 | None | No records exist |
+| 1956–1979 | Historical context only | Rich colonial-era infrastructure loans; outside primary scope |
+| **1980–2025** | **Primary analysis period** | Captures structural adjustment era through recent period |
+| 2026 | Reported separately | Snapshot is 09/30/2026; partial year, incomplete record |
+
+Three loans approved in 2025 are in the dataset: P504033 (May 2025, $120M agriculture), P179757 (August 2025, $0 FCPF grant), and P508347 (September 2025, $300M fiscal DPL). These are within the 1980–2025 primary window and should be included as the most recent data point.
+
+Two projects approved after September 30, 2026 may not yet appear in the dataset. The snapshot should be treated as approximately current through late 2026.
+
+---
+
+## 8. Inflation adjustment methodology
+
+The nominal-dollar comparison of loans across a 46-year period (1980–2025) significantly misrepresents real scale. A $100M loan in 1980 represents approximately **$328M in 2025 dollars** using the US GDP deflator.
+
+### Primary indicator: US GDP deflator (NY.GDP.DEFL.ZS)
+
+```{r deflator-table}
+#| echo: false
+deflator |>
+  filter(year >= 1980) |>
+  select(year, defl) |>
+  mutate(
+    defl = round(defl, 1),
+    multiplier_to_2025 = round(deflator$defl[deflator$year == 2025] / defl, 3)
+  ) |>
+  filter(year %in% c(1980, 1985, 1990, 1995, 2000, 2005, 2010, 2015, 2020, 2023, 2024, 2025)) |>
+  rename(`Year` = year, `Deflator (2020=100)` = defl, `Multiplier to 2025 USD` = multiplier_to_2025) |>
+  kable(caption = "US GDP deflator selected values (Source: World Bank API, NY.GDP.DEFL.ZS, base year 2020)") |>
+  kable_styling(bootstrap_options = c("striped","condensed"))
+```
+
+**Source:** World Bank Open Data API, indicator `NY.GDP.DEFL.ZS`, country `US`.  
+**URL:** `https://api.worldbank.org/v2/country/US/indicator/NY.GDP.DEFL.ZS`  
+**Coverage:** 1960–2025 (annual, no missing years).  
+**Base year:** 2020 (value = 100 in 2020, per the returned data).  
+**Data vintage:** Retrieved 2026-10-31.
+
+### Why GDP deflator rather than CPI
+
+- **CPI** measures changes in consumer prices affecting US households. It is the standard measure for assessing purchasing power of wages and household budgets.
+- **GDP deflator** measures price changes across all US-produced final goods and services — a broader index that better reflects the purchasing power of US-dollar-denominated international transactions.
+
+For this project, the GDP deflator is preferred because the aim is to compare the *real scale* of historical lending commitments, not specifically household purchasing power.
+
+### Proposed calculation
+
+```
+real_amount_2025 = nominal_amount × (defl_2025 / defl_approval_year)
+```
+
+where `defl_x` is the `NY.GDP.DEFL.ZS` value for year `x`.
+
+### Limitations
+
+1. Neither the US GDP deflator nor CPI measures the **local purchasing power** of lending in Costa Rica. A $100M loan in 1985 purchased different quantities of Costa Rican infrastructure than $100M in 2020.
+2. The 2025 deflator value (`r round(deflator$defl[deflator$year == 2025], 1)`) is **preliminary** and may be revised in future World Bank data vintages.
+3. Exchange-rate changes between the USD and Costa Rican colón are not captured.
+4. For Phase 2: preserve original nominal amounts as the primary field; real amounts should be a clearly labelled derived field.
+
+---
+
+## 9. Data limitations and unresolved questions
+
+| Issue | Status | Impact |
+|---|---|---|
+| P148435 absent from V2 API | Resolved — present in Excel and loans | Corrects earlier incorrect gap finding |
+| P169724 ($100M, Dropped) no approval date | Unresolved — not in V2 API, V3 API, or Excel date fields | Small; project was never board-approved |
+| P504033 API amount ($150M) vs loan/xlsx ($120M) | Resolved — use $120M from loan statement | Minor; project outside primary 1980-2025 window |
+| 16 V2 API projects without boardapprovaldate | Partially resolved in Phase 0 (date recovery) | V3 API provides dates for 15/16 |
+| 35 xlsx-only projects (no loans, no API) | Documented — not IBRD loans | Do not include in IBRD financial totals |
+| WB Projects API V2 does not return all projects | Documented — 43 missing vs Excel | Use Excel as canonical project catalogue |
+| Cumulative disbursements not usable as annual flows | Documented — needs transaction-level IDS data | Annual disbursement trends not feasible with current data |
+| IFC Costa Rica data not currently downloaded | Noted — available at ifc.org | Scope limitation; include if Phase 2 expands scope |
+| 2025 deflator is preliminary | Noted | Flag all real-dollar figures as preliminary |
+| Three loans have `Loan Status = Terminated` | Documented — full cancellation, net principal = 0 | Exclude from net financial totals; count as project activity |
+
+### Unresolved: earlier gap-analysis findings that need revision
+
+The Phase 0 EDA report concluded:
+
+> "Years 2013, 2015, 2016, 2017, and 2019 still have zero confirmed positive IBRD financing commitments."
+
+This finding must be **revised** in light of the audit:
+
+- **2016** had $420M in IBRD commitments (P148435, health insurance loan) — one of the largest in the entire portfolio.
+- **1990** had $60M (P006926, Transport Sector Investment) and **1991–1993** had further loans, all absent from the earlier API-only analysis.
+
+The corrected finding is: the genuinely low-activity years within 2013–2019 are **2013, 2015, 2017, and 2019** — not the entire period.
+
+---
+
+## 10. Recommended analytical dataset architecture
+
+For Phase 2 analysis, the following data architecture is recommended:
+
+| Dataset | Source | Unit | Primary use |
+|---|---|---|---|
+| `loan_records_clean.csv` | IBRD Statement (filtered for CR, cleaned) | **Loan-level** | Financial detail; multi-loan project inspection |
+| `project_finance_summary.csv` | Aggregated from loan records | **Project-level** | Commitment totals; per-project analysis |
+| `projects_master.csv` | Reconciled from Excel + API + loans | **Project-level** | Canonical project catalogue; sector, instrument, date |
+| `project_source_reconciliation.csv` | Three-way reconciliation | **Project-level** | Audit trail; membership flags |
+| `us_gdp_deflator.csv` | World Bank API (NY.GDP.DEFL.ZS) | Annual | Inflation adjustment |
+
+**Primary financial measure for trend analysis:** `original_principal_amount` from the IBRD Statement, aggregated to project level, assigned to `board_approval_year`. This maps cleanly to calendar years and is not affected by the snapshot-date limitation of disbursement figures.
+
+**Scope filter for primary analysis:** `approval_year >= 1980` and `approval_year <= 2025`, `is_guarantee = FALSE`, `!is.na(project_id)`. This gives **`r nrow(proj_fin |> filter(!is.na(approval_year), approval_year >= 1980, approval_year <= 2025))`** projects with IBRD loan records in the primary study window.
+
+---
+
+## 11. Next steps before Phase 2 analysis
+
+1. **Update earlier EDA figures** to include P148435 (2016, $420M) in the portfolio timeline.
+2. **Revise the gap-analysis finding** in `reports/date-recovery.qmd` and `reports/eda-report.qmd`.
+3. **Decide on scope:** confirm whether the analysis covers 1980–2025 IBRD loans only, or whether pre-1980 loans are included for historical context.
+4. **Download IFC data** if the scope expands to include private-sector financing (report separately).
+5. **Obtain transaction-level disbursement data** (WB IDS or IMF BOP) if annual disbursement flows are needed.
+6. **Add inflation-adjusted amounts** to the project finance summary using `us_gdp_deflator.csv`.
+7. **Rerun `02_clean_projects.R`** to incorporate projects from the full 115-project Excel (not just the 72 from the API), particularly for the sector and thematic analysis.

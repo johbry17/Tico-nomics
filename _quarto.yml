@@ -1,22 +1,28 @@
 project:
   type: website
   output-dir: docs
+  render:
+    - index.qmd
+    - reports/field-note.qmd
+    - reports/eda-analysis.qmd
+    - reports/data-dictionary.qmd
+    - reports/methodology.qmd
 
 website:
   title: "Tico-nomics"
-  description: "The World Bank in Costa Rica: Development Finance, Sectoral Priorities, and Economic Change, 1990–2024"
+  description: "The World Bank Group in Costa Rica: Development Finance, Shifting Priorities, and 45 Years of an Evolving Relationship"
   navbar:
     left:
       - href: index.qmd
         text: Overview
-      - href: reports/feasibility-audit.qmd
-        text: Feasibility Audit
-      - href: reports/date-recovery.qmd
-        text: Date Investigation
-      - href: reports/data-audit-reconciliation.qmd
-        text: Data Audit
-      - href: reports/eda-report.qmd
-        text: EDA
+      - href: reports/field-note.qmd
+        text: Field Note
+      - href: reports/eda-analysis.qmd
+        text: Analysis
+      - href: reports/data-dictionary.qmd
+        text: Data Dictionary
+      - href: reports/methodology.qmd
+        text: Methodology
     right:
       - icon: github
         href: https://github.com/johbry17/Tico-nomics
@@ -25,7 +31,7 @@ format:
   html:
     theme:
       light: flatly
-    css: styles.css
+    # css: styles.css
     toc: true
     toc-depth: 3
     code-fold: true

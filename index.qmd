@@ -1,61 +1,50 @@
 ---
-title: "The World Bank in Costa Rica"
-subtitle: "Development Finance, Sectoral Priorities, and Economic Change, 1990–2024"
+title: "The World Bank Group in Costa Rica"
+subtitle: "Development Finance, Shifting Priorities, and 45 Years of an Evolving Relationship"
 ---
 
 ```{r}
 #| include: false
-library(here)
-library(dplyr)
-library(readr)
-library(scales)
-source(here("R", "functions.R"))
-
-projects <- read_csv(here("data", "processed", "projects_inscope.csv"),
-                     show_col_types = FALSE)
+library(here); library(dplyr); library(readr); library(scales)
+source(here("R","functions.R"))
+ibrd <- read_csv(here("data","processed","ibrd_projects.csv"), show_col_types=FALSE)
+scope <- ibrd |> filter(!is.na(approval_year), approval_year >= 1980, approval_year <= 2025)
 ```
 
-## Overview
+## About this project
 
-From 1990 to 2024, the World Bank approved **`r nrow(projects)` projects** in Costa Rica, 
-committing approximately **`r fmt_billions(sum(projects$totalamt[projects$has_financing==TRUE], na.rm=TRUE))`** 
-in IBRD lending (nominal US dollars at time of commitment).
+Between 1980 and 2025, the World Bank's IBRD approved **`r nrow(scope)` loans** to Costa Rica with a total original principal of approximately **`r fmt_billions(sum(scope$total_principal))`** in nominal US dollars.
 
-This portfolio traces a country navigating structural adjustment, infrastructure investment, fiscal 
-reform, environmental leadership, and pandemic response — all while maintaining one of Latin America's 
-strongest human development records.
-
-This site presents an exploratory, descriptive analysis of that portfolio. It is not a causal study.
+This project examines how that relationship evolved — in scale, instruments, sectoral composition, and stated development priorities — and what the record reveals about the intersection of Costa Rica's development trajectory and the World Bank Group's changing practice of development finance.
 
 ---
 
-### Research Questions
+### The central question
 
-**Primary:** How has the sectoral and thematic distribution of World Bank lending to Costa Rica changed 
-from 1990 to 2024, and what do these patterns reveal about evolving development priorities?
+**How did the World Bank Group's financing relationship with Costa Rica evolve from 1980 to 2025, and what does that evolution reveal about changing development priorities, financing instruments, and the broader character of international development finance?**
 
-**Secondary:** How do changes in development financing relate chronologically to Costa Rica's broader 
-economic and social trajectory?
+Costa Rica is the case study; the subject is the evolving relationship between a country's changing needs and a lender's changing priorities.
 
 ---
 
-### Data Sources
+### The project covers
 
-| Source | Description | Coverage |
-|--------|-------------|----------|
-| World Bank Projects API | Project-level lending records | 72 projects, 1956–2024 |
-| World Development Indicators (`wbstats`) | GDP per capita, Gini, life expectancy, literacy | Costa Rica, 1960–2024 |
-
-**Analysis period:** 1990–2024 (25 projects with confirmed approval dates; 16 additional projects 
-lack approval dates in the API and cannot be placed in the timeline).
+- **IBRD sovereign lending** — the core quantitative analysis, covering 35 board-approved loans from 1980 to 2025
+- **IFC private-sector investment** — a companion analysis of approximately $874M in own-account investments in Costa Rican private entities
+- **MIGA political-risk guarantees** — a historical survey of 10 guarantee projects (1995–2008)
+- **Development context** — key WDI indicators tracing Costa Rica's economic and social trajectory
 
 ---
 
-### Navigation
+### Site map
 
-- **[Data Audit](reports/feasibility-audit.qmd)** — Assessment of data quality, completeness, and analytical feasibility
-- **[Analysis](reports/eda-report.qmd)** — Exploratory data analysis and findings
+| Page | Contents |
+|------|----------|
+| [Field Note](reports/field-note.qmd) | The research narrative: four decades, four episodes, three institutions |
+| [Analysis](reports/eda-analysis.qmd) | Full tables and charts |
+| [Data Dictionary](reports/data-dictionary.qmd) | Variable definitions, sources, and limitations |
+| [Methodology](reports/methodology.qmd) | Research design, source hierarchy, and analytical decisions |
 
 ---
 
-*Analysis by [Bryan Johns](https://github.com/johbry17). Data: World Bank Projects API and World Development Indicators.*
+*Analysis by [Bryan Johns](https://github.com/johbry17). Data: World Bank IBRD Statement of Loans and Guarantees; World Bank Projects & Operations; IFC project disclosures; MIGA project briefs; World Development Indicators.*

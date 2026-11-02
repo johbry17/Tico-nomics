@@ -1,86 +1,123 @@
 # Tico-nomics
 
-The World Bank in Costa Rica: An exploratory analysis of development finance, sectoral priorities, and economic change, 1990–2024.
+**The World Bank Group in Costa Rica: Development Finance, Shifting Priorities, and 45 Years of an Evolving Relationship**
+
+An exploratory, descriptive analysis of how the World Bank Group's financing relationship with Costa Rica changed from 1980 to 2025.
+
+---
 
 ## Overview
 
-This project uses the World Bank Projects API and World Development Indicators to trace 35 years of IBRD lending to Costa Rica — examining how sectoral priorities, instrument types, and development language have evolved across an era of structural adjustment, infrastructure investment, fiscal reform, and pandemic response.
+Between 1980 and 2025, the World Bank's IBRD approved 35 loans to Costa Rica with a total original principal of approximately $4.6 billion (nominal USD) — or roughly $6.2 billion in constant 2025 dollars. Across the same period, IFC made approximately $874 million in own-account investments in Costa Rican private enterprises, and MIGA issued historical guarantees with a total peak exposure of approximately $336 million.
 
-**Working research question:** How has the sectoral and thematic distribution of World Bank lending to Costa Rica changed from 1990 to 2024, and what do these patterns reveal about evolving development priorities?
+**Central question:** How did the World Bank Group's financing relationship with Costa Rica evolve from 1980 to 2025, and what does that evolution reveal about changing development priorities, financing instruments, and the broader character of international development finance?
 
-## Data
+---
 
-- [IBRD Loans Summary by Status](https://financesone.worldbank.org/ibrd-loans-summary-by-status/DS01535)
-- [IBRD Statement of Loans and Guarantees - Latest Available Snapshot 10/31/26](https://financesone.worldbank.org/ibrd-statement-of-loans-and-guarantees-latest-available-snapshot/DS00047)
-- [World Bank Group Projects & Operations](https://projects.worldbank.org/en/projects-operations/projects-summary) - List of projects in Costa Rica
-- **World Bank Projects API:** 72 Costa Rica projects (all years); 25 confirmed in the 1990–2024 analysis window
-  - Main: [all fields](https://search.worldbank.org/api/v2/projects?format=json&countrycode=CR&rows=100)
-  - Filtered: [selected fields with abstracts](https://search.worldbank.org/api/v2/projects?format=json&countrycode=CR&rows=100&fl=id,project_name,totalamt,sector1,sector2,sector3,boardapprovaldate,closingdate,status,project_abstract)
-- [International Finance Corporation Projects](https://disclosures.ifc.org/search?Country_Description=Costa+Rica&sortBy=Disclosed_Date&sortOrder=desc)
-- [MIGA Projects](https://www.miga.org/projects?f%5B%5D=host_country%3A1882)
-- **World Development Indicators:** GDP per capita, Gini index, life expectancy, adult literacy (via `wbstats`)
+## Institutional scope
 
-_[List of graduates from IDA](https://ida.worldbank.org/en/about/borrowing-countries/ida-graduates), with Costa Rica's last credit in FY62_
+| Institution | Role | Covered? |
+|---|---|---|
+| **IBRD** | Sovereign loans to middle-income governments | Core analysis |
+| **IDA** | Concessional financing | Historical note only (CR graduated FY1962) |
+| **IFC** | Private-sector investment | Companion analysis |
+| **MIGA** | Political-risk guarantees | Historical survey |
+
+IDA graduates page: https://ida.worldbank.org/en/about/borrowing-countries/ida-graduates
+
+These institutions' financial measures are NOT comparable and are never summed.
+
+---
+
+## Data sources
+
+| File | Source | Description |
+|---|---|---|
+| `ibrd_statement_of_loans_and_guarantees_*.csv` | World Bank IBRD Statement DS00047 | Loan-level; snapshot 09/30/2026 |
+| `Projects_and_Operations_List.xlsx` | World Bank Projects Portal | 115 Costa Rica projects; snapshot 11/01/2026 |
+| `world_bank_costa_rica*.json` | WB Search API V2 | 72-project supplementary extract |
+| `IFC_Projects_Costa Rica.xlsx` | IFC Project Disclosures | 30 projects |
+| `World_Bank_Group_Guarantees_MIGA-projects.csv` | MIGA Project Briefs | 12 records (10 deduplicated) |
+
+All raw files are immutable. Do not modify them.
+
+---
 
 ## Repository structure
 
 ```
 Tico-nomics/
-├── _quarto.yml               # Quarto website configuration
-├── index.qmd                 # Site homepage
+├── _quarto.yml
+├── README.md
+├── index.qmd
 ├── data/
-│   ├── raw/                  # Original unmodified data files
-│   ├── processed/            # Extracted and cleaned datasets
-│   └── derived/              # Analytical summary tables
+│   ├── raw/              # Unmodified source files
+│   ├── processed/        # Cleaned datasets
+│   └── derived/          # Summary tables
 ├── R/
-│   ├── functions.R           # Reusable functions and ggplot2 theme
-│   ├── 01_import_and_audit.R # Data inspection and feasibility audit
-│   ├── 02_clean_projects.R   # Project data cleaning and preparation
-│   ├── 03_wdi_data.R         # WDI retrieval and cleaning
-│   ├── 04_eda.R              # Exploratory data analysis
-│   └── 05_visualizations.R   # Publication-quality visualizations
+│   ├── functions.R
+│   ├── 00_setup.R
+│   ├── 01_import_sources.R
+│   ├── 02_reconcile_projects.R
+│   ├── 03_prepare_ibrd.R
+│   ├── 04_prepare_ifc.R
+│   ├── 05_prepare_miga.R
+│   ├── 06_prepare_wdi.R
+│   ├── 07_analysis.R
+│   ├── 08_visualizations.R
+│   └── 09_validation.R
 ├── reports/
-│   ├── feasibility-audit.qmd # Data audit report
-│   └── eda-report.qmd        # EDA findings report
-├── figures/                  # Saved figures (PNG + SVG)
-└── docs/                     # Rendered Quarto website output
+│   ├── field-note.qmd
+│   ├── eda-analysis.qmd
+│   ├── data-dictionary.qmd
+│   └── methodology.qmd
+├── figures/
+├── archive/
+│   ├── phase-0-feasibility/
+│   ├── phase-1-date-recovery/
+│   └── phase-1-final-audit/
+└── docs/
 ```
+
+---
 
 ## Rebuilding the analysis
 
-Run scripts in order from the project root:
-
 ```r
-source("R/01_import_and_audit.R")
-source("R/02_clean_projects.R")
-source("R/03_wdi_data.R")
-source("R/04_eda.R")
-source("R/05_visualizations.R")
+source("R/06_prepare_wdi.R")       # requires internet
+source("R/01_import_sources.R")
+source("R/02_reconcile_projects.R")
+source("R/03_prepare_ibrd.R")
+source("R/04_prepare_ifc.R")
+source("R/05_prepare_miga.R")
+source("R/07_analysis.R")
+source("R/08_visualizations.R")
+source("R/09_validation.R")
 ```
-
-Or render the full Quarto website:
 
 ```bash
 quarto render
 ```
 
-**Requirements:** R 4.4+, Quarto 1.4+, packages: `here`, `jsonlite`, `dplyr`, `tidyr`, `purrr`, `stringr`, `lubridate`, `ggplot2`, `scales`, `wbstats`, `readr`, `tidytext`, `forcats`, `glue`, `knitr`, `kableExtra`, `patchwork`, `ggtext`, `svglite`
+**Requirements:** R >= 4.4, Quarto >= 1.4. Packages: `here`, `readr`, `readxl`, `dplyr`, `tidyr`, `purrr`, `stringr`, `lubridate`, `jsonlite`, `httr2`, `ggplot2`, `scales`, `patchwork`, `svglite`, `knitr`, `kableExtra`, `tidytext`, `forcats`, `glue`
 
-## Key findings (preliminary)
+---
 
-1. **Temporal concentration:** Over 60% of confirmed 1990–2024 commitments were approved in 2020–2024, driven by large Development Policy Loans ($300–500M) for fiscal reform and decarbonization.
-2. **Instrument shift:** The portfolio has moved from project-level Investment Project Financing toward budget-support Development Policy Loans — signaling a shift toward policy-conditioned budget support.
-3. **Environmental continuity:** Environmental and climate themes appear in every lending period, evolving from standalone conservation projects to institutionalized fiscal policy (the Fiscal and Decarbonization DPL series, 2020–2023).
-4. **A gap to investigate:** The 2013–2019 period appears underrepresented; 16 projects lack API approval dates and cannot be placed in the timeline.
-5. **Independent development trajectory:** Costa Rica's strong development indicators appear largely independent of World Bank lending volume — consistent with the Bank's role as a supplemental financier in a middle-income country.
+## Key findings
+
+1. **P148435 ($420M Health Insurance, 2016)** was missing from earlier API-based analyses. Its inclusion changes the picture of the 2010-2019 period substantially.
+2. **Instrument mix shifts across four periods**: Policy-based lending dominated the 1980s (~80%), disappeared in the 2010s, and returned at scale in the 2020s tied to fiscal-climate policy.
+3. **Real lending is more evenly distributed**: In 2025 USD, earlier periods (1980s SAL era, 2009 $500M DPL) are larger relative to recent lending than nominal figures suggest.
+4. **Environmental themes appear in every period** but change character: from discrete PES/conservation projects to fiscal-climate integration in the 2020–2023 Decarbonization DPL series.
+5. **IFC's CR portfolio is concentrated in financial services**, with Reventazon HPP ($100M, 2012) as the largest energy-sector investment.
+
+---
 
 ## Data limitations
 
-- 16 of 72 projects lack approval dates in the API and cannot be placed in the time series
-- Sector data absent for the 3 most recent 2024 approvals
-- All amounts are nominal US dollars at time of commitment
-- Adult literacy data has only 2 observations (2000, 2011); excluded from analysis
-
-## Status
-
-Exploratory analysis complete. See [Data Audit](reports/feasibility-audit.qmd) and [EDA Report](reports/eda-report.qmd) for details.
+- WB Projects API V2 returned only 72 of 115 Costa Rica projects; the Projects & Operations List is authoritative.
+- Sector data unavailable for 13 of 35 in-scope IBRD projects.
+- Disbursements in the IBRD Statement are cumulative snapshot balances (09/30/2026), not annual flows.
+- IFC investment dates are projected board dates, not confirmed approvals.
+- MIGA gross exposure is maximum potential liability, not capital transferred.
+- 2025 GDP deflator is preliminary.

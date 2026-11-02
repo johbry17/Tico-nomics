@@ -1,6 +1,6 @@
 # functions.R
 # Reusable functions and ggplot2 theme for the Tico-nomics project
-# World Bank Lending in Costa Rica, 1990–2024
+# World Bank Group in Costa Rica, 1980–2025
 
 library(ggplot2)
 library(scales)
@@ -10,15 +10,13 @@ library(glue)
 # Colour palette
 # ---------------------------------------------------------------------------
 
-# A restrained, editorial palette for a development-finance analysis.
-# Primary: deep teal (World Bank blue-green) with warm accent and neutral greys.
 PALETTE <- list(
-  teal        = "#1a6b72",   # primary data colour
+  teal        = "#1a6b72",   # primary / IBRD
   amber       = "#c87d2f",   # accent / highlight
-  slate       = "#3d5166",   # secondary data colour
-  sage        = "#5a8a6a",   # third category
-  rose        = "#b05060",   # fourth category / alert
-  tan         = "#c9a96e",   # fifth category
+  slate       = "#3d5166",   # secondary / IFC
+  sage        = "#5a8a6a",   # third / MIGA
+  rose        = "#b05060",   # fourth / alert
+  tan         = "#c9a96e",   # fifth
   grey_dark   = "#2d2d2d",
   grey_mid    = "#6b6b6b",
   grey_light  = "#d4d4d4",
@@ -26,27 +24,36 @@ PALETTE <- list(
   white       = "#ffffff"
 )
 
-# Named vector for sector colour scales
-SECTOR_COLOURS <- c(
-  "Transportation"                       = "#1a6b72",
-  "Energy and Extractives"               = "#c87d2f",
-  "Public Administration"                = "#3d5166",
-  "Education"                            = "#5a8a6a",
-  "Health"                               = "#b05060",
-  "Finance"                              = "#c9a96e",
-  "Water, Sanitation and Waste"          = "#4e7fa0",
-  "Agriculture, Fishing & Forestry"      = "#7a9e5e",
-  "Social Protection"                    = "#8b5c8c",
-  "ICT / Trade"                          = "#7a6244",
-  "Other"                                = "#9e9e9e"
+# Institution colours
+INSTITUTION_COLOURS <- c(
+  "IBRD" = "#1a6b72",
+  "IFC"  = "#3d5166",
+  "MIGA" = "#5a8a6a",
+  "IDA"  = "#9e9e9e"
 )
 
-# Period colours (for decade comparisons)
+# Period colours
 PERIOD_COLOURS <- c(
+  "1980–1989" = "#7a6244",
   "1990–1999" = "#1a6b72",
   "2000–2009" = "#c87d2f",
   "2010–2019" = "#3d5166",
-  "2020–2024" = "#5a8a6a"
+  "2020–2025" = "#5a8a6a"
+)
+
+# Sector colours
+SECTOR_COLOURS <- c(
+  "Transportation"                  = "#1a6b72",
+  "Energy and Extractives"          = "#c87d2f",
+  "Public Administration"           = "#3d5166",
+  "Education"                       = "#5a8a6a",
+  "Health"                          = "#b05060",
+  "Finance"                         = "#c9a96e",
+  "Water, Sanitation and Waste"     = "#4e7fa0",
+  "Agriculture, Fishing & Forestry" = "#7a9e5e",
+  "Social Protection"               = "#8b5c8c",
+  "ICT / Trade"                     = "#7a6244",
+  "Other"                           = "#9e9e9e"
 )
 
 # ---------------------------------------------------------------------------
@@ -125,12 +132,22 @@ theme_set(theme_tico())
 # ---------------------------------------------------------------------------
 
 caption_wb <- function(extra = NULL) {
-  base <- "Source: World Bank Projects API (search.worldbank.org)"
+  base <- "Source: World Bank Projects & Operations List; IBRD Statement of Loans and Guarantees (DS00047, snapshot 09/30/2026)"
+  if (!is.null(extra)) glue("{base}. {extra}") else base
+}
+
+caption_ifc <- function(extra = NULL) {
+  base <- "Source: IFC Project Disclosures (disclosures.ifc.org)"
+  if (!is.null(extra)) glue("{base}. {extra}") else base
+}
+
+caption_miga <- function(extra = NULL) {
+  base <- "Source: MIGA Project Briefs (miga.org)"
   if (!is.null(extra)) glue("{base}. {extra}") else base
 }
 
 caption_wdi <- function(extra = NULL) {
-  base <- "Source: World Development Indicators via wbstats R package"
+  base <- "Source: World Development Indicators via World Bank API"
   if (!is.null(extra)) glue("{base}. {extra}") else base
 }
 

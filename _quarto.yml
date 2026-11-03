@@ -2,27 +2,27 @@ project:
   type: website
   output-dir: docs
   render:
-    - index.qmd
-    - reports/field-note.qmd
+    - reports/index.qmd
     - reports/eda-analysis.qmd
     - reports/data-dictionary.qmd
     - reports/methodology.qmd
 
+author: "Bryan C. Johns"
+
 website:
   title: "Tico-nomics"
   description: "The World Bank Group in Costa Rica: Development Finance, Shifting Priorities, and 45 Years of an Evolving Relationship"
+  favicon: images/landmark-solid.ico
   navbar:
     left:
-      - href: index.qmd
+      - href: reports/index.qmd
         text: Overview
-      - href: reports/field-note.qmd
-        text: Field Note
       - href: reports/eda-analysis.qmd
         text: Analysis
       - href: reports/data-dictionary.qmd
-        text: Data Dictionary
+        text: Data
       - href: reports/methodology.qmd
-        text: Methodology
+        text: Methods
     right:
       - icon: github
         href: https://github.com/johbry17/Tico-nomics
@@ -31,6 +31,7 @@ format:
   html:
     theme:
       light: flatly
+      dark: darkly
     # css: styles.css
     toc: true
     toc-depth: 3

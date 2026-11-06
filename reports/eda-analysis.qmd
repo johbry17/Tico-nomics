@@ -6,34 +6,93 @@ date: today
 
 ```{r setup}
 #| include: false
-library(here); library(dplyr); library(tidyr); library(readr)
-library(ggplot2); library(scales); library(knitr); library(kableExtra); library(patchwork)
-source(here("R","functions.R"))
+library(here)
+library(dplyr)
+library(tidyr)
+library(readr)
+library(ggplot2)
+library(scales)
+library(knitr)
+library(kableExtra)
+library(patchwork)
+source(here("R", "functions.R"))
 
-ibrd_annual   <- read_csv(here("data","derived","ibrd_annual.csv"),     show_col_types=FALSE)
-ibrd_period   <- read_csv(here("data","derived","ibrd_by_period.csv"),  show_col_types=FALSE)
-ibrd_proj     <- read_csv(here("data","processed","ibrd_projects.csv"), show_col_types=FALSE)
-instr_period  <- read_csv(here("data","derived","instrument_by_period.csv"), show_col_types=FALSE)
-sec_period    <- read_csv(here("data","derived","sector_by_period.csv"), show_col_types=FALSE)
-sec_totals    <- read_csv(here("data","derived","sector_totals.csv"),   show_col_types=FALSE)
-top10         <- read_csv(here("data","derived","ibrd_top10.csv"),      show_col_types=FALSE)
-theme_pres    <- read_csv(here("data","derived","abstract_themes.csv"), show_col_types=FALSE)
-word_counts   <- read_csv(here("data","derived","word_counts.csv"),     show_col_types=FALSE)
-ifc_proj      <- read_csv(here("data","processed","ifc_projects.csv"),  show_col_types=FALSE)
-ifc_sector    <- read_csv(here("data","derived","ifc_by_sector.csv"),   show_col_types=FALSE)
-miga          <- read_csv(here("data","processed","miga_projects.csv"), show_col_types=FALSE)
-wdi           <- read_csv(here("data","derived","wdi_scope.csv"),       show_col_types=FALSE)
-deflator      <- read_csv(here("data","processed","us_gdp_deflator.csv"), show_col_types=FALSE)
+ibrd_annual <- read_csv(
+    here("data", "derived", "ibrd_annual.csv"),
+    show_col_types = FALSE
+)
+ibrd_period <- read_csv(
+    here("data", "derived", "ibrd_by_period.csv"),
+    show_col_types = FALSE
+)
+ibrd_proj <- read_csv(
+    here("data", "processed", "ibrd_projects.csv"),
+    show_col_types = FALSE
+)
+instr_period <- read_csv(
+    here("data", "derived", "instrument_by_period.csv"),
+    show_col_types = FALSE
+)
+sec_period <- read_csv(
+    here("data", "derived", "sector_by_period.csv"),
+    show_col_types = FALSE
+)
+sec_totals <- read_csv(
+    here("data", "derived", "sector_totals.csv"),
+    show_col_types = FALSE
+)
+top10 <- read_csv(
+    here("data", "derived", "ibrd_top10.csv"),
+    show_col_types = FALSE
+)
+theme_pres <- read_csv(
+    here("data", "derived", "abstract_themes.csv"),
+    show_col_types = FALSE
+)
+word_counts <- read_csv(
+    here("data", "derived", "word_counts.csv"),
+    show_col_types = FALSE
+)
+ifc_proj <- read_csv(
+    here("data", "processed", "ifc_projects.csv"),
+    show_col_types = FALSE
+)
+ifc_sector <- read_csv(
+    here("data", "derived", "ifc_by_sector.csv"),
+    show_col_types = FALSE
+)
+miga <- read_csv(
+    here("data", "processed", "miga_projects.csv"),
+    show_col_types = FALSE
+)
+wdi <- read_csv(
+    here("data", "derived", "wdi_scope.csv"),
+    show_col_types = FALSE
+)
+deflator <- read_csv(
+    here("data", "processed", "us_gdp_deflator.csv"),
+    show_col_types = FALSE
+)
 
-period_levels <- c("1980–1989","1990–1999","2000–2009","2010–2019","2020–2025")
+period_levels <- c(
+    "1980–1989",
+    "1990–1999",
+    "2000–2009",
+    "2010–2019",
+    "2020–2025"
+)
 
 ibrd_scope <- ibrd_proj |>
-  filter(!is.na(approval_year), approval_year >= 1980, approval_year <= 2025) |>
-  mutate(period = factor(period, levels=period_levels))
+    filter(
+        !is.na(approval_year),
+        approval_year >= 1980,
+        approval_year <= 2025
+    ) |>
+    mutate(period = factor(period, levels = period_levels))
 
 instr_period <- instr_period |>
-  filter(period %in% period_levels) |>
-  mutate(period = factor(period, levels=period_levels))
+    filter(period %in% period_levels) |>
+    mutate(period = factor(period, levels = period_levels))
 ```
 
 ## A. Portfolio chronology and scale
@@ -41,7 +100,7 @@ instr_period <- instr_period |>
 ### Annual commitments (nominal and real)
 
 ```{r fig1}
-knitr::include_graphics(here("figures","fig1_ibrd_timeline.png"))
+knitr::include_graphics(here("figures", "fig1_ibrd_timeline.png"))
 ```
 
 ### Commitments by period
@@ -49,21 +108,30 @@ knitr::include_graphics(here("figures","fig1_ibrd_timeline.png"))
 ```{r period-table}
 #| echo: false
 ibrd_period |>
-  filter(period %in% period_levels) |>
-  mutate(period = factor(period, levels=period_levels)) |>
-  arrange(period) |>
-  mutate(
-    total_principal = fmt_billions(total_principal),
-    net_principal   = fmt_billions(net_principal),
-    real_principal  = fmt_billions(real_principal),
-    pct_nominal     = paste0(pct_nominal, "%"),
-    pct_real        = paste0(pct_real, "%")
-  ) |>
-  select(Period=period, `Projects`=n_projects, `DPL`=n_dpl, `IPF/Other`=n_ipf,
-         `Nominal (US$)`=total_principal, `Net principal`=net_principal,
-         `Real 2025 USD`=real_principal, `% nominal`=pct_nominal) |>
-  kable(caption = "IBRD commitments by approval period (nominal and real 2025 USD; real uses US GDP deflator NY.GDP.DEFL.ZS)") |>
-  kable_styling(bootstrap_options=c("striped","condensed"))
+    filter(period %in% period_levels) |>
+    mutate(period = factor(period, levels = period_levels)) |>
+    arrange(period) |>
+    mutate(
+        total_principal = fmt_billions(total_principal),
+        net_principal = fmt_billions(net_principal),
+        real_principal = fmt_billions(real_principal),
+        pct_nominal = paste0(pct_nominal, "%"),
+        pct_real = paste0(pct_real, "%")
+    ) |>
+    select(
+        Period = period,
+        `Projects` = n_projects,
+        `DPL` = n_dpl,
+        `IPF/Other` = n_ipf,
+        `Nominal (US$)` = total_principal,
+        `Net principal` = net_principal,
+        `Real 2025 USD` = real_principal,
+        `% nominal` = pct_nominal
+    ) |>
+    kable(
+        caption = "IBRD commitments by approval period (nominal and real 2025 USD; real uses US GDP deflator NY.GDP.DEFL.ZS)"
+    ) |>
+    kable_styling(bootstrap_options = c("striped", "condensed"))
 ```
 
 ### Top 10 projects
@@ -71,20 +139,27 @@ ibrd_period |>
 ```{r top10-table}
 #| echo: false
 top10 |>
-  mutate(
-    total_principal    = fmt_millions(total_principal),
-    real_principal_2025 = fmt_millions(real_principal_2025),
-    net_principal      = fmt_millions(net_principal),
-    total_cancelled    = fmt_millions(total_cancelled)
-  ) |>
-  select(
-    `Project ID`=project_id, `Project name`=project_name, Year=approval_year,
-    `Nominal`=total_principal, `Real 2025`=real_principal_2025,
-    `Net`=net_principal, `Cancelled`=total_cancelled,
-    `Instrument`=instrument_group, `Status`=loan_status_summary
-  ) |>
-  kable(caption="Top 10 IBRD projects by original principal (nominal USD, 1980–2025)") |>
-  kable_styling(bootstrap_options=c("striped","condensed"), font_size=11)
+    mutate(
+        total_principal = fmt_millions(total_principal),
+        real_principal_2025 = fmt_millions(real_principal_2025),
+        net_principal = fmt_millions(net_principal),
+        total_cancelled = fmt_millions(total_cancelled)
+    ) |>
+    select(
+        `Project ID` = project_id,
+        `Project name` = project_name,
+        Year = approval_year,
+        `Nominal` = total_principal,
+        `Real 2025` = real_principal_2025,
+        `Net` = net_principal,
+        `Cancelled` = total_cancelled,
+        `Instrument` = instrument_group,
+        `Status` = loan_status_summary
+    ) |>
+    kable(
+        caption = "Top 10 IBRD projects by original principal (nominal USD, 1980–2025)"
+    ) |>
+    kable_styling(bootstrap_options = c("striped", "condensed"), font_size = 11)
 ```
 
 ### All in-scope projects
@@ -92,20 +167,26 @@ top10 |>
 ```{r all-projects-table}
 #| echo: false
 ibrd_scope |>
-  arrange(approval_year) |>
-  mutate(
-    total_principal     = fmt_millions(total_principal),
-    real_principal_2025 = fmt_millions(real_principal_2025),
-    net_principal       = fmt_millions(net_principal)
-  ) |>
-  select(
-    `Project ID`=project_id, `Project name`=project_name, Year=approval_year,
-    `Nominal`=total_principal, `Real 2025`=real_principal_2025,
-    `Net`=net_principal, `Instrument`=instrument_group,
-    `Status`=loan_status_summary
-  ) |>
-  kable(caption="All IBRD in-scope projects, 1980–2025 (nominal and real 2025 USD)") |>
-  kable_styling(bootstrap_options=c("striped","condensed"), font_size=10)
+    arrange(approval_year) |>
+    mutate(
+        total_principal = fmt_millions(total_principal),
+        real_principal_2025 = fmt_millions(real_principal_2025),
+        net_principal = fmt_millions(net_principal)
+    ) |>
+    select(
+        `Project ID` = project_id,
+        `Project name` = project_name,
+        Year = approval_year,
+        `Nominal` = total_principal,
+        `Real 2025` = real_principal_2025,
+        `Net` = net_principal,
+        `Instrument` = instrument_group,
+        `Status` = loan_status_summary
+    ) |>
+    kable(
+        caption = "All IBRD in-scope projects, 1980–2025 (nominal and real 2025 USD)"
+    ) |>
+    kable_styling(bootstrap_options = c("striped", "condensed"), font_size = 10)
 ```
 
 ---
@@ -113,7 +194,7 @@ ibrd_scope |>
 ## B. Nominal versus real: the inflation story
 
 ```{r fig8}
-knitr::include_graphics(here("figures","fig8_nominal_vs_real.png"))
+knitr::include_graphics(here("figures", "fig8_nominal_vs_real.png"))
 ```
 
 In real 2025 dollars, the 1980s SAL era (4 policy-based projects, ~$235M nominal) represented approximately **`r scales::dollar(ibrd_period$real_principal[ibrd_period$period=="1980–1989"], scale=1e-6, suffix="M", accuracy=1)`** — substantially larger than the nominal figure suggests. The 2009 $500M DPL was approximately $728M in 2025 dollars. The recent 2020–2025 operations lose some of their comparative magnitude once inflation-adjusted.
@@ -125,21 +206,31 @@ In real 2025 dollars, the 1980s SAL era (4 policy-based projects, ~$235M nominal
 ## C. Instrument mix
 
 ```{r fig2}
-knitr::include_graphics(here("figures","fig2_instrument_mix.png"))
+knitr::include_graphics(here("figures", "fig2_instrument_mix.png"))
 ```
 
 ```{r instr-table}
 #| echo: false
 instr_period |>
-  group_by(period) |>
-  mutate(pct = round(100*total_principal/sum(total_principal), 0)) |>
-  ungroup() |>
-  mutate(total_principal = fmt_millions(total_principal),
-         real_principal  = fmt_millions(real_principal)) |>
-  select(Period=period, Instrument=instrument_group, N=n,
-         `Nominal (US$M)`=total_principal, `Real 2025 (US$M)`=real_principal, `% of period`=pct) |>
-  kable(caption="Instrument mix by period — DPL vs Investment Project Financing") |>
-  kable_styling(bootstrap_options=c("striped","condensed"))
+    group_by(period) |>
+    mutate(pct = round(100 * total_principal / sum(total_principal), 0)) |>
+    ungroup() |>
+    mutate(
+        total_principal = fmt_millions(total_principal),
+        real_principal = fmt_millions(real_principal)
+    ) |>
+    select(
+        Period = period,
+        Instrument = instrument_group,
+        N = n,
+        `Nominal (US$M)` = total_principal,
+        `Real 2025 (US$M)` = real_principal,
+        `% of period` = pct
+    ) |>
+    kable(
+        caption = "Instrument mix by period — DPL vs Investment Project Financing"
+    ) |>
+    kable_styling(bootstrap_options = c("striped", "condensed"))
 ```
 
 **Instrument note:** Structural Adjustment Loans (SAL I, SAL II, SAL III) and the 1980 Rural Roads Non-Project Loan are classified as Development Policy Lending. The Export Development loan (1983) is similarly classified as adjustment-era policy lending. The Catastrophe DDO (2008), Public Finance and Competitiveness DPL-DDO (2009), and all Fiscal and Decarbonization DPLs (2020–2025) are Development Policy Loans. All others are Investment Project Financing or equivalent.
@@ -149,20 +240,29 @@ instr_period |>
 ## D. Sectoral composition
 
 ```{r fig3}
-knitr::include_graphics(here("figures","fig3_sector_composition.png"))
+knitr::include_graphics(here("figures", "fig3_sector_composition.png"))
 ```
 
 ```{r sector-table}
 #| echo: false
 sec_totals |>
-  mutate(alloc_principal = fmt_millions(alloc_principal),
-         alloc_real      = fmt_millions(alloc_real)) |>
-  arrange(desc(as.numeric(gsub("[^0-9.]","",alloc_principal)))) |>
-  select(`Sector group`=sector_group, Allocations=n_allocations,
-         Projects=n_projects, `Allocated (nominal)`=alloc_principal,
-         `Allocated (real 2025)`=alloc_real, `% with pct data`=pct_with_alloc) |>
-  kable(caption="Sector group totals (allocated where sector percentages available)") |>
-  kable_styling(bootstrap_options=c("striped","condensed"))
+    mutate(
+        alloc_principal = fmt_millions(alloc_principal),
+        alloc_real = fmt_millions(alloc_real)
+    ) |>
+    arrange(desc(as.numeric(gsub("[^0-9.]", "", alloc_principal)))) |>
+    select(
+        `Sector group` = sector_group,
+        Allocations = n_allocations,
+        Projects = n_projects,
+        `Allocated (nominal)` = alloc_principal,
+        `Allocated (real 2025)` = alloc_real,
+        `% with pct data` = pct_with_alloc
+    ) |>
+    kable(
+        caption = "Sector group totals (allocated where sector percentages available)"
+    ) |>
+    kable_styling(bootstrap_options = c("striped", "condensed"))
 ```
 
 > Sector data is available for **22 of 35** in-scope projects (via Projects API). The DPL series (2020–2025) typically lacks sector percentage data in the API; they are excluded from sector allocation calculations, which understates the recent period's financial weight in broad sectors like Public Administration and Finance.
@@ -173,38 +273,52 @@ sec_totals |>
 
 ```{r fig5}
 #| fig-cap: "Theme keyword presence by period. Only periods with available abstracts are shown. The 1990–1999 period has zero project abstracts in the API and is excluded. Percentages are shares of projects WITH available abstracts that mention the theme."
-knitr::include_graphics(here("figures","fig5_abstract_themes.png"))
+knitr::include_graphics(here("figures", "fig5_abstract_themes.png"))
 ```
 
 ```{r word-table}
 #| echo: false
 word_counts |>
-  head(30) |>
-  rename(Word=word, Frequency=n) |>
-  kable(caption="30 most frequent words in project abstracts (stop words removed, in-scope projects only)") |>
-  kable_styling(bootstrap_options=c("striped","condensed"), full_width=FALSE)
+    head(30) |>
+    rename(Word = word, Frequency = n) |>
+    kable(
+        caption = "30 most frequent words in project abstracts (stop words removed, in-scope projects only)"
+    ) |>
+    kable_styling(
+        bootstrap_options = c("striped", "condensed"),
+        full_width = FALSE
+    )
 ```
 
 ```{r theme-table}
 #| echo: false
 theme_labels <- c(
-  "Infrastructure"="Infrastructure",
-  "Environment_Climate"="Environment & Climate",
-  "Social_Development"="Social Development",
-  "Governance_Fiscal"="Governance & Fiscal",
-  "Competitiveness_Trade"="Competitiveness",
-  "Disaster_Risk"="Disaster Risk"
+    "Infrastructure" = "Infrastructure",
+    "Environment_Climate" = "Environment & Climate",
+    "Social_Development" = "Social Development",
+    "Governance_Fiscal" = "Governance & Fiscal",
+    "Competitiveness_Trade" = "Competitiveness",
+    "Disaster_Risk" = "Disaster Risk"
 )
 theme_pres |>
-  filter(!is.na(period)) |>
-  mutate(theme_label = theme_labels[theme]) |>
-  select(Period = period, Theme = theme_label,
-         `Abstracts available` = n_with_abstract,
-         `Total IBRD projects` = n_total_ibrd,
-         `With theme` = n_with_theme, `% of abstracts` = pct) |>
-  kable(caption = "Thematic keyword presence in project abstracts by period. '% of abstracts' is the share of projects with available abstracts that mention the theme — NOT the share of all in-scope projects. The 1990–1999 period has no abstracts in the API extract.") |>
-  kable_styling(bootstrap_options=c("striped","condensed"), font_size=11) |>
-  collapse_rows(columns=1, valign="top")
+    filter(!is.na(period)) |>
+    mutate(theme_label = theme_labels[theme]) |>
+    select(
+        Period = period,
+        Theme = theme_label,
+        `Abstracts available` = n_with_abstract,
+        `Total IBRD projects` = n_total_ibrd,
+        `With theme` = n_with_theme,
+        `% of abstracts` = pct
+    ) |>
+    kable(
+        caption = "Thematic keyword presence in project abstracts by period. '% of abstracts' is the share of projects with available abstracts that mention the theme — NOT the share of all in-scope projects. The 1990–1999 period has no abstracts in the API extract."
+    ) |>
+    kable_styling(
+        bootstrap_options = c("striped", "condensed"),
+        font_size = 11
+    ) |>
+    collapse_rows(columns = 1, valign = "top")
 ```
 
 > **Abstract coverage:** The 1990–1999 period has **zero** project abstracts available in the WB Projects API extract; that period is absent from theme calculations. Totals for other periods: 1980–1989: 2 abstracts of 8 projects; 2000–2009: 7 of 7; 2010–2019: 1 of 2; 2020–2025: 9 of 12. Percentages are shares of projects with available abstracts, not all in-scope IBRD projects.
@@ -214,23 +328,41 @@ theme_pres |>
 ## F. Economic and development context
 
 ```{r fig6}
-knitr::include_graphics(here("figures","fig6_development_trajectory.png"))
+knitr::include_graphics(here("figures", "fig6_development_trajectory.png"))
 ```
 
 ```{r wdi-table}
 #| echo: false
 wdi |>
-  filter(year %in% c(1980,1985,1990,1995,2000,2005,2010,2015,2020,2023,2024)) |>
-  mutate(
-    gdp_per_capita_usd = scales::dollar(gdp_per_capita_usd, accuracy=100),
-    gdp_growth_pct     = ifelse(is.na(gdp_growth_pct), "—", paste0(round(gdp_growth_pct,1),"%")),
-    gini               = ifelse(is.na(gini), "—", round(gini,1)),
-    life_expectancy_years = ifelse(is.na(life_expectancy_years), "—", round(life_expectancy_years,1))
-  ) |>
-  select(Year=year, `GDP per capita`=gdp_per_capita_usd,
-         `GDP growth`=gdp_growth_pct, Gini=gini, `Life expectancy`=life_expectancy_years) |>
-  kable(caption="Costa Rica selected WDI indicators (contextual only). GDP per capita is in current US dollars — not inflation-adjusted. Do not interpret year-over-year changes as real economic growth without accounting for dollar inflation.") |>
-  kable_styling(bootstrap_options=c("striped","condensed"))
+    filter(
+        year %in%
+            c(1980, 1985, 1990, 1995, 2000, 2005, 2010, 2015, 2020, 2023, 2024)
+    ) |>
+    mutate(
+        gdp_per_capita_usd = scales::dollar(gdp_per_capita_usd, accuracy = 100),
+        gdp_growth_pct = ifelse(
+            is.na(gdp_growth_pct),
+            "—",
+            paste0(round(gdp_growth_pct, 1), "%")
+        ),
+        gini = ifelse(is.na(gini), "—", round(gini, 1)),
+        life_expectancy_years = ifelse(
+            is.na(life_expectancy_years),
+            "—",
+            round(life_expectancy_years, 1)
+        )
+    ) |>
+    select(
+        Year = year,
+        `GDP per capita` = gdp_per_capita_usd,
+        `GDP growth` = gdp_growth_pct,
+        Gini = gini,
+        `Life expectancy` = life_expectancy_years
+    ) |>
+    kable(
+        caption = "Costa Rica selected WDI indicators (contextual only). GDP per capita is in current US dollars — not inflation-adjusted. Do not interpret year-over-year changes as real economic growth without accounting for dollar inflation."
+    ) |>
+    kable_styling(bootstrap_options = c("striped", "condensed"))
 ```
 
 ---
@@ -238,20 +370,34 @@ wdi |>
 ## G. IFC companion analysis
 
 ```{r fig7}
-knitr::include_graphics(here("figures","fig7_ifc_investments.png"))
+knitr::include_graphics(here("figures", "fig7_ifc_investments.png"))
 ```
 
 ```{r ifc-table}
 #| echo: false
 ifc_proj |>
-  filter(is_investment, in_scope, !is_pipeline) |>
-  arrange(best_year) |>
-  mutate(amt_m = ifelse(is.na(ifc_invest_usd_m), "—", paste0("$",ifc_invest_usd_m,"M"))) |>
-  select(`Project #`=project_number, `Project name`=project_name,
-         `Ind. year`=best_year, `Date type`=date_type,
-         `IFC own-acct`=amt_m, Sector=sector_group, Status=status) |>
-  kable(caption="IFC investments in Costa Rica (indicative dates; amounts in nominal USD)") |>
-  kable_styling(bootstrap_options=c("striped","condensed"), font_size=11)
+    filter(is_investment, in_scope, !is_pipeline) |>
+    arrange(best_year) |>
+    mutate(
+        amt_m = ifelse(
+            is.na(ifc_invest_usd_m),
+            "—",
+            paste0("$", ifc_invest_usd_m, "M")
+        )
+    ) |>
+    select(
+        `Project #` = project_number,
+        `Project name` = project_name,
+        `Ind. year` = best_year,
+        `Date type` = date_type,
+        `IFC own-acct` = amt_m,
+        Sector = sector_group,
+        Status = status
+    ) |>
+    kable(
+        caption = "IFC investments in Costa Rica (indicative dates; amounts in nominal USD)"
+    ) |>
+    kable_styling(bootstrap_options = c("striped", "condensed"), font_size = 11)
 ```
 
 > **Date caveat:** Only 2 IFC projects (Advisory Services) have actual Approval Dates. All investment projects show Projected Board Dates — planned, not confirmed. Year assignments are approximate. Do not use for precise annual trend analysis.
@@ -259,10 +405,16 @@ ifc_proj |>
 ```{r ifc-sector-table}
 #| echo: false
 ifc_sector |>
-  mutate(total_m = paste0("$",round(total_m,0),"M")) |>
-  rename(`Sector group`=sector_group, Projects=n, `Total IFC investment`=total_m) |>
-  kable(caption="IFC investments by sector (indicative amounts, nominal USD)") |>
-  kable_styling(bootstrap_options=c("striped","condensed"))
+    mutate(total_m = paste0("$", round(total_m, 0), "M")) |>
+    rename(
+        `Sector group` = sector_group,
+        Projects = n,
+        `Total IFC investment` = total_m
+    ) |>
+    kable(
+        caption = "IFC investments by sector (indicative amounts, nominal USD)"
+    ) |>
+    kable_styling(bootstrap_options = c("striped", "condensed"))
 ```
 
 ---
@@ -271,16 +423,24 @@ ifc_sector |>
 
 ```{r miga-table}
 #| echo: false
-names(miga) <- gsub("[^a-zA-Z0-9]","_",tolower(names(miga)))
-names(miga) <- gsub("_+","_",names(miga)); names(miga) <- gsub("_$","",names(miga))
+names(miga) <- gsub("[^a-zA-Z0-9]", "_", tolower(names(miga)))
+names(miga) <- gsub("_+", "_", names(miga))
+names(miga) <- gsub("_$", "", names(miga))
 miga |>
-  arrange(fiscal_year) |>
-  mutate(gross_exposure_up_to = paste0("$",gross_exposure_up_to,"M")) |>
-  select(`Proj. ID`=project_id, Title=title, Sector=sector,
-         `FY`=fiscal_year, `Peak exposure`=gross_exposure_up_to,
-         `Investor country`=investor_country) |>
-  kable(caption="MIGA historical guarantees in Costa Rica (deduplicated; project 3639 shown at FY2003 maximum). 'Peak exposure' = maximum MIGA liability under issued contracts, not a loan.") |>
-  kable_styling(bootstrap_options=c("striped","condensed"), font_size=11)
+    arrange(fiscal_year) |>
+    mutate(gross_exposure_up_to = paste0("$", gross_exposure_up_to, "M")) |>
+    select(
+        `Proj. ID` = project_id,
+        Title = title,
+        Sector = sector,
+        `FY` = fiscal_year,
+        `Peak exposure` = gross_exposure_up_to,
+        `Investor country` = investor_country
+    ) |>
+    kable(
+        caption = "MIGA historical guarantees in Costa Rica (deduplicated; project 3639 shown at FY2003 maximum). 'Peak exposure' = maximum MIGA liability under issued contracts, not a loan."
+    ) |>
+    kable_styling(bootstrap_options = c("striped", "condensed"), font_size = 11)
 ```
 
 > MIGA uses **fiscal years** (July–June). FY2008 = July 2007 – June 2008. Gross exposure represents the maximum MIGA liability under issued guarantee contracts — not capital transferred to Costa Rica.

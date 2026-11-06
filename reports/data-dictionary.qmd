@@ -6,9 +6,16 @@ date: today
 
 ```{r setup}
 #| include: false
-library(here); library(knitr); library(kableExtra); library(dplyr); library(readr)
-source(here("R","functions.R"))
-deflator <- read_csv(here("data","processed","us_gdp_deflator.csv"), show_col_types=FALSE)
+library(here)
+library(knitr)
+library(kableExtra)
+library(dplyr)
+library(readr)
+source(here("R", "functions.R"))
+deflator <- read_csv(
+    here("data", "processed", "us_gdp_deflator.csv"),
+    show_col_types = FALSE
+)
 ```
 
 This page documents every variable in the final analytical datasets. Variables are grouped by dataset. Units, sources, transformations, and interpretive limitations are noted where relevant.
@@ -22,34 +29,37 @@ This page documents every variable in the final analytical datasets. Variables a
 ```{r}
 #| echo: false
 tribble(
-  ~Variable, ~Definition, ~Source, ~Unit, ~Notes,
-  "loan_number",        "IBRD loan identifier (e.g., IBRD85930)",               "IBRD Statement",       "Text",    "Prefix IBRDB/IBRDG = guarantee; none present for Costa Rica",
-  "project_id",         "World Bank project identifier (e.g., P148435)",         "IBRD Statement",       "Text",    "Join key to project-level tables",
-  "project_name",       "Loan-level project name",                                "IBRD Statement",       "Text",    "May differ slightly from Projects List name",
-  "country_economy",    "Country name",                                           "IBRD Statement",       "Text",    "All rows: Costa Rica",
-  "loan_type",          "Financial instrument code (CPL/FSL/NPL/SCL/SCPD)",      "IBRD Statement",       "Code",    "Financial terms, not operational type; see 03_prepare_ibrd.R for classification",
-  "loan_status",        "Current loan status",                                    "IBRD Statement",       "Category","As of 09/30/2026 snapshot",
-  "board_approval_date","Board approval date (raw string MM/DD/YYYY)",            "IBRD Statement",       "Date",    "Source: IBRD Statement field",
-  "board_date",         "Parsed approval date",                                   "Derived",             "Date",    "Parsed from board_approval_date using lubridate::mdy()",
-  "approval_year",      "Calendar year of board approval",                        "Derived",             "Integer","",
-  "original_principal_amount_us", "Original loan amount approved by IBRD Board", "IBRD Statement",       "US$",     "Nominal USD at time of approval; NOT money received",
-  "cancelled_amount_us","Amount cancelled from original principal",               "IBRD Statement",       "US$",     "Includes full cancellation of Terminated loans",
-  "undisbursed_amount_us","Remaining approved balance not yet drawn",             "IBRD Statement",       "US$",     "As of 09/30/2026",
-  "disbursed_amount_us","Cumulative drawdowns since inception",                   "IBRD Statement",       "US$",     "CUMULATIVE BALANCE — not an annual flow; do not assign to approval year",
-  "repaid_to_ibrd_us",  "Cumulative principal repaid to IBRD",                   "IBRD Statement",       "US$",     "As of 09/30/2026",
-  "due_to_ibrd_us",     "Outstanding principal owed to IBRD",                     "IBRD Statement",       "US$",     "As of 09/30/2026",
-  "loans_held_us",      "IBRD's net exposure",                                    "IBRD Statement",       "US$",     "Disbursed - repaid - sold to third parties",
-  "net_principal",      "original_principal_amount_us - cancelled_amount_us",    "Derived",             "US$",     "Amount committed net of cancellations. Not 'money received'. For Terminated loans = 0.",
-  "real_principal_2025","Inflation-adjusted original principal in 2025 USD",      "Derived",             "2025 US$","= nominal * (defl_2025 / defl_year). 2025 deflator preliminary.",
-  "real_net_2025",      "Inflation-adjusted net principal in 2025 USD",           "Derived",             "2025 US$","As real_principal_2025 but applied to net_principal",
-  "is_guarantee",       "Whether loan number is IBRDB or IBRDG prefix",           "Derived",             "Logical",  "No guarantees present in Costa Rica records",
-  "instrument_group",   "Operational classification: Development Policy Loan or Investment Project Financing", "Derived", "Category", "Based on loan_type + project_name; see 03_prepare_ibrd.R",
-  "period",             "Approval period grouping",                               "Derived",             "Category","1980–1989; 1990–1999; 2000–2009; 2010–2019; 2020–2025"
+    ~Variable                      , ~Definition                                                                           , ~Source          , ~Unit      , ~Notes                                                                                   ,
+    "loan_number"                  , "IBRD loan identifier (e.g., IBRD85930)"                                              , "IBRD Statement" , "Text"     , "Prefix IBRDB/IBRDG = guarantee; none present for Costa Rica"                            ,
+    "project_id"                   , "World Bank project identifier (e.g., P148435)"                                       , "IBRD Statement" , "Text"     , "Join key to project-level tables"                                                       ,
+    "project_name"                 , "Loan-level project name"                                                             , "IBRD Statement" , "Text"     , "May differ slightly from Projects List name"                                            ,
+    "country_economy"              , "Country name"                                                                        , "IBRD Statement" , "Text"     , "All rows: Costa Rica"                                                                   ,
+    "loan_type"                    , "Financial instrument code (CPL/FSL/NPL/SCL/SCPD)"                                    , "IBRD Statement" , "Code"     , "Financial terms, not operational type; see 03_prepare_ibrd.R for classification"        ,
+    "loan_status"                  , "Current loan status"                                                                 , "IBRD Statement" , "Category" , "As of 09/30/2026 snapshot"                                                              ,
+    "board_approval_date"          , "Board approval date (raw string MM/DD/YYYY)"                                         , "IBRD Statement" , "Date"     , "Source: IBRD Statement field"                                                           ,
+    "board_date"                   , "Parsed approval date"                                                                , "Derived"        , "Date"     , "Parsed from board_approval_date using lubridate::mdy()"                                 ,
+    "approval_year"                , "Calendar year of board approval"                                                     , "Derived"        , "Integer"  , ""                                                                                       ,
+    "original_principal_amount_us" , "Original loan amount approved by IBRD Board"                                         , "IBRD Statement" , "US$"      , "Nominal USD at time of approval; NOT money received"                                    ,
+    "cancelled_amount_us"          , "Amount cancelled from original principal"                                            , "IBRD Statement" , "US$"      , "Includes full cancellation of Terminated loans"                                         ,
+    "undisbursed_amount_us"        , "Remaining approved balance not yet drawn"                                            , "IBRD Statement" , "US$"      , "As of 09/30/2026"                                                                       ,
+    "disbursed_amount_us"          , "Cumulative drawdowns since inception"                                                , "IBRD Statement" , "US$"      , "CUMULATIVE BALANCE — not an annual flow; do not assign to approval year"                ,
+    "repaid_to_ibrd_us"            , "Cumulative principal repaid to IBRD"                                                 , "IBRD Statement" , "US$"      , "As of 09/30/2026"                                                                       ,
+    "due_to_ibrd_us"               , "Outstanding principal owed to IBRD"                                                  , "IBRD Statement" , "US$"      , "As of 09/30/2026"                                                                       ,
+    "loans_held_us"                , "IBRD's net exposure"                                                                 , "IBRD Statement" , "US$"      , "Disbursed - repaid - sold to third parties"                                             ,
+    "net_principal"                , "original_principal_amount_us - cancelled_amount_us"                                  , "Derived"        , "US$"      , "Amount committed net of cancellations. Not 'money received'. For Terminated loans = 0." ,
+    "real_principal_2025"          , "Inflation-adjusted original principal in 2025 USD"                                   , "Derived"        , "2025 US$" , "= nominal * (defl_2025 / defl_year). 2025 deflator preliminary."                        ,
+    "real_net_2025"                , "Inflation-adjusted net principal in 2025 USD"                                        , "Derived"        , "2025 US$" , "As real_principal_2025 but applied to net_principal"                                    ,
+    "is_guarantee"                 , "Whether loan number is IBRDB or IBRDG prefix"                                        , "Derived"        , "Logical"  , "No guarantees present in Costa Rica records"                                            ,
+    "instrument_group"             , "Operational classification: Development Policy Loan or Investment Project Financing" , "Derived"        , "Category" , "Based on loan_type + project_name; see 03_prepare_ibrd.R"                               ,
+    "period"                       , "Approval period grouping"                                                            , "Derived"        , "Category" , "1980–1989; 1990–1999; 2000–2009; 2010–2019; 2020–2025"
 ) |>
-  kable(caption="IBRD loans clean — variable definitions") |>
-  kable_styling(bootstrap_options=c("striped","condensed"), font_size=11) |>
-  column_spec(1, bold=TRUE, width="12em") |>
-  column_spec(2, width="18em")
+    kable(caption = "IBRD loans clean — variable definitions") |>
+    kable_styling(
+        bootstrap_options = c("striped", "condensed"),
+        font_size = 11
+    ) |>
+    column_spec(1, bold = TRUE, width = "12em") |>
+    column_spec(2, width = "18em")
 ```
 
 ---
@@ -61,27 +71,29 @@ tribble(
 ```{r}
 #| echo: false
 tribble(
-  ~Variable, ~Definition, ~Derivation,
-  "project_id",         "World Bank project ID",                                     "From ibrd_loans_clean",
-  "n_loans",            "Number of loan records for this project",                   "count() over project_id",
-  "approval_year",      "Calendar year of first loan's board approval",               "first(approval_year)",
-  "board_date",         "Parsed board approval date",                                 "first(board_date)",
-  "period",             "Period grouping",                                            "first(period)",
-  "instrument_group",   "Dominant instrument type",                                  "paste(unique())",
-  "loan_type_codes",    "All loan type codes for this project",                       "paste(unique(loan_type))",
-  "loan_status_summary","All loan statuses",                                          "paste(unique(loan_status))",
-  "total_principal",    "Sum of original_principal_amount_us across all loans",       "sum()",
-  "total_cancelled",    "Sum of cancelled_amount_us across all loans",                "sum()",
-  "total_disbursed",    "Sum of disbursed_amount_us (cumulative, snapshot balance)",  "sum()",
-  "total_repaid",       "Sum of repaid_to_ibrd_us",                                  "sum()",
-  "net_principal",      "total_principal - total_cancelled",                          "Derived",
-  "real_principal_2025","Sum of real_principal_2025 across loans",                   "sum()",
-  "project_name",       "Project name (from Projects List if available, else loan)",  "Left join to projects_universe",
-  "sector1_xl, sector2_xl, sector3_xl", "Sector classifications from Projects List", "Left join to projects_universe",
-  "in_scope",           "Whether approval_year is in 1980–2025",                     "Derived"
+    ~Variable                            , ~Definition                                                 , ~Derivation                      ,
+    "project_id"                         , "World Bank project ID"                                     , "From ibrd_loans_clean"          ,
+    "n_loans"                            , "Number of loan records for this project"                   , "count() over project_id"        ,
+    "approval_year"                      , "Calendar year of first loan's board approval"              , "first(approval_year)"           ,
+    "board_date"                         , "Parsed board approval date"                                , "first(board_date)"              ,
+    "period"                             , "Period grouping"                                           , "first(period)"                  ,
+    "instrument_group"                   , "Dominant instrument type"                                  , "paste(unique())"                ,
+    "loan_type_codes"                    , "All loan type codes for this project"                      , "paste(unique(loan_type))"       ,
+    "loan_status_summary"                , "All loan statuses"                                         , "paste(unique(loan_status))"     ,
+    "total_principal"                    , "Sum of original_principal_amount_us across all loans"      , "sum()"                          ,
+    "total_cancelled"                    , "Sum of cancelled_amount_us across all loans"               , "sum()"                          ,
+    "total_disbursed"                    , "Sum of disbursed_amount_us (cumulative, snapshot balance)" , "sum()"                          ,
+    "total_repaid"                       , "Sum of repaid_to_ibrd_us"                                  , "sum()"                          ,
+    "net_principal"                      , "total_principal - total_cancelled"                         , "Derived"                        ,
+    "real_principal_2025"                , "Sum of real_principal_2025 across loans"                   , "sum()"                          ,
+    "project_name"                       , "Project name (from Projects List if available, else loan)" , "Left join to projects_universe" ,
+    "sector1_xl, sector2_xl, sector3_xl" , "Sector classifications from Projects List"                 , "Left join to projects_universe" ,
+    "in_scope"                           , "Whether approval_year is in 1980–2025"                     , "Derived"
 ) |>
-  kable(caption="IBRD projects — variable definitions (project-level aggregates)") |>
-  kable_styling(bootstrap_options=c("striped","condensed"), font_size=11)
+    kable(
+        caption = "IBRD projects — variable definitions (project-level aggregates)"
+    ) |>
+    kable_styling(bootstrap_options = c("striped", "condensed"), font_size = 11)
 ```
 
 ---
@@ -93,24 +105,24 @@ tribble(
 ```{r}
 #| echo: false
 tribble(
-  ~Variable, ~Definition, ~Notes,
-  "project_id",       "World Bank project ID",                                      "Primary key",
-  "project_name",     "Project name from Projects List",                             "",
-  "board_date_xl",    "Board approval date (parsed from Projects List)",              "",
-  "approval_year",    "Calendar year of board approval",                             "Derived from board_date_xl",
-  "period",           "Period grouping",                                             "1980–1989 … 2020–2025 + Pre-1980 + Post-scope",
-  "last_stage",       "Last Stage Reached in the project pipeline",                  "Board Approved / CD Approved / Concept Review / etc.",
-  "financing_type",   "Financing type: IBRD / Grants / Other / NA",                  "NA for legacy records without this field",
-  "is_ibrd_loan",     "financing_type == 'IBRD'",                                    "Logical",
-  "is_grant",         "financing_type == 'Grants'",                                  "Logical",
-  "has_loan_record",  "Whether this project_id has a record in the IBRD Statement",  "Logical; defines IBRD-eligible set",
-  "in_scope",         "Whether approval_year is in 1980–2025",                       "Logical",
-  "ibrd_commit_xl",   "IBRD Commitment from Projects List",                          "Character field; converted to numeric; NA for many rows",
-  "sector1_xl, sector2_xl, sector3_xl", "Sector fields from Projects List",         "",
-  "pdo",              "Project Development Objective",                               "From Projects List"
+    ~Variable                            , ~Definition                                                  , ~Notes                                                    ,
+    "project_id"                         , "World Bank project ID"                                      , "Primary key"                                             ,
+    "project_name"                       , "Project name from Projects List"                            , ""                                                        ,
+    "board_date_xl"                      , "Board approval date (parsed from Projects List)"            , ""                                                        ,
+    "approval_year"                      , "Calendar year of board approval"                            , "Derived from board_date_xl"                              ,
+    "period"                             , "Period grouping"                                            , "1980–1989 … 2020–2025 + Pre-1980 + Post-scope"           ,
+    "last_stage"                         , "Last Stage Reached in the project pipeline"                 , "Board Approved / CD Approved / Concept Review / etc."    ,
+    "financing_type"                     , "Financing type: IBRD / Grants / Other / NA"                 , "NA for legacy records without this field"                ,
+    "is_ibrd_loan"                       , "financing_type == 'IBRD'"                                   , "Logical"                                                 ,
+    "is_grant"                           , "financing_type == 'Grants'"                                 , "Logical"                                                 ,
+    "has_loan_record"                    , "Whether this project_id has a record in the IBRD Statement" , "Logical; defines IBRD-eligible set"                      ,
+    "in_scope"                           , "Whether approval_year is in 1980–2025"                      , "Logical"                                                 ,
+    "ibrd_commit_xl"                     , "IBRD Commitment from Projects List"                         , "Character field; converted to numeric; NA for many rows" ,
+    "sector1_xl, sector2_xl, sector3_xl" , "Sector fields from Projects List"                           , ""                                                        ,
+    "pdo"                                , "Project Development Objective"                              , "From Projects List"
 ) |>
-  kable(caption="Projects universe — variable definitions") |>
-  kable_styling(bootstrap_options=c("striped","condensed"), font_size=11)
+    kable(caption = "Projects universe — variable definitions") |>
+    kable_styling(bootstrap_options = c("striped", "condensed"), font_size = 11)
 ```
 
 ---
@@ -122,27 +134,27 @@ tribble(
 ```{r}
 #| echo: false
 tribble(
-  ~Variable, ~Definition, ~Notes,
-  "project_number",    "IFC project number",                                        "Primary key",
-  "project_name",      "IFC project name",                                          "",
-  "type_desc",         "Investment or Advisory Services",                            "",
-  "status",            "Active / Completed / Pending",                              "",
-  "sector",            "Full IFC sector classification code and name",              "Granular IFC taxonomy",
-  "sector_group",      "Simplified sector grouping",                                "Derived: Financial Services / Energy / Tourism etc.",
-  "approval_date_act", "Actual Approval Date",                                      "Available only for 2 Advisory Services projects",
-  "projected_board_dt","Projected Board Date",                                      "PLANNED date, not confirmed approval",
-  "best_date",         "Coalesce(approval_date_act, projected_board_dt)",           "Best available date proxy",
-  "best_year",         "Year from best_date",                                       "Use with caution; projected dates only for investments",
-  "date_type",         "Describes which date was used",                             "'Actual (Advisory only)' or 'Projected board date (indicative)'",
-  "ifc_invest_usd_m",  "IFC own-account investment amount in USD millions",         "Parsed from 'Investment as Approved by The Board' text field",
-  "n_docs",            "Number of disclosure documents for this project",            "",
-  "is_advisory",       "type_desc == 'Advisory Services'",                          "",
-  "is_investment",     "type_desc == 'Investment'",                                 "",
-  "is_pipeline",       "status == 'Pending'",                                       "Insulet CR (51930) — excluded from historical analysis",
-  "in_scope",          "best_year >= 1980 & best_year <= 2025",                    ""
+    ~Variable            , ~Definition                                         , ~Notes                                                            ,
+    "project_number"     , "IFC project number"                                , "Primary key"                                                     ,
+    "project_name"       , "IFC project name"                                  , ""                                                                ,
+    "type_desc"          , "Investment or Advisory Services"                   , ""                                                                ,
+    "status"             , "Active / Completed / Pending"                      , ""                                                                ,
+    "sector"             , "Full IFC sector classification code and name"      , "Granular IFC taxonomy"                                           ,
+    "sector_group"       , "Simplified sector grouping"                        , "Derived: Financial Services / Energy / Tourism etc."             ,
+    "approval_date_act"  , "Actual Approval Date"                              , "Available only for 2 Advisory Services projects"                 ,
+    "projected_board_dt" , "Projected Board Date"                              , "PLANNED date, not confirmed approval"                            ,
+    "best_date"          , "Coalesce(approval_date_act, projected_board_dt)"   , "Best available date proxy"                                       ,
+    "best_year"          , "Year from best_date"                               , "Use with caution; projected dates only for investments"          ,
+    "date_type"          , "Describes which date was used"                     , "'Actual (Advisory only)' or 'Projected board date (indicative)'" ,
+    "ifc_invest_usd_m"   , "IFC own-account investment amount in USD millions" , "Parsed from 'Investment as Approved by The Board' text field"    ,
+    "n_docs"             , "Number of disclosure documents for this project"   , ""                                                                ,
+    "is_advisory"        , "type_desc == 'Advisory Services'"                  , ""                                                                ,
+    "is_investment"      , "type_desc == 'Investment'"                         , ""                                                                ,
+    "is_pipeline"        , "status == 'Pending'"                               , "Insulet CR (51930) — excluded from historical analysis"          ,
+    "in_scope"           , "best_year >= 1980 & best_year <= 2025"             , ""
 ) |>
-  kable(caption="IFC projects — variable definitions") |>
-  kable_styling(bootstrap_options=c("striped","condensed"), font_size=11)
+    kable(caption = "IFC projects — variable definitions") |>
+    kable_styling(bootstrap_options = c("striped", "condensed"), font_size = 11)
 ```
 
 > **IFC amounts are indicative and NOT comparable to IBRD sovereign loan principal.** They represent IFC's own-account investment in private entities. The `investment_text` field also includes syntax from the disclosure portal; amounts are extracted from the leading number.
@@ -156,19 +168,19 @@ tribble(
 ```{r}
 #| echo: false
 tribble(
-  ~Variable, ~Definition, ~Notes,
-  "project_id",         "MIGA project identifier",                               "Integer",
-  "title",              "Project title",                                          "",
-  "sector",             "Sector (Tourism / Banking / Power / Transportation / Manufacturing)", "",
-  "fiscal_year",        "MIGA fiscal year of guarantee issuance",                "FY = July–June; FY2008 = July 2007–June 2008",
-  "fy_label",           "Integer copy of fiscal_year for filtering",             "Use fiscal_year for labeling; fy_label is NOT a calendar year",
-  "gross_exposure_up_to","Maximum MIGA liability under issued contracts (US$ millions)", "NOT a loan; NOT capital received by Costa Rica",
-  "description",        "MIGA guarantee description",                            "From MIGA project brief",
-  "investor_country",   "Country of origin of investor",                         "",
-  "in_scope",           "fy_label >= 1980 & fy_label <= 2025",              "Based on fiscal year label; see FY convention note"
+    ~Variable              , ~Definition                                                           , ~Notes                                                          ,
+    "project_id"           , "MIGA project identifier"                                             , "Integer"                                                       ,
+    "title"                , "Project title"                                                       , ""                                                              ,
+    "sector"               , "Sector (Tourism / Banking / Power / Transportation / Manufacturing)" , ""                                                              ,
+    "fiscal_year"          , "MIGA fiscal year of guarantee issuance"                              , "FY = July–June; FY2008 = July 2007–June 2008"                  ,
+    "fy_label"             , "Integer copy of fiscal_year for filtering"                           , "Use fiscal_year for labeling; fy_label is NOT a calendar year" ,
+    "gross_exposure_up_to" , "Maximum MIGA liability under issued contracts (US$ millions)"        , "NOT a loan; NOT capital received by Costa Rica"                ,
+    "description"          , "MIGA guarantee description"                                          , "From MIGA project brief"                                       ,
+    "investor_country"     , "Country of origin of investor"                                       , ""                                                              ,
+    "in_scope"             , "fy_label >= 1980 & fy_label <= 2025"                                 , "Based on fiscal year label; see FY convention note"
 ) |>
-  kable(caption="MIGA projects — variable definitions") |>
-  kable_styling(bootstrap_options=c("striped","condensed"), font_size=11)
+    kable(caption = "MIGA projects — variable definitions") |>
+    kable_styling(bootstrap_options = c("striped", "condensed"), font_size = 11)
 ```
 
 > **Project 3639 (Grupo del Istmo de Papagayo)** appeared in FY2001, FY2002, and FY2003 with escalating cumulative exposures ($16.4M, $38.3M, $81M). The FY2001 and FY2002 rows were removed; the FY2003 row ($81M) represents the most complete disclosure. Summing all three rows would overcount by approximately $136M.

@@ -7,15 +7,25 @@ source(here::here("R", "00_setup.R"))
 
 cat("\n========== IFC DATA PREPARATION ==========\n\n")
 
-cat("IMPORTANT: IFC investment amounts represent IFC's own-account investment in\n")
-cat("PRIVATE entities, not sovereign loans. They are NOT comparable to IBRD principal.\n\n")
+cat(
+  "IMPORTANT: IFC investment amounts represent IFC's own-account investment in\n"
+)
+cat(
+  "PRIVATE entities, not sovereign loans. They are NOT comparable to IBRD principal.\n\n"
+)
 
 # ---------------------------------------------------------------------------
 # 1.  Load raw data
 # ---------------------------------------------------------------------------
 
 ifc_raw <- read_excel(file.path(RAW, "IFC_Projects_Costa Rica.xlsx"), sheet = 1)
-cat("Raw rows:", nrow(ifc_raw), "| Unique Project Numbers:", length(unique(ifc_raw[["Project Number"]])), "\n")
+cat(
+  "Raw rows:",
+  nrow(ifc_raw),
+  "| Unique Project Numbers:",
+  length(unique(ifc_raw[["Project Number"]])),
+  "\n"
+)
 
 # ---------------------------------------------------------------------------
 # 2.  Parse investment amounts from text field
@@ -27,17 +37,33 @@ cat("Raw rows:", nrow(ifc_raw), "| Unique Project Numbers:", length(unique(ifc_r
 # Extract the leading number as IFC's own investment amount.
 
 parse_ifc_amount <- function(txt) {
-  if (is.na(txt) || nchar(trimws(txt)) == 0) return(NA_real_)
+  if (is.na(txt) || nchar(trimws(txt)) == 0) {
+    return(NA_real_)
+  }
   # Pattern: leading number (with possible decimal) followed by "million"
-  m <- regmatches(txt, regexpr("^\\s*([0-9]+\\.?[0-9]*)\\s*million", txt, ignore.case=TRUE))
-  if (length(m) == 0 || nchar(m) == 0) return(NA_real_)
+  m <- regmatches(
+    txt,
+    regexpr("^\\s*([0-9]+\\.?[0-9]*)\\s*million", txt, ignore.case = TRUE)
+  )
+  if (length(m) == 0 || nchar(m) == 0) {
+    return(NA_real_)
+  }
   as.numeric(regmatches(m, regexpr("^\\s*([0-9]+\\.?[0-9]*)", m)))
 }
 
-ifc_raw[["ifc_invest_parsed"]] <- sapply(ifc_raw[["Investment as Approved by The Board"]], parse_ifc_amount)
+ifc_raw[["ifc_invest_parsed"]] <- sapply(
+  ifc_raw[["Investment as Approved by The Board"]],
+  parse_ifc_amount
+)
 
 # Validate parsing
-cat("Parsed amounts (non-NA):", sum(!is.na(ifc_raw[["ifc_invest_parsed"]])), "of", nrow(ifc_raw), "\n")
+cat(
+  "Parsed amounts (non-NA):",
+  sum(!is.na(ifc_raw[["ifc_invest_parsed"]])),
+  "of",
+  nrow(ifc_raw),
+  "\n"
+)
 cat("Sample parsed values (first 5 rows with amounts):\n")
 ifc_raw |>
   filter(!is.na(ifc_invest_parsed)) |>
@@ -53,65 +79,101 @@ ifc_raw |>
 ifc_projects <- ifc_raw |>
   group_by(`Project Number`) |>
   summarise(
-    project_name       = first(`Project Name`),
-    type_desc          = first(`Type Description`),
-    status             = first(`Status Description`),
-    sector             = first(Sector[!is.na(Sector)]),
-    business_area      = first(`Business Area Description`[!is.na(`Business Area Description`)]),
+    project_name = first(`Project Name`),
+    type_desc = first(`Type Description`),
+    status = first(`Status Description`),
+    sector = first(Sector[!is.na(Sector)]),
+    business_area = first(`Business Area Description`[
+      !is.na(`Business Area Description`)
+    ]),
     # Date fields
-    approval_date_act  = first(`Approval Date`[!is.na(`Approval Date`)]),
-    projected_board_dt = first(`Projected Board Date`[!is.na(`Projected Board Date`)]),
+    approval_date_act = first(`Approval Date`[!is.na(`Approval Date`)]),
+    projected_board_dt = first(`Projected Board Date`[
+      !is.na(`Projected Board Date`)
+    ]),
     # Amount (use first non-NA parsed amount across disclosure docs)
-    ifc_invest_usd_m   = first(ifc_invest_parsed[!is.na(ifc_invest_parsed)]),
-    n_docs             = n(),
-    investment_text    = first(`Investment as Approved by The Board`[!is.na(`Investment as Approved by The Board`)]),
-    description        = first(`Project Description`[!is.na(`Project Description`)]),
+    ifc_invest_usd_m = first(ifc_invest_parsed[!is.na(ifc_invest_parsed)]),
+    n_docs = n(),
+    investment_text = first(`Investment as Approved by The Board`[
+      !is.na(`Investment as Approved by The Board`)
+    ]),
+    description = first(`Project Description`[!is.na(`Project Description`)]),
     .groups = "drop"
   ) |>
   rename(project_number = `Project Number`) |>
   mutate(
     # Use projected board date as best available proxy for approval year
     # IMPORTANT: this is projected/planned, NOT confirmed actual approval
-    best_date      = dplyr::coalesce(approval_date_act, projected_board_dt),
-    best_year      = year(best_date),
-    date_type      = dplyr::case_when(
-      !is.na(approval_date_act)  ~ "Actual (Advisory only)",
+    best_date = dplyr::coalesce(approval_date_act, projected_board_dt),
+    best_year = year(best_date),
+    date_type = dplyr::case_when(
+      !is.na(approval_date_act) ~ "Actual (Advisory only)",
       !is.na(projected_board_dt) ~ "Projected board date (indicative)",
-      TRUE                       ~ "No date available"
+      TRUE ~ "No date available"
     ),
-    in_scope       = !is.na(best_year) & best_year >= STUDY_START & best_year <= STUDY_END,
-    is_advisory    = type_desc == "Advisory Services",
-    is_investment  = type_desc == "Investment",
-    is_pipeline    = status == "Pending",
+    in_scope = !is.na(best_year) &
+      best_year >= STUDY_START &
+      best_year <= STUDY_END,
+    is_advisory = type_desc == "Advisory Services",
+    is_investment = type_desc == "Investment",
+    is_pipeline = status == "Pending",
 
     # Sector simplification
     sector_group = dplyr::case_when(
-      grepl("Banking|Finance|Capital|SME|Housing Finance|Trade", sector, ignore.case=TRUE) ~ "Financial Services",
-      grepl("Hotel|Tourism|Hospitality", sector, ignore.case=TRUE)    ~ "Tourism / Hospitality",
-      grepl("Hydro|Renewable|Power|Energy", sector, ignore.case=TRUE) ~ "Energy",
-      grepl("Airport|Transportation", sector, ignore.case=TRUE)       ~ "Transportation",
-      grepl("Medical|Health", sector, ignore.case=TRUE)               ~ "Health",
-      grepl("Fruit|Vegetable|Agri|Farm", sector, ignore.case=TRUE)    ~ "Agriculture / Food",
-      grepl("Retail|Supermarket", sector, ignore.case=TRUE)           ~ "Retail",
-      !is.na(sector)                                                   ~ "Other",
-      TRUE                                                             ~ "Unclassified"
+      grepl(
+        "Banking|Finance|Capital|SME|Housing Finance|Trade",
+        sector,
+        ignore.case = TRUE
+      ) ~ "Financial Services",
+      grepl(
+        "Hotel|Tourism|Hospitality",
+        sector,
+        ignore.case = TRUE
+      ) ~ "Tourism / Hospitality",
+      grepl(
+        "Hydro|Renewable|Power|Energy",
+        sector,
+        ignore.case = TRUE
+      ) ~ "Energy",
+      grepl(
+        "Airport|Transportation",
+        sector,
+        ignore.case = TRUE
+      ) ~ "Transportation",
+      grepl("Medical|Health", sector, ignore.case = TRUE) ~ "Health",
+      grepl(
+        "Fruit|Vegetable|Agri|Farm",
+        sector,
+        ignore.case = TRUE
+      ) ~ "Agriculture / Food",
+      grepl("Retail|Supermarket", sector, ignore.case = TRUE) ~ "Retail",
+      !is.na(sector) ~ "Other",
+      TRUE ~ "Unclassified"
     )
   )
 
 cat("\n=== IFC PROJECT SUMMARY ===\n")
 cat("Unique projects:", nrow(ifc_projects), "\n")
-cat("Type distribution:\n"); print(table(ifc_projects$type_desc))
-cat("Status:\n"); print(table(ifc_projects$status))
-cat("Date type:\n"); print(table(ifc_projects$date_type))
-cat("In-scope (1980-2025):", sum(ifc_projects$in_scope, na.rm=TRUE), "\n")
-cat("Pipeline (Pending, excluded from historical analysis):", sum(ifc_projects$is_pipeline), "\n")
+cat("Type distribution:\n")
+print(table(ifc_projects$type_desc))
+cat("Status:\n")
+print(table(ifc_projects$status))
+cat("Date type:\n")
+print(table(ifc_projects$date_type))
+cat("In-scope (1980-2025):", sum(ifc_projects$in_scope, na.rm = TRUE), "\n")
+cat(
+  "Pipeline (Pending, excluded from historical analysis):",
+  sum(ifc_projects$is_pipeline),
+  "\n"
+)
 
 # ---------------------------------------------------------------------------
 # 4.  Known issues documentation
 # ---------------------------------------------------------------------------
 
 cat("\n=== KNOWN IFC DATA ISSUES ===\n")
-cat("
+cat(
+  "
 1. BAC CR Green (50864): Board approved $200M; description mentions a $30M unfunded
    guarantee line. IFC's own-account investment = $200M per the disclosure field.
    Do NOT report $230M as the investment amount.
@@ -136,13 +198,30 @@ cat("
 7. Date caveats: Only 2 Advisory Services projects have actual Approval Date.
    All Investment projects show Projected Board Date only. Year assignments should
    be labelled as 'indicative' and not used for precise annual trend claims.
-\n")
+\n"
+)
 
 # Specific project checks
-cat("BAC CR Green (50864) amount:", ifc_projects$ifc_invest_usd_m[ifc_projects$project_number == "50864"], "M\n")
-cat("Coopenae (30325) amount:", ifc_projects$ifc_invest_usd_m[ifc_projects$project_number == "30325"], "M\n")
-cat("Reventazon HPP (31383) amount:", ifc_projects$ifc_invest_usd_m[ifc_projects$project_number == "31383"], "M\n")
-cat("Insulet CR (51930) in_scope:", ifc_projects$in_scope[ifc_projects$project_number == "51930"], "\n")
+cat(
+  "BAC CR Green (50864) amount:",
+  ifc_projects$ifc_invest_usd_m[ifc_projects$project_number == "50864"],
+  "M\n"
+)
+cat(
+  "Coopenae (30325) amount:",
+  ifc_projects$ifc_invest_usd_m[ifc_projects$project_number == "30325"],
+  "M\n"
+)
+cat(
+  "Reventazon HPP (31383) amount:",
+  ifc_projects$ifc_invest_usd_m[ifc_projects$project_number == "31383"],
+  "M\n"
+)
+cat(
+  "Insulet CR (51930) in_scope:",
+  ifc_projects$in_scope[ifc_projects$project_number == "51930"],
+  "\n"
+)
 
 # ---------------------------------------------------------------------------
 # 5.  In-scope investment summary
@@ -154,13 +233,23 @@ ifc_invest_scope <- ifc_projects |>
 cat("\n=== IN-SCOPE IFC INVESTMENTS (1980-2025, excl. pipeline) ===\n")
 cat("Projects:", nrow(ifc_invest_scope), "\n")
 cat("With parsed amount:", sum(!is.na(ifc_invest_scope$ifc_invest_usd_m)), "\n")
-cat("Total IFC own-account (indicative):", sum(ifc_invest_scope$ifc_invest_usd_m, na.rm=TRUE), "M USD\n")
-cat("Note: dates are projected/planned; do not use for precise annual time series.\n")
+cat(
+  "Total IFC own-account (indicative):",
+  sum(ifc_invest_scope$ifc_invest_usd_m, na.rm = TRUE),
+  "M USD\n"
+)
+cat(
+  "Note: dates are projected/planned; do not use for precise annual time series.\n"
+)
 
 cat("\nIn-scope investments by sector:\n")
 ifc_invest_scope |>
   group_by(sector_group) |>
-  summarise(n=n(), total_m = sum(ifc_invest_usd_m, na.rm=TRUE), .groups="drop") |>
+  summarise(
+    n = n(),
+    total_m = sum(ifc_invest_usd_m, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
   arrange(desc(total_m)) |>
   print()
 
@@ -168,8 +257,8 @@ ifc_invest_scope |>
 # 6.  Save
 # ---------------------------------------------------------------------------
 
-write_csv(ifc_projects,     file.path(PROC, "ifc_projects.csv"))
-write_csv(ifc_invest_scope, file.path(DER,  "ifc_investments_scope.csv"))
+write_csv(ifc_projects, file.path(PROC, "ifc_projects.csv"))
+write_csv(ifc_invest_scope, file.path(DER, "ifc_investments_scope.csv"))
 
 cat("\nSaved:\n")
 cat("  data/processed/ifc_projects.csv\n")

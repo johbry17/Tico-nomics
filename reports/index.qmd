@@ -6,23 +6,46 @@ date: today
 
 ```{r setup}
 #| include: false
-library(here); library(dplyr); library(readr); library(scales); library(knitr); library(kableExtra)
-source(here("R","functions.R"))
-ibrd_proj  <- read_csv(here("data","processed","ibrd_projects.csv"),    show_col_types=FALSE)
-ibrd_per   <- read_csv(here("data","derived","ibrd_by_period.csv"),     show_col_types=FALSE)
-ifc        <- read_csv(here("data","processed","ifc_projects.csv"),     show_col_types=FALSE)
-miga       <- read_csv(here("data","processed","miga_projects.csv"),    show_col_types=FALSE)
-wdi        <- read_csv(here("data","derived","wdi_scope.csv"),          show_col_types=FALSE)
-deflator   <- read_csv(here("data","processed","us_gdp_deflator.csv"),  show_col_types=FALSE)
+library(here)
+library(dplyr)
+library(readr)
+library(scales)
+library(knitr)
+library(kableExtra)
+source(here("R", "functions.R"))
+ibrd_proj <- read_csv(
+    here("data", "processed", "ibrd_projects.csv"),
+    show_col_types = FALSE
+)
+ibrd_per <- read_csv(
+    here("data", "derived", "ibrd_by_period.csv"),
+    show_col_types = FALSE
+)
+ifc <- read_csv(
+    here("data", "processed", "ifc_projects.csv"),
+    show_col_types = FALSE
+)
+miga <- read_csv(
+    here("data", "processed", "miga_projects.csv"),
+    show_col_types = FALSE
+)
+wdi <- read_csv(
+    here("data", "derived", "wdi_scope.csv"),
+    show_col_types = FALSE
+)
+deflator <- read_csv(
+    here("data", "processed", "us_gdp_deflator.csv"),
+    show_col_types = FALSE
+)
 
 ibrd_scope <- ibrd_proj |>
-  filter(!is.na(approval_year), approval_year >= 1980, approval_year <= 2025)
+    filter(!is.na(approval_year), approval_year >= 1980, approval_year <= 2025)
 
-total_nom  <- sum(ibrd_scope$total_principal)
-total_real <- sum(ibrd_scope$real_principal_2025, na.rm=TRUE)
+total_nom <- sum(ibrd_scope$total_principal)
+total_real <- sum(ibrd_scope$real_principal_2025, na.rm = TRUE)
 n_projects <- nrow(ibrd_scope)
-d25 <- deflator$defl[deflator$year==2025]
-d80 <- deflator$defl[deflator$year==1980]
+d25 <- deflator$defl[deflator$year == 2025]
+d80 <- deflator$defl[deflator$year == 1980]
 ```
 
 ## Why Costa Rica? Why the World Bank?
@@ -61,7 +84,7 @@ The **World Bank Group** is not a single institution. It comprises five related 
 
 ```{r fig1}
 #| fig-cap: "Annual IBRD commitments to Costa Rica, 1980–2025. Bars show original principal (nominal USD) and the same in constant 2025 USD. The 2022 bar is near-zero: P178320 (COVID-19 Vaccines) was board-approved but the loan agreement was terminated before becoming effective, so the IBRD statement records its original principal as $0."
-knitr::include_graphics(here("figures","fig1_ibrd_timeline.png"))
+knitr::include_graphics(here("figures", "fig1_ibrd_timeline.png"))
 ```
 
 The IBRD lending record reveals four broadly distinguishable periods:
@@ -92,7 +115,7 @@ This pattern — fiscal policy and environmental policy fused into a single lend
 
 ```{r fig2}
 #| fig-cap: "Instrument mix by period. Policy-based lending dominated the 1980s, virtually disappeared in the 2010s, and returned at scale in the 2020s."
-knitr::include_graphics(here("figures","fig2_instrument_mix.png"))
+knitr::include_graphics(here("figures", "fig2_instrument_mix.png"))
 ```
 
 ---
@@ -101,7 +124,7 @@ knitr::include_graphics(here("figures","fig2_instrument_mix.png"))
 
 ```{r fig3}
 #| fig-cap: "Sectoral composition of allocated commitments. Sector data is available for 22 of 35 in-scope projects; recent approvals without sector percentages are excluded."
-knitr::include_graphics(here("figures","fig3_sector_composition.png"))
+knitr::include_graphics(here("figures", "fig3_sector_composition.png"))
 ```
 
 The sector picture is necessarily incomplete — sector percentage data is unavailable for several large recent loans, including the 2020–2025 DPL series, which describe their operations in terms of policy pillars rather than traditional sectors. Where data is available, the portfolio shows:
@@ -115,7 +138,7 @@ The 2020s DPL series defies easy sector classification. Their stated objectives 
 
 ```{r fig5}
 #| fig-cap: "Thematic language in project abstracts, by period. The 1990–1999 period has no project abstracts in the API extract and does not appear. Percentages are shares of projects with available abstracts, not all in-scope projects."
-knitr::include_graphics(here("figures","fig5_abstract_themes.png"))
+knitr::include_graphics(here("figures", "fig5_abstract_themes.png"))
 ```
 
 ---
@@ -124,15 +147,15 @@ knitr::include_graphics(here("figures","fig5_abstract_themes.png"))
 
 ```{r fig6}
 #| fig-cap: "Costa Rica's development trajectory. These are contextual patterns, not evidence that World Bank lending caused the observed changes."
-knitr::include_graphics(here("figures","fig6_development_trajectory.png"))
+knitr::include_graphics(here("figures", "fig6_development_trajectory.png"))
 ```
 
 ```{r gdp-context}
 #| echo: false
-gdp_1980 <- wdi$gdp_per_capita_usd[wdi$year==1980]
-gdp_2024 <- wdi$gdp_per_capita_usd[wdi$year==2024]
-le_1980  <- wdi$life_expectancy_years[wdi$year==1980]
-le_2023  <- wdi$life_expectancy_years[wdi$year==2023]
+gdp_1980 <- wdi$gdp_per_capita_usd[wdi$year == 1980]
+gdp_2024 <- wdi$gdp_per_capita_usd[wdi$year == 2024]
+le_1980 <- wdi$life_expectancy_years[wdi$year == 1980]
+le_2023 <- wdi$life_expectancy_years[wdi$year == 2023]
 ```
 
 Costa Rica's economic and social trajectory over the period is striking. GDP per capita grew from approximately **`r scales::dollar(gdp_1980, accuracy=100)`** in 1980 to **`r scales::dollar(gdp_2024, accuracy=100)`** in 2024 — an increase that survived structural adjustment, two regional crises, the global financial crisis, and the COVID pandemic. Life expectancy rose from **`r round(le_1980,1)` years** to **`r round(le_2023,1)` years**.
@@ -147,14 +170,14 @@ The Gini index shows a more complicated picture: moderate inequality with some i
 
 ```{r fig7}
 #| fig-cap: "IFC own-account investments in Costa Rica by indicative board date and sector. Amounts in nominal USD. Not comparable to IBRD sovereign lending."
-knitr::include_graphics(here("figures","fig7_ifc_investments.png"))
+knitr::include_graphics(here("figures", "fig7_ifc_investments.png"))
 ```
 
 ```{r ifc-summary}
 #| echo: false
 ifc_scope <- ifc |> filter(is_investment, in_scope, !is_pipeline)
 n_ifc <- nrow(ifc_scope)
-total_ifc <- sum(ifc_scope$ifc_invest_usd_m, na.rm=TRUE)
+total_ifc <- sum(ifc_scope$ifc_invest_usd_m, na.rm = TRUE)
 ```
 
 IFC has made **`r n_ifc` investments** in Costa Rica (as of the disclosure record), with total own-account investment of approximately **$`r round(total_ifc,0)` million** (nominal USD, indicative). The portfolio is overwhelmingly concentrated in **financial services** — commercial banks, SME lenders, housing finance institutions. The second-largest sector is **energy**, led by the $100 million Reventazon hydroelectric project (2012), the largest hydroelectric facility in Central America.

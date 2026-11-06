@@ -10,23 +10,54 @@ cat("\n========== ANALYSIS ==========\n\n")
 # 0.  Load inputs
 # ---------------------------------------------------------------------------
 
-ibrd_projects <- read_csv(file.path(PROC, "ibrd_projects.csv"),       show_col_types=FALSE)
-ibrd_loans    <- read_csv(file.path(PROC, "ibrd_loans_clean.csv"),    show_col_types=FALSE)
-ibrd_annual   <- read_csv(file.path(DER,  "ibrd_annual.csv"),         show_col_types=FALSE)
-ibrd_period   <- read_csv(file.path(DER,  "ibrd_by_period.csv"),      show_col_types=FALSE)
-ifc_projects  <- read_csv(file.path(PROC, "ifc_projects.csv"),        show_col_types=FALSE)
-miga_raw_all  <- read_csv(file.path(PROC, "miga_records_raw.csv"),    show_col_types=FALSE)
-miga_projects <- read_csv(file.path(PROC, "miga_projects.csv"),       show_col_types=FALSE)
-projects_univ <- read_csv(file.path(PROC, "projects_universe.csv"),   show_col_types=FALSE)
-wdi           <- read_csv(file.path(PROC, "wdi_clean.csv"),           show_col_types=FALSE)
-deflator      <- read_csv(file.path(PROC, "us_gdp_deflator.csv"),     show_col_types=FALSE)
+ibrd_projects <- read_csv(
+  file.path(PROC, "ibrd_projects.csv"),
+  show_col_types = FALSE
+)
+ibrd_loans <- read_csv(
+  file.path(PROC, "ibrd_loans_clean.csv"),
+  show_col_types = FALSE
+)
+ibrd_annual <- read_csv(
+  file.path(DER, "ibrd_annual.csv"),
+  show_col_types = FALSE
+)
+ibrd_period <- read_csv(
+  file.path(DER, "ibrd_by_period.csv"),
+  show_col_types = FALSE
+)
+ifc_projects <- read_csv(
+  file.path(PROC, "ifc_projects.csv"),
+  show_col_types = FALSE
+)
+miga_raw_all <- read_csv(
+  file.path(PROC, "miga_records_raw.csv"),
+  show_col_types = FALSE
+)
+miga_projects <- read_csv(
+  file.path(PROC, "miga_projects.csv"),
+  show_col_types = FALSE
+)
+projects_univ <- read_csv(
+  file.path(PROC, "projects_universe.csv"),
+  show_col_types = FALSE
+)
+wdi <- read_csv(file.path(PROC, "wdi_clean.csv"), show_col_types = FALSE)
+deflator <- read_csv(
+  file.path(PROC, "us_gdp_deflator.csv"),
+  show_col_types = FALSE
+)
 
 # In-scope IBRD projects (1980-2025 with loan records)
 ibrd_scope <- ibrd_projects |>
   filter(!is.na(approval_year), approval_year >= 1980, approval_year <= 2025)
 
 cat("IBRD in-scope projects:", nrow(ibrd_scope), "\n")
-cat("IFC in-scope investments:", nrow(ifc_projects |> filter(is_investment, in_scope, !is_pipeline)), "\n")
+cat(
+  "IFC in-scope investments:",
+  nrow(ifc_projects |> filter(is_investment, in_scope, !is_pipeline)),
+  "\n"
+)
 cat("MIGA deduplicated projects:", nrow(miga_projects), "\n\n")
 
 # ---------------------------------------------------------------------------
@@ -35,30 +66,55 @@ cat("MIGA deduplicated projects:", nrow(miga_projects), "\n\n")
 
 cat("=== A. IBRD PORTFOLIO OVERVIEW ===\n")
 
-total_nominal   <- sum(ibrd_scope$total_principal)
-total_real      <- sum(ibrd_scope$real_principal_2025, na.rm=TRUE)
-total_net       <- sum(ibrd_scope$net_principal)
+total_nominal <- sum(ibrd_scope$total_principal)
+total_real <- sum(ibrd_scope$real_principal_2025, na.rm = TRUE)
+total_net <- sum(ibrd_scope$net_principal)
 total_cancelled <- sum(ibrd_scope$total_cancelled)
-pct_2020s       <- 100 * sum(ibrd_scope$total_principal[ibrd_scope$period == "2020–2025"]) / total_nominal
+pct_2020s <- 100 *
+  sum(ibrd_scope$total_principal[ibrd_scope$period == "2020–2025"]) /
+  total_nominal
 
-cat("Total original principal (nominal, 1980-2025):", fmt_billions(total_nominal), "\n")
-cat("Total real principal (2025 USD):",               fmt_billions(total_real), "\n")
-cat("Total net principal (orig - cancelled):",        fmt_billions(total_net), "\n")
-cat("Total cancelled:",                               fmt_millions(total_cancelled), "\n")
-cat("Cancellation rate:", round(100*total_cancelled/total_nominal, 1), "%\n")
+cat(
+  "Total original principal (nominal, 1980-2025):",
+  fmt_billions(total_nominal),
+  "\n"
+)
+cat("Total real principal (2025 USD):", fmt_billions(total_real), "\n")
+cat("Total net principal (orig - cancelled):", fmt_billions(total_net), "\n")
+cat("Total cancelled:", fmt_millions(total_cancelled), "\n")
+cat(
+  "Cancellation rate:",
+  round(100 * total_cancelled / total_nominal, 1),
+  "%\n"
+)
 cat("Share in 2020-2025:", round(pct_2020s, 1), "%\n\n")
 
 # Top 10 projects
 top10 <- ibrd_scope |>
   arrange(desc(total_principal)) |>
   head(10) |>
-  select(project_id, project_name, approval_year, total_principal, real_principal_2025,
-         net_principal, total_cancelled, instrument_group, loan_status_summary)
+  select(
+    project_id,
+    project_name,
+    approval_year,
+    total_principal,
+    real_principal_2025,
+    net_principal,
+    total_cancelled,
+    instrument_group,
+    loan_status_summary
+  )
 
 cat("Top 10 projects (nominal):\n")
-print(top10 |> mutate(total_principal=fmt_millions(total_principal),
-                       real_principal_2025=fmt_millions(real_principal_2025),
-                       net_principal=fmt_millions(net_principal)) |> as.data.frame())
+print(
+  top10 |>
+    mutate(
+      total_principal = fmt_millions(total_principal),
+      real_principal_2025 = fmt_millions(real_principal_2025),
+      net_principal = fmt_millions(net_principal)
+    ) |>
+    as.data.frame()
+)
 
 write_csv(top10, file.path(DER, "ibrd_top10.csv"))
 
@@ -70,10 +126,16 @@ cat("\n=== B. INSTRUMENT MIX ===\n")
 
 instr_summary <- ibrd_scope |>
   group_by(period, instrument_group) |>
-  summarise(n = n(), total_principal = sum(total_principal),
-            real_principal = sum(real_principal_2025, na.rm=TRUE), .groups="drop") |>
+  summarise(
+    n = n(),
+    total_principal = sum(total_principal),
+    real_principal = sum(real_principal_2025, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
   group_by(period) |>
-  mutate(pct_nominal = round(100*total_principal/sum(total_principal),1)) |>
+  mutate(
+    pct_nominal = round(100 * total_principal / sum(total_principal), 1)
+  ) |>
   ungroup()
 
 cat("Instrument mix by period:\n")
@@ -81,11 +143,18 @@ print(instr_summary)
 
 overall_instr <- ibrd_scope |>
   group_by(instrument_group) |>
-  summarise(n=n(), total_principal=sum(total_principal),
-            real_principal=sum(real_principal_2025,na.rm=TRUE), .groups="drop") |>
-  mutate(pct_n=round(100*n/sum(n),1),
-         pct_nominal=round(100*total_principal/sum(total_principal),1))
-cat("\nOverall instrument mix:\n"); print(overall_instr)
+  summarise(
+    n = n(),
+    total_principal = sum(total_principal),
+    real_principal = sum(real_principal_2025, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
+  mutate(
+    pct_n = round(100 * n / sum(n), 1),
+    pct_nominal = round(100 * total_principal / sum(total_principal), 1)
+  )
+cat("\nOverall instrument mix:\n")
+print(overall_instr)
 
 write_csv(instr_summary, file.path(DER, "instrument_by_period.csv"))
 
@@ -97,31 +166,56 @@ cat("\n=== C. SECTOR ANALYSIS ===\n")
 
 # Build sector data (sector fields already in ibrd_scope from 03_prepare_ibrd.R)
 sector_data <- ibrd_scope |>
-  select(project_id, project_name, approval_year, period, total_principal, real_principal_2025,
-         sector1_xl, sector2_xl, sector3_xl)
+  select(
+    project_id,
+    project_name,
+    approval_year,
+    period,
+    total_principal,
+    real_principal_2025,
+    sector1_xl,
+    sector2_xl,
+    sector3_xl
+  )
 
 # Get sector percentages from API data for projects in API
-api_raw_main <- jsonlite::fromJSON(file.path(RAW, "world_bank_costa_rica.json"), simplifyVector=FALSE)
+api_raw_main <- jsonlite::fromJSON(
+  file.path(RAW, "world_bank_costa_rica.json"),
+  simplifyVector = FALSE
+)
 
 sector_pcts <- purrr::map_dfr(names(api_raw_main$projects), function(id) {
-  p  <- api_raw_main$projects[[id]]
+  p <- api_raw_main$projects[[id]]
   get_sec <- function(slot) {
     s <- p[[slot]]
-    if (is.null(s)) return(list(name=NA_character_, pct=NA_real_))
-    nm  <- if (is.null(s$Name) || s$Name == "") NA_character_ else s$Name
-    pct <- if (!is.null(s$Percent) && s$Percent > 0) as.numeric(s$Percent) else NA_real_
-    list(name=nm, pct=pct)
+    if (is.null(s)) {
+      return(list(name = NA_character_, pct = NA_real_))
+    }
+    nm <- if (is.null(s$Name) || s$Name == "") NA_character_ else s$Name
+    pct <- if (!is.null(s$Percent) && s$Percent > 0) {
+      as.numeric(s$Percent)
+    } else {
+      NA_real_
+    }
+    list(name = nm, pct = pct)
   }
-  s1 <- get_sec("sector1"); s2 <- get_sec("sector2"); s3 <- get_sec("sector3")
-  tibble(project_id=id,
-    sec1_name=s1$name, sec1_pct=s1$pct,
-    sec2_name=s2$name, sec2_pct=s2$pct,
-    sec3_name=s3$name, sec3_pct=s3$pct)
+  s1 <- get_sec("sector1")
+  s2 <- get_sec("sector2")
+  s3 <- get_sec("sector3")
+  tibble(
+    project_id = id,
+    sec1_name = s1$name,
+    sec1_pct = s1$pct,
+    sec2_name = s2$name,
+    sec2_pct = s2$pct,
+    sec3_name = s3$name,
+    sec3_pct = s3$pct
+  )
 })
 
 # Merge sector pcts with in-scope projects
 sector_full <- ibrd_scope |>
-  left_join(sector_pcts, by="project_id") |>
+  left_join(sector_pcts, by = "project_id") |>
   # Use API sector names where available, else fall back to xlsx
   mutate(
     sector1_name = dplyr::coalesce(sec1_name, sector1_xl),
@@ -134,11 +228,15 @@ make_sector_rows <- function(df, slot_num, name_col, pct_col) {
   df |>
     filter(!is.na(.data[[name_col]])) |>
     transmute(
-      project_id, project_name, approval_year, period,
-      total_principal, real_principal_2025,
-      slot         = slot_num,
-      sector_name  = .data[[name_col]],
-      sector_pct   = suppressWarnings(as.numeric(.data[[pct_col]]))
+      project_id,
+      project_name,
+      approval_year,
+      period,
+      total_principal,
+      real_principal_2025,
+      slot = slot_num,
+      sector_name = .data[[name_col]],
+      sector_pct = suppressWarnings(as.numeric(.data[[pct_col]]))
     )
 }
 
@@ -148,48 +246,69 @@ sector_long2 <- bind_rows(
   make_sector_rows(sector_full, 3L, "sector3_name", "sec3_pct")
 ) |>
   mutate(
-    sector_group    = group_sector(sector_name),
-    alloc_principal = if_else(!is.na(sector_pct) & sector_pct > 0,
-                               total_principal * sector_pct / 100, NA_real_),
-    alloc_real_2025 = if_else(!is.na(sector_pct) & sector_pct > 0,
-                               real_principal_2025 * sector_pct / 100, NA_real_)
+    sector_group = group_sector(sector_name),
+    alloc_principal = if_else(
+      !is.na(sector_pct) & sector_pct > 0,
+      total_principal * sector_pct / 100,
+      NA_real_
+    ),
+    alloc_real_2025 = if_else(
+      !is.na(sector_pct) & sector_pct > 0,
+      real_principal_2025 * sector_pct / 100,
+      NA_real_
+    )
   ) |>
   arrange(approval_year, project_id, slot)
 
 cat("Sector long table:", nrow(sector_long2), "rows\n")
 cat("Projects with sector data:", n_distinct(sector_long2$project_id), "\n")
-cat("Projects WITHOUT sector data:", nrow(ibrd_scope) - n_distinct(sector_long2$project_id), "\n")
+cat(
+  "Projects WITHOUT sector data:",
+  nrow(ibrd_scope) - n_distinct(sector_long2$project_id),
+  "\n"
+)
 
 # Sector group totals (using allocated amounts where available, else count)
 sec_totals <- sector_long2 |>
   group_by(sector_group) |>
   summarise(
     n_allocations = n(),
-    n_projects    = n_distinct(project_id),
-    alloc_principal = sum(alloc_principal, na.rm=TRUE),
-    alloc_real      = sum(alloc_real_2025, na.rm=TRUE),
-    pct_with_alloc  = round(mean(!is.na(alloc_principal))*100, 0),
+    n_projects = n_distinct(project_id),
+    alloc_principal = sum(alloc_principal, na.rm = TRUE),
+    alloc_real = sum(alloc_real_2025, na.rm = TRUE),
+    pct_with_alloc = round(mean(!is.na(alloc_principal)) * 100, 0),
     .groups = "drop"
   ) |>
   arrange(desc(alloc_principal))
 
-cat("\nSector group totals:\n"); print(sec_totals)
+cat("\nSector group totals:\n")
+print(sec_totals)
 
 # Sector by period
 sec_by_period <- sector_long2 |>
   filter(!is.na(period), period != "Pre-1980") |>
   group_by(period, sector_group) |>
-  summarise(alloc_principal=sum(alloc_principal,na.rm=TRUE),
-            alloc_real=sum(alloc_real_2025,na.rm=TRUE),
-            n=n(), .groups="drop") |>
+  summarise(
+    alloc_principal = sum(alloc_principal, na.rm = TRUE),
+    alloc_real = sum(alloc_real_2025, na.rm = TRUE),
+    n = n(),
+    .groups = "drop"
+  ) |>
   group_by(period) |>
-  mutate(pct=round(100*alloc_principal/sum(alloc_principal)*
-                   if_else(sum(alloc_principal)>0,1,0),1)) |>
+  mutate(
+    pct = round(
+      100 *
+        alloc_principal /
+        sum(alloc_principal) *
+        if_else(sum(alloc_principal) > 0, 1, 0),
+      1
+    )
+  ) |>
   ungroup() |>
   arrange(period, desc(alloc_principal))
 
-write_csv(sector_long2,  file.path(DER, "sector_long.csv"))
-write_csv(sec_totals,    file.path(DER, "sector_totals.csv"))
+write_csv(sector_long2, file.path(DER, "sector_long.csv"))
+write_csv(sec_totals, file.path(DER, "sector_totals.csv"))
 write_csv(sec_by_period, file.path(DER, "sector_by_period.csv"))
 cat("Sector tables saved.\n")
 
@@ -200,33 +319,117 @@ cat("Sector tables saved.\n")
 cat("\n=== D. ABSTRACT THEMES ===\n")
 
 # Get abstracts from filtered API file
-api_filt <- jsonlite::fromJSON(file.path(RAW, "world_bank_costa_rica_filtered.json"), simplifyVector=FALSE)
+api_filt <- jsonlite::fromJSON(
+  file.path(RAW, "world_bank_costa_rica_filtered.json"),
+  simplifyVector = FALSE
+)
 abstracts_raw <- purrr::map_dfr(names(api_filt$projects), function(id) {
-  p  <- api_filt$projects[[id]]
+  p <- api_filt$projects[[id]]
   ab <- p[["project_abstract"]]
-  txt <- if (!is.null(ab)) coalesce(ab[["cdata!"]], ab[["#cdata-section"]], as.character(ab[[1]])) else NA_character_
-  txt <- if (!is.null(txt) && !is.na(txt) && nchar(trimws(txt)) > 0) trimws(txt) else NA_character_
-  tibble(project_id=id, abstract=txt)
+  txt <- if (!is.null(ab)) {
+    coalesce(ab[["cdata!"]], ab[["#cdata-section"]], as.character(ab[[1]]))
+  } else {
+    NA_character_
+  }
+  txt <- if (!is.null(txt) && !is.na(txt) && nchar(trimws(txt)) > 0) {
+    trimws(txt)
+  } else {
+    NA_character_
+  }
+  tibble(project_id = id, abstract = txt)
 })
 
 # Join with in-scope IBRD projects
 abstracts_scope <- ibrd_scope |>
-  left_join(abstracts_raw, by="project_id") |>
+  left_join(abstracts_raw, by = "project_id") |>
   filter(!is.na(abstract), nchar(abstract) > 100)
 
 cat("In-scope projects with abstracts:", nrow(abstracts_scope), "\n")
 
 # Keyword theme presence
 theme_keywords <- list(
-  Infrastructure        = c("road","highway","transport","infrastructure","port","bridge","power","electricity","grid","energy"),
-  Environment_Climate   = c("environment","environmental","climate","biodiversity","forest","conservation","emissions","carbon","nature","ecosystem","sustainable","decarbonization","decarbon"),
-  Social_Development    = c("social","poverty","health","education","welfare","vulnerable","protection","safety","inequality"),
-  Governance_Fiscal     = c("fiscal","governance","institutional","reform","management","tax","revenue","accountability","transparency","decentralization"),
-  Competitiveness_Trade = c("competitiveness","trade","productivity","private","investment","market","economic","growth","innovation"),
-  Disaster_Risk         = c("disaster","risk","resilience","resilient","emergency","catastrophe","flood","earthquake","pandemic","covid")
+  Infrastructure = c(
+    "road",
+    "highway",
+    "transport",
+    "infrastructure",
+    "port",
+    "bridge",
+    "power",
+    "electricity",
+    "grid",
+    "energy"
+  ),
+  Environment_Climate = c(
+    "environment",
+    "environmental",
+    "climate",
+    "biodiversity",
+    "forest",
+    "conservation",
+    "emissions",
+    "carbon",
+    "nature",
+    "ecosystem",
+    "sustainable",
+    "decarbonization",
+    "decarbon"
+  ),
+  Social_Development = c(
+    "social",
+    "poverty",
+    "health",
+    "education",
+    "welfare",
+    "vulnerable",
+    "protection",
+    "safety",
+    "inequality"
+  ),
+  Governance_Fiscal = c(
+    "fiscal",
+    "governance",
+    "institutional",
+    "reform",
+    "management",
+    "tax",
+    "revenue",
+    "accountability",
+    "transparency",
+    "decentralization"
+  ),
+  Competitiveness_Trade = c(
+    "competitiveness",
+    "trade",
+    "productivity",
+    "private",
+    "investment",
+    "market",
+    "economic",
+    "growth",
+    "innovation"
+  ),
+  Disaster_Risk = c(
+    "disaster",
+    "risk",
+    "resilience",
+    "resilient",
+    "emergency",
+    "catastrophe",
+    "flood",
+    "earthquake",
+    "pandemic",
+    "covid"
+  )
 )
 
-period_levels <- c("1980–1989","1990–1999","2000–2009","2010–2019","2020–2025")
+period_levels <- c(
+  "1980–1989",
+  "1990–1999",
+  "2000–2009",
+  "2010–2019",
+  "2020–2025"
+)
 
 theme_pres <- purrr::map_dfr(names(theme_keywords), function(theme_name) {
   kw <- theme_keywords[[theme_name]]
@@ -240,8 +443,8 @@ theme_pres <- purrr::map_dfr(names(theme_keywords), function(theme_name) {
     summarise(
       # Denominator = projects WITH abstracts in this period (not all in-scope projects)
       n_with_abstract = n(),
-      n_with_theme    = sum(has_theme),
-      pct             = round(100 * n_with_theme / n_with_abstract, 0),
+      n_with_theme = sum(has_theme),
+      pct = round(100 * n_with_theme / n_with_abstract, 0),
       .groups = "drop"
     ) |>
     mutate(theme = theme_name)
@@ -255,7 +458,7 @@ period_totals <- ibrd_scope |>
 # Ensure all period_levels appear, even those with zero abstracts (e.g., 1990–1999)
 all_period_theme <- tidyr::crossing(
   period = period_levels,
-  theme  = names(theme_keywords)
+  theme = names(theme_keywords)
 )
 
 theme_pres <- all_period_theme |>
@@ -263,16 +466,20 @@ theme_pres <- all_period_theme |>
   left_join(period_totals, by = "period") |>
   mutate(
     n_with_abstract = replace_na(n_with_abstract, 0L),
-    n_with_theme    = replace_na(n_with_theme, 0L),
-    pct             = replace_na(pct, NA_real_),  # NA where no abstracts; do not show 0%
-    has_abstracts   = n_with_abstract > 0,
-    period          = factor(period, levels = period_levels)
+    n_with_theme = replace_na(n_with_theme, 0L),
+    pct = replace_na(pct, NA_real_), # NA where no abstracts; do not show 0%
+    has_abstracts = n_with_abstract > 0,
+    period = factor(period, levels = period_levels)
   ) |>
   arrange(period, desc(pct))
 
 cat("Theme presence computed.\n")
-cat("Note: The 1990–1999 period has 0 project abstracts in the API extract and is excluded\n")
-cat("  from theme analysis. Percentages are shares of projects WITH abstracts, not all projects.\n")
+cat(
+  "Note: The 1990–1999 period has 0 project abstracts in the API extract and is excluded\n"
+)
+cat(
+  "  from theme analysis. Percentages are shares of projects WITH abstracts, not all projects.\n"
+)
 cat("Coverage check:\n")
 theme_pres |>
   dplyr::distinct(period, n_with_abstract, n_total_ibrd) |>
@@ -280,21 +487,56 @@ theme_pres |>
 write_csv(theme_pres, file.path(DER, "abstract_themes.csv"))
 
 # Word counts
-stop_words_custom <- tibble::tibble(word=c(
-  "project","costa","rica","bank","world","program","programme",
-  "component","support","including","include","provide","provided","improve",
-  "percent","million","billion","financing","loan","lending","ibrd","ida",
-  "will","also","government","ministry","objective","objectives",
-  "subcomponent","subcomponents","1","2","3","4","5","i","ii","iii"
-))
-data("stop_words", package="tidytext")
+stop_words_custom <- tibble::tibble(
+  word = c(
+    "project",
+    "costa",
+    "rica",
+    "bank",
+    "world",
+    "program",
+    "programme",
+    "component",
+    "support",
+    "including",
+    "include",
+    "provide",
+    "provided",
+    "improve",
+    "percent",
+    "million",
+    "billion",
+    "financing",
+    "loan",
+    "lending",
+    "ibrd",
+    "ida",
+    "will",
+    "also",
+    "government",
+    "ministry",
+    "objective",
+    "objectives",
+    "subcomponent",
+    "subcomponents",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "i",
+    "ii",
+    "iii"
+  )
+)
+data("stop_words", package = "tidytext")
 
 word_counts <- abstracts_scope |>
   tidytext::unnest_tokens(word, abstract) |>
-  anti_join(stop_words, by="word") |>
-  anti_join(stop_words_custom, by="word") |>
-  filter(str_detect(word,"^[a-z]"), nchar(word) > 2) |>
-  count(word, sort=TRUE)
+  anti_join(stop_words, by = "word") |>
+  anti_join(stop_words_custom, by = "word") |>
+  filter(str_detect(word, "^[a-z]"), nchar(word) > 2) |>
+  count(word, sort = TRUE)
 
 write_csv(word_counts, file.path(DER, "word_counts.csv"))
 cat("Word counts saved:", nrow(word_counts), "unique words\n")
@@ -310,13 +552,22 @@ ifc_scope <- ifc_projects |>
   arrange(best_year)
 
 cat("In-scope IFC investments:", nrow(ifc_scope), "\n")
-cat("Total IFC own-account (indicative, M USD):", sum(ifc_scope$ifc_invest_usd_m, na.rm=TRUE), "\n")
+cat(
+  "Total IFC own-account (indicative, M USD):",
+  sum(ifc_scope$ifc_invest_usd_m, na.rm = TRUE),
+  "\n"
+)
 
 ifc_by_sector <- ifc_scope |>
   group_by(sector_group) |>
-  summarise(n=n(), total_m=sum(ifc_invest_usd_m,na.rm=TRUE), .groups="drop") |>
+  summarise(
+    n = n(),
+    total_m = sum(ifc_invest_usd_m, na.rm = TRUE),
+    .groups = "drop"
+  ) |>
   arrange(desc(total_m))
-cat("IFC by sector:\n"); print(ifc_by_sector)
+cat("IFC by sector:\n")
+print(ifc_by_sector)
 
 write_csv(ifc_by_sector, file.path(DER, "ifc_by_sector.csv"))
 
@@ -327,7 +578,12 @@ write_csv(ifc_by_sector, file.path(DER, "ifc_by_sector.csv"))
 cat("\n=== F. WDI CONTEXT ===\n")
 wdi_scope <- wdi |> filter(year >= 1980, year <= 2025)
 cat("WDI rows in scope:", nrow(wdi_scope), "\n")
-for (col in c("gdp_per_capita_usd","gdp_growth_pct","gini","life_expectancy_years")) {
+for (col in c(
+  "gdp_per_capita_usd",
+  "gdp_growth_pct",
+  "gini",
+  "life_expectancy_years"
+)) {
   if (col %in% names(wdi_scope)) {
     obs <- sum(!is.na(wdi_scope[[col]]))
     cat(" ", col, ":", obs, "obs in scope\n")

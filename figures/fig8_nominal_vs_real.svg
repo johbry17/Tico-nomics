@@ -80,7 +80,7 @@
 <rect x='154.52' y='60.47' width='15.86' height='15.86' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #C87D2F; fill-opacity: 0.90;' />
 <text x='95.04' y='71.56' style='font-size: 8.80px;fill: #6B6B6B; font-family: "Arial";' textLength='53.29px' lengthAdjust='spacingAndGlyphs'>Nominal USD</text>
 <text x='176.57' y='71.56' style='font-size: 8.80px;fill: #6B6B6B; font-family: "Arial";' textLength='61.14px' lengthAdjust='spacingAndGlyphs'>Real 2025 USD</text>
-<text x='7.97' y='37.25' style='font-size: 10.45px;fill: #6B6B6B; font-family: "Arial";' textLength='617.30px' lengthAdjust='spacingAndGlyphs'>The 2020–2025 surge is still the largest period in real terms, but earlier periods were larger in real value than nominal figures suggest.</text>
+<text x='7.97' y='37.25' style='font-size: 10.45px;fill: #6B6B6B; font-family: "Arial";' textLength='627.75px' lengthAdjust='spacingAndGlyphs'>Inflation adjustment increases the apparent scale of earlier lending periods; 2020–2025 remains the largest period by real commitments.</text>
 <text x='7.97' y='23.24' style='font-size: 13.75px; font-weight: bold;fill: #2D2D2D; font-family: "Arial";' textLength='386.67px' lengthAdjust='spacingAndGlyphs'>IBRD Commitments by Period: Nominal vs Real (2025 USD)</text>
 <text x='7.97' y='459.20' style='font-size: 7.92px;fill: #909090; font-family: "Arial";' textLength='802.97px' lengthAdjust='spacingAndGlyphs'>Source: World Bank Projects &amp; Operations List; IBRD Statement of Loans and Guarantees (DS00047, snapshot 09/30/2026). Real 2025 USD uses US GDP deflator NY.GDP.DEFL.ZS (base 2020=100). 2025 deflator is preliminary.</text>
 </g>

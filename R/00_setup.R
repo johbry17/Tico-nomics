@@ -25,14 +25,14 @@ library(glue)
 source(here("R", "functions.R"))
 
 # Paths
-RAW  <- here("data", "raw")
+RAW <- here("data", "raw")
 PROC <- here("data", "processed")
-DER  <- here("data", "derived")
-FIG  <- here("figures")
+DER <- here("data", "derived")
+FIG <- here("figures")
 
 # Study period
 STUDY_START <- 1980L
-STUDY_END   <- 2025L
+STUDY_END <- 2025L
 
 # Snapshot dates
 IBRD_SNAPSHOT <- as.Date("2026-09-30")

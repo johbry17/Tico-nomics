@@ -65,11 +65,11 @@ miga_dedup <- miga_raw |>
   # For project 3639: keep only FY2003 row as it captures the full scope
   filter(!(project_id == 3639 & fiscal_year %in% c(2001, 2002))) |>
   mutate(
-    # MIGA uses fiscal years (Jul-Jun). Convert to approximate calendar year.
-    # MIGA FY typically = calendar year - 1 (e.g., FY2003 started July 2002)
-    # For project 3639, FY2001 = calendar 2000-2001; use first fiscal year as calendar year.
-    fy_approx_calendar = as.integer(fiscal_year),
-    in_scope = fy_approx_calendar >= STUDY_START & fy_approx_calendar <= STUDY_END,
+    # MIGA uses fiscal years (Jul-Jun). fy_label is the WB FY number as reported.
+    # FY2008 = July 2007–June 2008; guarantees in "FY2008" were issued in that period.
+    # Do NOT interpret fy_label as a precise calendar year.
+    fy_label   = as.integer(fiscal_year),
+    in_scope   = fy_label >= STUDY_START & fy_label <= STUDY_END,
     project_id_chr = as.character(project_id)
   )
 

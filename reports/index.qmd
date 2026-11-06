@@ -60,7 +60,7 @@ The **World Bank Group** is not a single institution. It comprises five related 
 ## Four decades of IBRD lending
 
 ```{r fig1}
-#| fig-cap: "Annual IBRD commitments to Costa Rica, 1980–2025. Darker bars show nominal USD; lighter bars show the same amounts in constant 2025 USD using the US GDP deflator. The 2022 bar shows a net negative from a Terminated loan (P178320)."
+#| fig-cap: "Annual IBRD commitments to Costa Rica, 1980–2025. Bars show original principal (nominal USD) and the same in constant 2025 USD. The 2022 bar is near-zero: P178320 (COVID-19 Vaccines) was board-approved but the loan agreement was terminated before becoming effective, so the IBRD statement records its original principal as $0."
 knitr::include_graphics(here("figures","fig1_ibrd_timeline.png"))
 ```
 
@@ -78,7 +78,7 @@ The structural adjustment programme was controversial. It reshaped Costa Rica's 
 
 After the adjustment era, IBRD lending shifted toward targeted investments: the Ecomarkets payment-for-ecosystem-services project (2000), health sector strengthening (2001), education equity (2005), environmental mainstreaming (2006), and port-city infrastructure in Limón (2008). A CAT-DDO contingency credit in 2008 provided a disaster-risk buffer.
 
-The 2009 $500 million Public Finance and Competitiveness DPL-DDO was the largest single World Bank commitment to Costa Rica in the entire 1980–2025 period — extended as the global financial crisis threatened Costa Rica's fiscal position. It was development policy lending, but triggered not by structural reform conditionality as in the 1980s, but by an economic emergency.
+The 2009 $500 million Public Finance and Competitiveness DPL-DDO was among the largest World Bank commitments to Costa Rica, extended as the global financial crisis threatened Costa Rica's fiscal position. It was development policy lending, but triggered not by structural reform conditionality as in the 1980s, but by an economic emergency.
 
 ### The 2010s: Sustained but concentrated investment
 
@@ -114,7 +114,7 @@ The sector picture is necessarily incomplete — sector percentage data is unava
 The 2020s DPL series defies easy sector classification. Their stated objectives span fiscal management, climate policy, social protection, and energy transition simultaneously — a reflection of how policy-based lending increasingly integrates multiple development domains.
 
 ```{r fig5}
-#| fig-cap: "Thematic language in project abstracts, by period. Environment and climate are present in every period, but the vocabulary shifts."
+#| fig-cap: "Thematic language in project abstracts, by period. The 1990–1999 period has no project abstracts in the API extract and does not appear. Percentages are shares of projects with available abstracts, not all in-scope projects."
 knitr::include_graphics(here("figures","fig5_abstract_themes.png"))
 ```
 
@@ -139,7 +139,7 @@ Costa Rica's economic and social trajectory over the period is striking. GDP per
 
 Whether World Bank lending contributed to these improvements — or was merely present alongside them — cannot be established from this evidence. What the data does show is that the largest lending episodes (the 1985 SAL series, the 2009 DPL-DDO, the 2016 health loan, the 2020–2025 DPL series) coincided with specific economic stresses or strategic priorities, rather than tracking smoothly with GDP growth or development outcomes.
 
-The Gini index shows a more complicated picture: moderate inequality with some improvement in the 2010s, followed by a COVID-era spike.
+The Gini index shows a more complicated picture: moderate inequality with some improvement in the 2010s, followed by a COVID-era spike in 2020, and a subsequent sustained decline through 2025.
 
 ---
 

@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Bryan C. Johns">
-<meta name="dcterms.date" content="2026-11-05">
+<meta name="dcterms.date" content="2026-11-06">
 
 <title>Data Dictionary – Tico-nomics</title>
 <style>
@@ -45,14 +45,14 @@ ul.task-list li input[type="checkbox"] {
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-17888a1159294d3eb470f19f6f52f5a5.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-0ae969d3293726db143f6e9eb89af930.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-17888a1159294d3eb470f19f6f52f5a5.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-4b721e6ad85ebea0c181a306c565fca7.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-5afa34c8ef2a14af4d15b74b6240efcc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-4b721e6ad85ebea0c181a306c565fca7.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-92404dd89b1444827012a9e3a58cda88.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-8b348f4b4b74a528bf910da1e8c5139e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-92404dd89b1444827012a9e3a58cda88.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-8e33931cb160ebc23afbf1617d21167c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-b8a04212411590e85c997aaca1b697ff.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-8e33931cb160ebc23afbf1617d21167c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -350,7 +350,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 5, 2026</p>
+      <p class="date">November 6, 2026</p>
     </div>
   </div>
   
@@ -883,24 +883,29 @@ ul.task-list li input[type="checkbox"] {
 <td style="text-align: left;">FY = July–June; FY2008 = July 2007–June 2008</td>
 </tr>
 <tr class="odd">
+<td style="text-align: left;">fy_label</td>
+<td style="text-align: left;">Integer copy of fiscal_year for filtering</td>
+<td style="text-align: left;">Use fiscal_year for labeling; fy_label is NOT a calendar year</td>
+</tr>
+<tr class="even">
 <td style="text-align: left;">gross_exposure_up_to</td>
 <td style="text-align: left;">Maximum MIGA liability under issued contracts (US$ millions)</td>
 <td style="text-align: left;">NOT a loan; NOT capital received by Costa Rica</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">description</td>
 <td style="text-align: left;">MIGA guarantee description</td>
 <td style="text-align: left;">From MIGA project brief</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">investor_country</td>
 <td style="text-align: left;">Country of origin of investor</td>
 <td style="text-align: left;"></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">in_scope</td>
-<td style="text-align: left;">fiscal_year &gt;= 1980 &amp; fiscal_year &lt;= 2025</td>
-<td style="text-align: left;">Approximate calendar year mapping</td>
+<td style="text-align: left;">fy_label &gt;= 1980 &amp; fy_label &lt;= 2025</td>
+<td style="text-align: left;">Based on fiscal year label; see FY convention note</td>
 </tr>
 </tbody>
 </table>

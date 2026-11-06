@@ -114,7 +114,8 @@ cat("\n=== KNOWN IFC DATA ISSUES ===\n")
 cat("
 1. BAC CR Green (50864): Board approved $200M; description mentions a $30M unfunded
    guarantee line. IFC's own-account investment = $200M per the disclosure field.
-   Projected board date 2025-06-26 (outside 1980-2025 window by one month if calendar).
+   Do NOT report $230M as the investment amount.
+   Projected board date 2025-06-26 — within the 1980-2025 study window (year = 2025).
    
 2. Coopenae (30325): $15M IFC; another IFI contributed $15M for a $30M total package.
    IFC amount = $15M.

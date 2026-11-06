@@ -230,18 +230,53 @@ period_levels <- c("1980–1989","1990–1999","2000–2009","2010–2019","2020
 
 theme_pres <- purrr::map_dfr(names(theme_keywords), function(theme_name) {
   kw <- theme_keywords[[theme_name]]
+  # Build a single pattern for word-boundary-aware matching where feasible
+  # Using paste with | for OR; str_detect does full-string search on each abstract
+  pattern <- paste(kw, collapse = "|")
   abstracts_scope |>
     filter(!is.na(period)) |>
-    mutate(has_theme = str_detect(tolower(abstract), paste(kw, collapse="|"))) |>
+    mutate(has_theme = str_detect(tolower(abstract), pattern)) |>
     group_by(period) |>
-    summarise(n_projects=n(), n_with_theme=sum(has_theme),
-              pct=round(100*n_with_theme/n_projects, 0), .groups="drop") |>
-    mutate(theme=theme_name)
-}) |> filter(period %in% period_levels) |>
-  mutate(period=factor(period, levels=period_levels)) |>
+    summarise(
+      # Denominator = projects WITH abstracts in this period (not all in-scope projects)
+      n_with_abstract = n(),
+      n_with_theme    = sum(has_theme),
+      pct             = round(100 * n_with_theme / n_with_abstract, 0),
+      .groups = "drop"
+    ) |>
+    mutate(theme = theme_name)
+})
+
+# Add n_total_projects (all in-scope IBRD projects per period) for denominator transparency
+period_totals <- ibrd_scope |>
+  filter(!is.na(period), period %in% period_levels) |>
+  count(period, name = "n_total_ibrd")
+
+# Ensure all period_levels appear, even those with zero abstracts (e.g., 1990–1999)
+all_period_theme <- tidyr::crossing(
+  period = period_levels,
+  theme  = names(theme_keywords)
+)
+
+theme_pres <- all_period_theme |>
+  left_join(theme_pres, by = c("period", "theme")) |>
+  left_join(period_totals, by = "period") |>
+  mutate(
+    n_with_abstract = replace_na(n_with_abstract, 0L),
+    n_with_theme    = replace_na(n_with_theme, 0L),
+    pct             = replace_na(pct, NA_real_),  # NA where no abstracts; do not show 0%
+    has_abstracts   = n_with_abstract > 0,
+    period          = factor(period, levels = period_levels)
+  ) |>
   arrange(period, desc(pct))
 
 cat("Theme presence computed.\n")
+cat("Note: The 1990–1999 period has 0 project abstracts in the API extract and is excluded\n")
+cat("  from theme analysis. Percentages are shares of projects WITH abstracts, not all projects.\n")
+cat("Coverage check:\n")
+theme_pres |>
+  dplyr::distinct(period, n_with_abstract, n_total_ibrd) |>
+  print()
 write_csv(theme_pres, file.path(DER, "abstract_themes.csv"))
 
 # Word counts

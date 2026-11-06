@@ -102,7 +102,7 @@ The disbursed amounts in the IBRD Statement are **cumulative balances** as of 09
 
 ## 6. Instrument classification
 
-IBRD loan types in the Statement (`CPL`, `FSL`, `NPL`, `SCL`, `SCPD`) are **financial-term codes**, not operational instrument types. Classification as Development Policy Loan or Investment Project Financing uses the following logic, applied in `03_prepare_ibrd.R`:
+IBRD loan types in the Statement (`CPL`, `FSL`, `NPL`, `SCL`, `SCPD`) are **financial-term codes**, not operational instrument types. Classification as Development Policy Loan or Investment Project Financing uses the following logic, applied in `04_prepare_ibrd.R`:
 
 | Classified as DPL | Reason |
 |---|---|
@@ -165,7 +165,7 @@ IFC investment amounts represent **IFC's own-account investment in private entit
 
 **Deduplication:** The source file contains 40 rows for 30 unique project numbers (10 projects have multiple disclosure documents). The final dataset uses one row per project number, taking the first non-missing value for each field.
 
-**Known issues documented in `04_prepare_ifc.R`:** BAC CR Green ($200M, 2025), Coopenae ($15M, 2011), Aeropuerto Juan Santamaría ($35M, 2000), Corporacion Supermercados Unidos ($40M, multi-country), Insulet CR ($97M, pipeline/excluded).
+**Known issues documented in `05_prepare_ifc.R`:** BAC CR Green ($200M, 2025), Coopenae ($15M, 2011), Aeropuerto Juan Santamaría ($35M, 2000), Corporacion Supermercados Unidos ($40M, multi-country), Insulet CR ($97M, pipeline/excluded).
 
 ---
 
@@ -233,6 +233,6 @@ Then render the site:
 quarto render
 ```
 
-Scripts requiring internet access: `06_prepare_wdi.R` (World Bank API calls for deflator and WDI indicators). All other scripts read from `data/raw/` only.
+Scripts requiring internet access: `02_prepare_wdi.R` (World Bank API calls for deflator and WDI indicators). All other scripts read only from `data/raw/` or earlier pipeline outputs in `data/processed/`.
 
 Raw files in `data/raw/` must be preserved unchanged. The `archive/` directory contains historical exploratory scripts from Phase 0 and Phase 1; they are not part of the active pipeline.

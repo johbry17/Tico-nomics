@@ -161,10 +161,11 @@ tribble(
   "title",              "Project title",                                          "",
   "sector",             "Sector (Tourism / Banking / Power / Transportation / Manufacturing)", "",
   "fiscal_year",        "MIGA fiscal year of guarantee issuance",                "FY = July–June; FY2008 = July 2007–June 2008",
+  "fy_label",           "Integer copy of fiscal_year for filtering",             "Use fiscal_year for labeling; fy_label is NOT a calendar year",
   "gross_exposure_up_to","Maximum MIGA liability under issued contracts (US$ millions)", "NOT a loan; NOT capital received by Costa Rica",
   "description",        "MIGA guarantee description",                            "From MIGA project brief",
   "investor_country",   "Country of origin of investor",                         "",
-  "in_scope",           "fiscal_year >= 1980 & fiscal_year <= 2025",            "Approximate calendar year mapping"
+  "in_scope",           "fy_label >= 1980 & fy_label <= 2025",              "Based on fiscal year label; see FY convention note"
 ) |>
   kable(caption="MIGA projects — variable definitions") |>
   kable_styling(bootstrap_options=c("striped","condensed"), font_size=11)

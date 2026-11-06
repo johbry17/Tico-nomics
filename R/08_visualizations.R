@@ -219,11 +219,13 @@ theme_colours <- c(
 )
 
 theme_plot <- theme_pres |>
+  # Only plot rows where abstracts are available (pct is not NA)
+  filter(has_abstracts) |>
   mutate(theme_label=theme_labels[theme])
 
 fig5 <- ggplot(theme_plot, aes(x=period, y=pct, colour=theme, group=theme)) +
   geom_line(linewidth=1.1, alpha=0.9) +
-  geom_point(aes(size=n_projects), alpha=0.9) +
+  geom_point(aes(size=n_with_abstract), alpha=0.9) +
   scale_colour_manual(values=theme_colours,
                       labels=theme_labels, name="Thematic area",
                       guide=guide_legend(ncol=2, override.aes=list(size=3, linewidth=1.5))) +
@@ -231,9 +233,9 @@ fig5 <- ggplot(theme_plot, aes(x=period, y=pct, colour=theme, group=theme)) +
   scale_y_continuous(labels=label_percent(scale=1), limits=c(0,105), expand=expansion(mult=c(0,0))) +
   labs(
     title="Development Priorities in the Bank's Own Words",
-    subtitle="Share of in-scope projects per period whose abstracts mention each thematic area",
-    x="Period", y="Projects mentioning theme (%)",
-    caption=caption_wb("Keyword search on project abstracts (WB Projects API filtered extract). Point size = number of projects with abstracts in that period.")
+    subtitle="% of projects with available abstracts that mention each thematic area\nNote: 1990–1999 excluded — no project abstracts available in the API extract for that period.",
+    x="Period", y="Projects mentioning theme (% of abstracts available)",
+    caption=caption_wb("Keyword search on project abstracts (WB Projects API). Point size = number of projects with abstracts in that period.")
   ) +
   theme_tico() + theme(legend.position="bottom")
 
@@ -251,13 +253,13 @@ p6a <- ggplot(wdi |> filter(!is.na(gdp_per_capita_usd)), aes(x=year,y=gdp_per_ca
   geom_line(colour=PALETTE$teal, linewidth=0.9) +
   scale_x_continuous(breaks=seq(1980,2025,5), expand=expansion(add=0.5)) +
   scale_y_continuous(labels=label_dollar(scale_cut=cut_short_scale()), expand=expansion(mult=c(0,0.08))) +
-  labs(subtitle="GDP per capita (current US$)", x=NULL, y=NULL) + theme_tico()
+  labs(subtitle="GDP per capita (current US$ — not inflation-adjusted)", x=NULL, y=NULL) + theme_tico()
 
 p6b <- ggplot(wdi |> filter(!is.na(life_expectancy_years)), aes(x=year,y=life_expectancy_years)) +
   geom_line(colour=PALETTE$slate, linewidth=0.9) +
   geom_point(colour=PALETTE$slate, size=1.5, shape=16) +
   scale_x_continuous(breaks=seq(1980,2025,5), expand=expansion(add=0.5)) +
-  scale_y_continuous(labels=function(x) paste0(x," yrs"), limits=c(73,81),
+  scale_y_continuous(labels=function(x) paste0(x," yrs"), limits=c(73,83),
                      expand=expansion(mult=c(0.02,0.05))) +
   labs(subtitle="Life expectancy at birth (years)", x=NULL, y=NULL) + theme_tico()
 

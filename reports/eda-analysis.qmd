@@ -172,6 +172,7 @@ sec_totals |>
 ## E. Development priorities in project language
 
 ```{r fig5}
+#| fig-cap: "Theme keyword presence by period. Only periods with available abstracts are shown. The 1990–1999 period has zero project abstracts in the API and is excluded. Percentages are shares of projects WITH available abstracts that mention the theme."
 knitr::include_graphics(here("figures","fig5_abstract_themes.png"))
 ```
 
@@ -196,15 +197,17 @@ theme_labels <- c(
 )
 theme_pres |>
   filter(!is.na(period)) |>
-  mutate(theme_label=theme_labels[theme]) |>
-  select(Period=period, Theme=theme_label, `Projects in period`=n_projects,
-         `With theme`=n_with_theme, `%`=pct) |>
-  kable(caption="Thematic keyword presence in project abstracts by period") |>
+  mutate(theme_label = theme_labels[theme]) |>
+  select(Period = period, Theme = theme_label,
+         `Abstracts available` = n_with_abstract,
+         `Total IBRD projects` = n_total_ibrd,
+         `With theme` = n_with_theme, `% of abstracts` = pct) |>
+  kable(caption = "Thematic keyword presence in project abstracts by period. '% of abstracts' is the share of projects with available abstracts that mention the theme — NOT the share of all in-scope projects. The 1990–1999 period has no abstracts in the API extract.") |>
   kable_styling(bootstrap_options=c("striped","condensed"), font_size=11) |>
   collapse_rows(columns=1, valign="top")
 ```
 
-> Abstracts available for **19 of 35** in-scope projects. The 1980s projects predate systematic abstract publication; the 2020s DPL series have abstracts but are narrow in their project-level API coverage.
+> **Abstract coverage:** The 1990–1999 period has **zero** project abstracts available in the WB Projects API extract; that period is absent from theme calculations. Totals for other periods: 1980–1989: 2 abstracts of 8 projects; 2000–2009: 7 of 7; 2010–2019: 1 of 2; 2020–2025: 9 of 12. Percentages are shares of projects with available abstracts, not all in-scope IBRD projects.
 
 ---
 
@@ -226,7 +229,7 @@ wdi |>
   ) |>
   select(Year=year, `GDP per capita`=gdp_per_capita_usd,
          `GDP growth`=gdp_growth_pct, Gini=gini, `Life expectancy`=life_expectancy_years) |>
-  kable(caption="Costa Rica selected WDI indicators (contextual only)") |>
+  kable(caption="Costa Rica selected WDI indicators (contextual only). GDP per capita is in current US dollars — not inflation-adjusted. Do not interpret year-over-year changes as real economic growth without accounting for dollar inflation.") |>
   kable_styling(bootstrap_options=c("striped","condensed"))
 ```
 

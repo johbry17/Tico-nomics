@@ -113,8 +113,48 @@ check(mult >= 3.0 & mult <= 3.7,
 # 5.  IFC validations
 # ---------------------------------------------------------------------------
 
+# No negative net_principal at project level (Terminated-with-zero-original loans must be 0)
+neg_net <- projects |> filter(net_principal < 0)
+check(nrow(neg_net) == 0, paste("No negative net_principal values (got", nrow(neg_net), ")"))
+
+# P178320 (COVID Terminated): original_principal=0, net=0, cancelled=120M
+p178 <- loans |> filter(project_id == "P178320")
+if (nrow(p178) > 0) {
+  check(p178$original_principal_amount_us[1] == 0,
+        "P178320 (COVID Terminated) original_principal = 0 (as per IBRD statement)")
+  check(p178$net_principal[1] == 0,
+        "P178320 (COVID Terminated) net_principal capped at 0")
+}
+
+# Abstract theme coverage: all 5 periods must appear in theme table
+themes  <- read_csv(file.path(DER,"abstract_themes.csv"), show_col_types=FALSE)
+all_per <- c("1980–1989","1990–1999","2000–2009","2010–2019","2020–2025")
+check(all(all_per %in% as.character(themes$period)),
+      "All 5 periods present in abstract_themes.csv")
+# 1990-1999 should have n_with_abstract=0 (no abstracts in API)
+nineties <- themes |> filter(period == "1990–1999") |> dplyr::slice(1)
+check(nineties$n_with_abstract == 0, "1990–1999 correctly shows 0 abstracts available")
+
+# Sector coverage: fraction with data
+sec_long <- read_csv(file.path(DER,"sector_long.csv"), show_col_types=FALSE)
+n_sec_proj <- dplyr::n_distinct(sec_long$project_id)
+check(n_sec_proj >= 20 & n_sec_proj <= 25,
+      paste("Sector data available for", n_sec_proj, "of 35 in-scope projects"))
+
+# Two projects tied at $500M (2009 and 2023); neither uniquely largest
+top10 <- read_csv(file.path(DER,"ibrd_top10.csv"), show_col_types=FALSE)
+n_500m <- sum(top10$total_principal == 500000000)
+check(n_500m == 2,
+      paste("Two projects tied at $500M (2009 DPL + 2023 DPL), got", n_500m))
+
+# BAC CR Green in scope (projected year 2025, within window)
+# Note: ifc loaded in section 5 below; must read it here for this check
+ifc_tmp <- read_csv(file.path(PROC,"ifc_projects.csv"), show_col_types=FALSE)
+bac_in <- ifc_tmp$in_scope[ifc_tmp$project_number == "50864"]
+check(length(bac_in) == 1 && bac_in, "BAC CR Green (50864) is in-scope (best_year=2025)")
+
 cat("\n--- IFC ---\n")
-ifc <- read_csv(file.path(PROC,"ifc_projects.csv"), show_col_types=FALSE)
+ifc <- ifc_tmp
 check(nrow(ifc) == 30, paste("30 unique IFC project numbers (got", nrow(ifc), ")"))
 
 # Insulet CR (pipeline) must not be in historical analysis scope

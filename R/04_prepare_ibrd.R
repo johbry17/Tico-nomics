@@ -43,8 +43,11 @@ ibrd_loans <- ibrd_raw |>
     closed_date        = lubridate::mdy(closed_date_most_recent),
     is_guarantee       = grepl("^IBRDB|^IBRDG", loan_number),
     # net_principal: original commitment minus cancellations.
-    # For Terminated loans: cancelled_amount = original_principal, net = 0.
-    net_principal      = original_principal_amount_us - cancelled_amount_us,
+    # For Terminated loans where original_principal_amount_us = 0:
+    # The IBRD statement records these as cancelled_amount > 0 but original = 0.
+    # This is a known IBRD accounting convention for loans that were approved but
+    # never became legally effective. Net commitment is analytically zero, not negative.
+    net_principal      = pmax(original_principal_amount_us - cancelled_amount_us, 0),
     # Inflation adjustment to 2025 USD
     defl_year          = deflator$defl[match(approval_year, deflator$year)],
     real_principal_2025 = if_else(
@@ -140,7 +143,7 @@ ibrd_projects <- ibrd_loans |>
     total_disbursed          = sum(disbursed_amount_us, na.rm=TRUE),
     total_repaid             = sum(repaid_to_ibrd_us, na.rm=TRUE),
     total_loans_held         = sum(loans_held_us, na.rm=TRUE),
-    net_principal            = total_principal - total_cancelled,
+    net_principal            = pmax(total_principal - total_cancelled, 0),
     real_principal_2025      = sum(real_principal_2025, na.rm=TRUE),
     real_net_2025            = sum(real_net_2025, na.rm=TRUE),
     .groups = "drop"

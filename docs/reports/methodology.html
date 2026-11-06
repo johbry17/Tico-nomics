@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Bryan C. Johns">
-<meta name="dcterms.date" content="2026-11-05">
+<meta name="dcterms.date" content="2026-11-06">
 
 <title>Methodology – Tico-nomics</title>
 <style>
@@ -80,14 +80,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-17888a1159294d3eb470f19f6f52f5a5.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-0ae969d3293726db143f6e9eb89af930.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
-<link href="../site_libs/quarto-html/quarto-syntax-highlighting-17888a1159294d3eb470f19f6f52f5a5.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-4b721e6ad85ebea0c181a306c565fca7.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-dark-5afa34c8ef2a14af4d15b74b6240efcc.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-4b721e6ad85ebea0c181a306c565fca7.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-92404dd89b1444827012a9e3a58cda88.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
-<link href="../site_libs/bootstrap/bootstrap-dark-8b348f4b4b74a528bf910da1e8c5139e.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-92404dd89b1444827012a9e3a58cda88.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-8e33931cb160ebc23afbf1617d21167c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-dark-b8a04212411590e85c997aaca1b697ff.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="../site_libs/bootstrap/bootstrap-8e33931cb160ebc23afbf1617d21167c.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -393,7 +393,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 5, 2026</p>
+      <p class="date">November 6, 2026</p>
     </div>
   </div>
   
@@ -598,7 +598,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="instrument-classification" class="level2">
 <h2 class="anchored" data-anchor-id="instrument-classification">6. Instrument classification</h2>
-<p>IBRD loan types in the Statement (<code>CPL</code>, <code>FSL</code>, <code>NPL</code>, <code>SCL</code>, <code>SCPD</code>) are <strong>financial-term codes</strong>, not operational instrument types. Classification as Development Policy Loan or Investment Project Financing uses the following logic, applied in <code>03_prepare_ibrd.R</code>:</p>
+<p>IBRD loan types in the Statement (<code>CPL</code>, <code>FSL</code>, <code>NPL</code>, <code>SCL</code>, <code>SCPD</code>) are <strong>financial-term codes</strong>, not operational instrument types. Classification as Development Policy Loan or Investment Project Financing uses the following logic, applied in <code>04_prepare_ibrd.R</code>:</p>
 <table class="caption-top table">
 <colgroup>
 <col style="width: 50%">
@@ -670,7 +670,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Date caveat:</strong> Only 2 IFC projects (Advisory Services) have actual <code>Approval Date</code> values. All Investment projects show <code>Projected Board Date</code> — a planned date, not an actual approval confirmation. Year assignments from IFC data are approximate and should not be used for precise annual time-series claims.</p>
 <p><strong>Amount parsing:</strong> The <code>Investment as Approved by The Board</code> field in the IFC Excel contains text such as “15.0 million (USD)…”. Investment amounts are extracted by parsing the leading number.</p>
 <p><strong>Deduplication:</strong> The source file contains 40 rows for 30 unique project numbers (10 projects have multiple disclosure documents). The final dataset uses one row per project number, taking the first non-missing value for each field.</p>
-<p><strong>Known issues documented in <code>04_prepare_ifc.R</code>:</strong> BAC CR Green ($200M, 2025), Coopenae ($15M, 2011), Aeropuerto Juan Santamaría ($35M, 2000), Corporacion Supermercados Unidos ($40M, multi-country), Insulet CR ($97M, pipeline/excluded).</p>
+<p><strong>Known issues documented in <code>05_prepare_ifc.R</code>:</strong> BAC CR Green ($200M, 2025), Coopenae ($15M, 2011), Aeropuerto Juan Santamaría ($35M, 2000), Corporacion Supermercados Unidos ($40M, multi-country), Insulet CR ($97M, pipeline/excluded).</p>
 <hr>
 </section>
 <section id="miga-methodology" class="level2">
@@ -760,18 +760,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The complete analysis can be rebuilt from raw source files.</p>
 <p><strong>Prerequisites:</strong> R ≥ 4.4, Quarto ≥ 1.4, R packages listed in <code>R/00_setup.R</code>.</p>
 <p><strong>Pipeline (run in order from project root):</strong></p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/06_prepare_wdi.R"</span>)    <span class="co"># deflator and WDI (requires internet)</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/01_import_sources.R"</span>) <span class="co"># documentation only</span></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/02_reconcile_projects.R"</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/03_prepare_ibrd.R"</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/04_prepare_ifc.R"</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/05_prepare_miga.R"</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/01_import_sources.R"</span>) <span class="co"># documentation only</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/02_prepare_wdi.R"</span>)    <span class="co"># deflator and WDI (requires internet)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/03_reconcile_projects.R"</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/04_prepare_ibrd.R"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/05_prepare_ifc.R"</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/06_prepare_miga.R"</span>)</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/07_analysis.R"</span>)</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/08_visualizations.R"</span>)</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"R/09_validation.R"</span>)     <span class="co"># all checks should pass</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <p>Then render the site:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">quarto</span> render</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Scripts requiring internet access: <code>06_prepare_wdi.R</code> (World Bank API calls for deflator and WDI indicators). All other scripts read from <code>data/raw/</code> only.</p>
+<p>Scripts requiring internet access: <code>02_prepare_wdi.R</code> (World Bank API calls for deflator and WDI indicators). All other scripts read only from <code>data/raw/</code> or earlier pipeline outputs in <code>data/processed/</code>.</p>
 <p>Raw files in <code>data/raw/</code> must be preserved unchanged. The <code>archive/</code> directory contains historical exploratory scripts from Phase 0 and Phase 1; they are not part of the active pipeline.</p>
 
 

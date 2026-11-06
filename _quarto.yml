@@ -33,6 +33,7 @@ format:
       light: flatly
       dark: darkly
     # css: styles.css
+    respect-user-color-scheme: true
     toc: true
     toc-depth: 3
     code-fold: true

@@ -1,4 +1,4 @@
-# 03_prepare_ibrd.R
+# 04_prepare_ibrd.R
 # Clean and aggregate IBRD loan records.
 # Merges financial data with project metadata; calculates real 2025 USD values.
 # Saves: data/processed/ibrd_loans_clean.csv, data/processed/ibrd_projects.csv,

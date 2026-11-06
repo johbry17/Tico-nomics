@@ -1,4 +1,4 @@
-# 04_prepare_ifc.R
+# 05_prepare_ifc.R
 # Clean and deduplicate IFC project disclosures for Costa Rica.
 # IFC investment amounts are NOT comparable to IBRD loan principal.
 # Saves: data/processed/ifc_projects.csv

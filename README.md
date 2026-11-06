@@ -58,11 +58,11 @@ Tico-nomics/
 │   ├── functions.R
 │   ├── 00_setup.R
 │   ├── 01_import_sources.R
-│   ├── 02_reconcile_projects.R
-│   ├── 03_prepare_ibrd.R
-│   ├── 04_prepare_ifc.R
-│   ├── 05_prepare_miga.R
-│   ├── 06_prepare_wdi.R
+│   ├── 02_prepare_wdi.R
+│   ├── 03_reconcile_projects.R
+│   ├── 04_prepare_ibrd.R
+│   ├── 05_prepare_ifc.R
+│   ├── 06_prepare_miga.R
 │   ├── 07_analysis.R
 │   ├── 08_visualizations.R
 │   └── 09_validation.R

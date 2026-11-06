@@ -1,4 +1,4 @@
-# 06_prepare_wdi.R
+# 02_prepare_wdi.R
 # Retrieve WDI contextual indicators and US GDP deflator.
 # Saves: data/processed/wdi_clean.csv, data/processed/us_gdp_deflator.csv
 

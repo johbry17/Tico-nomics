@@ -1,4 +1,4 @@
-# 05_prepare_miga.R
+# 06_prepare_miga.R
 # Clean MIGA guarantee records for Costa Rica.
 # MIGA gross exposure is NOT a loan or disbursement.
 # Saves: data/processed/miga_projects.csv

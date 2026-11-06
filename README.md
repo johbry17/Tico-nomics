@@ -84,12 +84,12 @@ Tico-nomics/
 ## Rebuilding the analysis
 
 ```r
-source("R/06_prepare_wdi.R")       # requires internet
 source("R/01_import_sources.R")
-source("R/02_reconcile_projects.R")
-source("R/03_prepare_ibrd.R")
-source("R/04_prepare_ifc.R")
-source("R/05_prepare_miga.R")
+source("R/02_prepare_wdi.R")       # requires internet
+source("R/03_reconcile_projects.R")
+source("R/04_prepare_ibrd.R")
+source("R/05_prepare_ifc.R")
+source("R/06_prepare_miga.R")
 source("R/07_analysis.R")
 source("R/08_visualizations.R")
 source("R/09_validation.R")
@@ -121,3 +121,13 @@ quarto render
 - IFC investment dates are projected board dates, not confirmed approvals.
 - MIGA gross exposure is maximum potential liability, not capital transferred.
 - 2025 GDP deflator is preliminary.
+
+## Data
+
+- [IBRD Loans Summary by Status](https://financesone.worldbank.org/ibrd-loans-summary-by-status/DS01535)
+- [IBRD Statement of Loans and Guarantees - Latest Available Snapshot 10/31/26](https://financesone.worldbank.org/ibrd-statement-of-loans-and-guarantees-latest-available-snapshot/DS00047)
+- [World Bank Group Projects & Operations](https://projects.worldbank.org/en/projects-operations/projects-summary) - List of projects in Costa Rica
+- **World Bank Projects API:** 72 Costa Rica projects (all years); 25 confirmed in the 1990–2024 analysis window
+  - Main: [all fields](https://search.worldbank.org/api/v2/projects?format=json&countrycode=CR&rows=100)
+  - Filtered: [selected fields with abstracts](https://search.worldbank.org/api/v2/projects?format=json&countrycode=CR&rows=100&fl=id,project_name,totalamt,sector1,sector2,sector3,boardapprovaldate,closingdate,status,project_abstract)
+- **World Development Indicators:** GDP per capita, Gini index, life expectancy, adult literacy (via `wbstats`)

@@ -216,12 +216,12 @@ The complete analysis can be rebuilt from raw source files.
 **Pipeline (run in order from project root):**
 
 ```r
-source("R/06_prepare_wdi.R")    # deflator and WDI (requires internet)
 source("R/01_import_sources.R") # documentation only
-source("R/02_reconcile_projects.R")
-source("R/03_prepare_ibrd.R")
-source("R/04_prepare_ifc.R")
-source("R/05_prepare_miga.R")
+source("R/02_prepare_wdi.R")    # deflator and WDI (requires internet)
+source("R/03_reconcile_projects.R")
+source("R/04_prepare_ibrd.R")
+source("R/05_prepare_ifc.R")
+source("R/06_prepare_miga.R")
 source("R/07_analysis.R")
 source("R/08_visualizations.R")
 source("R/09_validation.R")     # all checks should pass

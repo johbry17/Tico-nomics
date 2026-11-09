@@ -332,16 +332,46 @@ theme_colours <- c(
 )
 
 theme_plot <- theme_pres |>
-  # Only plot rows where abstracts are available (pct is not NA)
-  filter(has_abstracts) |>
-  mutate(theme_label = theme_labels[theme])
+  mutate(
+    theme_label = theme_labels[theme],
+    # Convert period factor to numeric for x-axis so annotate("rect") works
+    period_num = as.numeric(factor(period, levels = period_levels))
+  )
+
+# Period labels for x-axis
+period_breaks <- seq_along(period_levels)
 
 fig5 <- ggplot(
   theme_plot,
-  aes(x = period, y = pct, colour = theme, group = theme)
+  aes(x = period_num, y = pct, colour = theme, group = theme)
 ) +
-  geom_line(linewidth = 1.1, alpha = 0.9) +
-  geom_point(aes(size = n_with_abstract), alpha = 0.9) +
+  # Shaded "no data" band for 1990s (integer position 2 of 5)
+  annotate(
+    "rect",
+    xmin = 1.5,
+    xmax = 2.5,
+    ymin = -Inf,
+    ymax = Inf,
+    fill = PALETTE$grey_light,
+    alpha = 0.35
+  ) +
+  annotate(
+    "text",
+    x = 2,
+    y = 55,
+    label = "No abstracts\navailable",
+    size = 2.8,
+    colour = PALETTE$grey_mid,
+    hjust = 0.5,
+    lineheight = 1.1
+  ) +
+  geom_line(linewidth = 1.1, alpha = 0.9, na.rm = TRUE) +
+  geom_point(aes(size = n_with_abstract), alpha = 0.9, na.rm = TRUE) +
+  scale_x_continuous(
+    breaks = period_breaks,
+    labels = period_levels,
+    expand = expansion(add = 0.4)
+  ) +
   scale_colour_manual(
     values = theme_colours,
     labels = theme_labels,
@@ -359,11 +389,14 @@ fig5 <- ggplot(
   ) +
   labs(
     title = "Development Priorities in the Bank's Own Words",
-    subtitle = "% of projects with available abstracts that mention each thematic area\nNote: 1990–1999 excluded — no project abstracts available in the API extract for that period.",
+    subtitle = paste0(
+      "% of projects with available abstracts mentioning each theme, by period\n",
+      "Shaded column: 1990\u20131999 has no project abstracts in the API extract \u2014 not analysed."
+    ),
     x = "Period",
-    y = "Projects mentioning theme (% of abstracts available)",
+    y = "Projects mentioning theme (% of those with abstracts)",
     caption = caption_wb(
-      "Keyword search on project abstracts (WB Projects API). Point size = number of projects with abstracts in that period."
+      "Keyword search on project abstracts (WB Projects API). Point size = projects with abstracts in that period. Lines do not cross the 1990s gap."
     )
   ) +
   theme_tico() +

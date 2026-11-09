@@ -130,4 +130,6 @@ quarto render
 - **World Bank Projects API:** 72 Costa Rica projects (all years); 25 confirmed in the 1990–2024 analysis window
   - Main: [all fields](https://search.worldbank.org/api/v2/projects?format=json&countrycode=CR&rows=100)
   - Filtered: [selected fields with abstracts](https://search.worldbank.org/api/v2/projects?format=json&countrycode=CR&rows=100&fl=id,project_name,totalamt,sector1,sector2,sector3,boardapprovaldate,closingdate,status,project_abstract)
+- [IFC Projects](https://disclosures.ifc.org/search?Country=Costa+Rica&Country_Description=Costa+Rica&sortBy=Disclosed_Date&sortOrder=desc)
+- [MIGA Projects](https://www.miga.org/projects?f%5B%5D=host_country%3A1882)
 - **World Development Indicators:** GDP per capita, Gini index, life expectancy, adult literacy (via `wbstats`)

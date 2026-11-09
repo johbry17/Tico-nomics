@@ -88,20 +88,20 @@ ibrd_loans <- ibrd_raw |>
       approval_year <= 2025 ~ "2020–2025",
       TRUE ~ "Post-scope"
     ),
-    # Instrument classification using BOTH loan_type AND project name.
-    # Key distinction: CPL+SCPD pairs from the 1980s were hybrid investment operations
-    # with a policy tranche; classify by the primary project purpose (name).
-    # Pure policy-based operations: SAL I/II/III, NPL, and named DPLs.
-    instrument_group = dplyr::case_when(
+    # Automated instrument classification: instrument_group_auto
+    # This is the raw rule-based result, preserved for auditing.
+    # Rules apply loan_type codes and project-name patterns.
+    # Manual overrides are applied separately below.
+    instrument_group_auto = dplyr::case_when(
       # Structural Adjustment Loans by name
       grepl(
         "\\bSAL\\s*(I|II|III|1|2|3)\\b|STRUCT.{0,5}ADJ|STRCTRL ADJ",
         project_name,
         ignore.case = TRUE
       ) ~ "Development Policy Loan",
-      # Export Development 1983 (SAL-era paired operation)
-      project_id == "P006922" ~ "Development Policy Loan",
-      # NPL loan type (non-project = pure adjustment)
+      # NPL loan type — historically used for non-project/policy-based operations.
+      # NOTE: P006919 is the only CR NPL and is a road infrastructure project;
+      # it is manually overridden below. Flag all NPL projects for review.
       grepl("^NPL$", loan_type) ~ "Development Policy Loan",
       # Modern DPLs: explicit "DPL", "Development Policy", "DDO" in name
       grepl(
@@ -115,11 +115,13 @@ ibrd_loans <- ibrd_raw |>
         project_name,
         ignore.case = TRUE
       ) ~ "Development Policy Loan",
-      # P508347: "Fiscal Management and Green Growth" explicitly described as DPL in source
+      # P508347: "Fiscal Management and Green Growth" confirmed DPL in source
       project_id == "P508347" ~ "Development Policy Loan",
       # Everything else: investment / TA / P4R
       TRUE ~ "Investment Project Financing"
     )
+    # Note: P006922 (Export Development 1983) is classified DPL via manual override,
+    # not automated rules. Its automated result is "Investment Project Financing".
   )
 
 cat("CR loan records:", nrow(ibrd_loans), "\n")
@@ -130,6 +132,52 @@ cat("  Loan types:\n")
 print(table(ibrd_loans$loan_type))
 cat("  Loan statuses:\n")
 print(table(ibrd_loans$loan_status))
+
+# ---------------------------------------------------------------------------
+# 2b. Apply manual instrument overrides
+# ---------------------------------------------------------------------------
+
+overrides <- read_csv(
+  file.path(here::here("data", "manual", "instrument_overrides.csv")),
+  show_col_types = FALSE
+)
+
+# Validate: all override project IDs exist in the loan data
+bad_ids <- setdiff(overrides$project_id, ibrd_loans$project_id)
+if (length(bad_ids) > 0) {
+  warning(
+    "Override project IDs not found in loan data: ",
+    paste(bad_ids, collapse = ", ")
+  )
+}
+
+# Join overrides and apply; retain auto result in instrument_group_auto
+ibrd_loans <- ibrd_loans |>
+  left_join(
+    overrides |> select(project_id, instrument_group_override, override_reason),
+    by = "project_id"
+  ) |>
+  mutate(
+    override_applied = !is.na(instrument_group_override),
+    instrument_group = if_else(
+      override_applied,
+      instrument_group_override,
+      instrument_group_auto
+    )
+  )
+
+cat("\nManual overrides applied:", sum(ibrd_loans$override_applied), "\n")
+ibrd_loans |>
+  filter(override_applied) |>
+  select(
+    project_id,
+    project_name,
+    loan_type,
+    instrument_group_auto,
+    instrument_group
+  ) |>
+  as.data.frame() |>
+  print()
 
 # ---------------------------------------------------------------------------
 # 3.  Financial validation against Phase 1 reference points
@@ -189,6 +237,12 @@ ibrd_projects <- ibrd_loans |>
     board_date = first(board_date),
     period = first(period),
     instrument_group = paste(sort(unique(instrument_group)), collapse = "; "),
+    instrument_group_auto = paste(
+      sort(unique(instrument_group_auto)),
+      collapse = "; "
+    ),
+    override_applied = any(override_applied),
+    override_reason = first(na.omit(override_reason)),
     loan_type_codes = paste(sort(unique(loan_type)), collapse = "; "),
     loan_status_summary = paste(sort(unique(loan_status)), collapse = "; "),
     loan_numbers = paste(sort(loan_number), collapse = "; "),
@@ -312,6 +366,92 @@ ibrd_by_period <- study_proj |>
 
 cat("\nBy period:\n")
 print(ibrd_by_period)
+
+# ---------------------------------------------------------------------------
+# 5b.  Classification review table (auditable output)
+# ---------------------------------------------------------------------------
+
+# Determine the basis of each automated classification
+classify_basis <- function(proj_name, loan_type_code) {
+  dplyr::case_when(
+    grepl(
+      "\\bSAL\\s*(I|II|III|1|2|3)\\b|STRUCT.{0,5}ADJ|STRCTRL ADJ",
+      proj_name,
+      ignore.case = TRUE
+    ) ~ "Name match: SAL/structural adjustment",
+    grepl("^NPL$", loan_type_code) ~
+      "Loan type NPL — flag for review: rule assigns DPL but NPL alone is insufficient",
+    grepl(
+      "\\bDPL\\b|DEVELOPMENT POLICY|\\bDDO\\b",
+      proj_name,
+      ignore.case = TRUE
+    ) ~ "Name match: DPL/Development Policy/DDO",
+    grepl("FISCAL.{1,10}DECARB", proj_name, ignore.case = TRUE) ~
+      "Name match: Fiscal…Decarbonization pattern",
+    TRUE ~ "Default rule: Investment Project Financing"
+  )
+}
+
+classification_review <- ibrd_projects |>
+  filter(!is.na(approval_year), approval_year >= 1980, approval_year <= 2025) |>
+  mutate(
+    auto_basis = classify_basis(project_name, loan_type_codes)
+  ) |>
+  # P508347 override basis not captured by function; fix inline
+  mutate(
+    auto_basis = if_else(
+      project_id == "P508347" &
+        auto_basis == "Default rule: Investment Project Financing",
+      "Project-ID hardcode: P508347 confirmed DPL",
+      auto_basis
+    )
+  ) |>
+  select(
+    project_id,
+    project_name,
+    approval_year,
+    loan_type_codes,
+    instrument_group_auto,
+    instrument_group,
+    override_applied,
+    override_reason,
+    auto_basis
+  ) |>
+  arrange(approval_year)
+
+cat("\n=== CLASSIFICATION REVIEW SUMMARY ===\n")
+cat("Projects by final instrument_group:\n")
+print(table(classification_review$instrument_group))
+cat(
+  "\nProjects with manual override:",
+  sum(classification_review$override_applied),
+  "\n"
+)
+cat("\nAuto basis distribution:\n")
+print(table(classification_review$auto_basis))
+
+# Flag NPL projects specifically for review
+npls <- classification_review |> filter(grepl("NPL", auto_basis))
+if (nrow(npls) > 0) {
+  cat("\nNPL-classified projects (require manual review):\n")
+  npls |>
+    select(
+      project_id,
+      project_name,
+      approval_year,
+      instrument_group_auto,
+      instrument_group,
+      override_applied
+    ) |>
+    as.data.frame() |>
+    print()
+}
+
+write_csv(
+  classification_review,
+  file.path(DER, "instrument_classification_review.csv")
+)
+cat("Saved: data/derived/instrument_classification_review.csv\n")
 
 # ---------------------------------------------------------------------------
 # 6.  Save

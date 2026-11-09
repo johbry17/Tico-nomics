@@ -134,6 +134,69 @@ check(
   "No duplicate project IDs in ibrd_projects.csv"
 )
 
+# --- Instrument classification override checks ---
+# P006919 must be classified as IPF (overridden from auto DPL via NPL rule)
+p919 <- projects |> filter(project_id == "P006919")
+if (nrow(p919) > 0) {
+  check(
+    p919$instrument_group[1] == "Investment Project Financing",
+    paste(
+      "P006919 (Highway) = IPF after override (got",
+      p919$instrument_group[1],
+      ")"
+    )
+  )
+  check(
+    p919$instrument_group_auto[1] == "Development Policy Loan",
+    "P006919 auto = DPL (NPL rule; visible contrast with override)"
+  )
+  check(
+    p919$override_applied[1] == TRUE,
+    "P006919 override_applied = TRUE"
+  )
+}
+
+# P006922 must be classified as DPL (manual override)
+p922 <- projects |> filter(project_id == "P006922")
+if (nrow(p922) > 0) {
+  check(
+    p922$instrument_group[1] == "Development Policy Loan",
+    paste(
+      "P006922 (Export Dev) = DPL after override (got",
+      p922$instrument_group[1],
+      ")"
+    )
+  )
+  check(
+    p922$override_applied[1] == TRUE,
+    "P006922 override_applied = TRUE"
+  )
+}
+
+# Overrides file exists and has 2 entries
+overrides_file <- file.path(here::here(
+  "data",
+  "manual",
+  "instrument_overrides.csv"
+))
+check(
+  file.exists(overrides_file),
+  "instrument_overrides.csv exists in data/manual/"
+)
+if (file.exists(overrides_file)) {
+  ov <- read_csv(overrides_file, show_col_types = FALSE)
+  check(
+    nrow(ov) == 2,
+    paste("instrument_overrides.csv has 2 entries (got", nrow(ov), ")")
+  )
+}
+
+# Review table was generated
+check(
+  file.exists(file.path(DER, "instrument_classification_review.csv")),
+  "instrument_classification_review.csv generated"
+)
+
 # ---------------------------------------------------------------------------
 # 4.  Study period totals
 # ---------------------------------------------------------------------------

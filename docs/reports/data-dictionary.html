@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Bryan C. Johns">
-<meta name="dcterms.date" content="2026-11-06">
+<meta name="dcterms.date" content="2026-11-08">
 
 <title>Data Dictionary – Tico-nomics</title>
 <style>
@@ -50,9 +50,9 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-4b721e6ad85ebea0c181a306c565fca7.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-48623ea6fe61c695f80a61c40dc8b690.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-e00a248abe5654bd5efa31501140cbed.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../site_libs/bootstrap/bootstrap-dark-47a944a041b2155960c7855fd8e9c238.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-48623ea6fe61c695f80a61c40dc8b690.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-e00a248abe5654bd5efa31501140cbed.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -350,7 +350,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 6, 2026</p>
+      <p class="date">November 8, 2026</p>
     </div>
   </div>
   
@@ -414,7 +414,7 @@ ul.task-list li input[type="checkbox"] {
 <td style="text-align: left; width: 18em;">Financial instrument code (CPL/FSL/NPL/SCL/SCPD)</td>
 <td style="text-align: left;">IBRD Statement</td>
 <td style="text-align: left;">Code</td>
-<td style="text-align: left;">Financial terms, not operational type; see 03_prepare_ibrd.R for classification</td>
+<td style="text-align: left;">Financial terms, not operational type; see 04_prepare_ibrd.R for classification</td>
 </tr>
 <tr class="even">
 <td style="text-align: left; width: 12em; font-weight: bold;">loan_status</td>
@@ -495,10 +495,10 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="odd">
 <td style="text-align: left; width: 12em; font-weight: bold;">net_principal</td>
-<td style="text-align: left; width: 18em;">original_principal_amount_us - cancelled_amount_us</td>
+<td style="text-align: left; width: 18em;">pmax(original_principal - cancelled, 0)</td>
 <td style="text-align: left;">Derived</td>
 <td style="text-align: left;">US$</td>
-<td style="text-align: left;">Amount committed net of cancellations. Not 'money received'. For Terminated loans = 0.</td>
+<td style="text-align: left;">Net commitment. For Terminated loans with original_principal=0, capped at 0 (not negative).</td>
 </tr>
 <tr class="even">
 <td style="text-align: left; width: 12em; font-weight: bold;">real_principal_2025</td>
@@ -522,13 +522,34 @@ ul.task-list li input[type="checkbox"] {
 <td style="text-align: left;">No guarantees present in Costa Rica records</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left; width: 12em; font-weight: bold;">instrument_group</td>
-<td style="text-align: left; width: 18em;">Operational classification: Development Policy Loan or Investment Project Financing</td>
+<td style="text-align: left; width: 12em; font-weight: bold;">instrument_group_auto</td>
+<td style="text-align: left; width: 18em;">Automated instrument classification (before overrides)</td>
 <td style="text-align: left;">Derived</td>
 <td style="text-align: left;">Category</td>
-<td style="text-align: left;">Based on loan_type + project_name; see 03_prepare_ibrd.R</td>
+<td style="text-align: left;">Result of rule-based system in 04_prepare_ibrd.R; preserved for auditing</td>
 </tr>
 <tr class="even">
+<td style="text-align: left; width: 12em; font-weight: bold;">instrument_group</td>
+<td style="text-align: left; width: 18em;">Final instrument classification (after manual overrides)</td>
+<td style="text-align: left;">Derived</td>
+<td style="text-align: left;">Category</td>
+<td style="text-align: left;">Uses instrument_group_auto unless an entry exists in data/manual/instrument_overrides.csv</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; width: 12em; font-weight: bold;">override_applied</td>
+<td style="text-align: left; width: 18em;">Whether a manual override was applied to this loan</td>
+<td style="text-align: left;">Derived</td>
+<td style="text-align: left;">Logical</td>
+<td style="text-align: left;">TRUE for P006919 (Highway, reclassified to IPF) and P006922 (Export Dev., confirmed DPL)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; width: 12em; font-weight: bold;">override_reason</td>
+<td style="text-align: left; width: 18em;">Reason for the manual override, if applied</td>
+<td style="text-align: left;">data/manual/instrument_overrides.csv</td>
+<td style="text-align: left;">Text</td>
+<td style="text-align: left;">See also evidence_source in the override file</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left; width: 12em; font-weight: bold;">period</td>
 <td style="text-align: left; width: 18em;">Approval period grouping</td>
 <td style="text-align: left;">Derived</td>
@@ -583,60 +604,75 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td style="text-align: left;">instrument_group</td>
-<td style="text-align: left;">Dominant instrument type</td>
-<td style="text-align: left;">paste(unique())</td>
+<td style="text-align: left;">Final instrument type (after overrides)</td>
+<td style="text-align: left;">paste(unique()); uses overrides from data/manual/</td>
 </tr>
 <tr class="odd">
+<td style="text-align: left;">instrument_group_auto</td>
+<td style="text-align: left;">Automated instrument type (before overrides)</td>
+<td style="text-align: left;">paste(unique()); preserved for auditing</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">override_applied</td>
+<td style="text-align: left;">Whether any manual override applies</td>
+<td style="text-align: left;">any(override_applied)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">override_reason</td>
+<td style="text-align: left;">Reason for the manual override, if applied</td>
+<td style="text-align: left;">first(na.omit(override_reason))</td>
+</tr>
+<tr class="even">
 <td style="text-align: left;">loan_type_codes</td>
 <td style="text-align: left;">All loan type codes for this project</td>
 <td style="text-align: left;">paste(unique(loan_type))</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">loan_status_summary</td>
 <td style="text-align: left;">All loan statuses</td>
 <td style="text-align: left;">paste(unique(loan_status))</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">total_principal</td>
 <td style="text-align: left;">Sum of original_principal_amount_us across all loans</td>
 <td style="text-align: left;">sum()</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">total_cancelled</td>
 <td style="text-align: left;">Sum of cancelled_amount_us across all loans</td>
 <td style="text-align: left;">sum()</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">total_disbursed</td>
 <td style="text-align: left;">Sum of disbursed_amount_us (cumulative, snapshot balance)</td>
 <td style="text-align: left;">sum()</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">total_repaid</td>
 <td style="text-align: left;">Sum of repaid_to_ibrd_us</td>
 <td style="text-align: left;">sum()</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left;">net_principal</td>
-<td style="text-align: left;">total_principal - total_cancelled</td>
-<td style="text-align: left;">Derived</td>
-</tr>
 <tr class="even">
+<td style="text-align: left;">net_principal</td>
+<td style="text-align: left;">pmax(total_principal - total_cancelled, 0)</td>
+<td style="text-align: left;">Capped at 0; see loan-level notes for P178320</td>
+</tr>
+<tr class="odd">
 <td style="text-align: left;">real_principal_2025</td>
 <td style="text-align: left;">Sum of real_principal_2025 across loans</td>
 <td style="text-align: left;">sum()</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">project_name</td>
 <td style="text-align: left;">Project name (from Projects List if available, else loan)</td>
 <td style="text-align: left;">Left join to projects_universe</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">sector1_xl, sector2_xl, sector3_xl</td>
 <td style="text-align: left;">Sector classifications from Projects List</td>
 <td style="text-align: left;">Left join to projects_universe</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td style="text-align: left;">in_scope</td>
 <td style="text-align: left;">Whether approval_year is in 1980–2025</td>
 <td style="text-align: left;">Derived</td>

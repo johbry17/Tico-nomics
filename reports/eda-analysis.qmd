@@ -265,7 +265,7 @@ sec_totals |>
     kable_styling(bootstrap_options = c("striped", "condensed"))
 ```
 
-> Sector data is available for **22 of 35** in-scope projects (via Projects API). The DPL series (2020–2025) typically lacks sector percentage data in the API; they are excluded from sector allocation calculations, which understates the recent period's financial weight in broad sectors like Public Administration and Finance.
+> Sector data is available for **22 of 35** in-scope projects (via the Projects API), representing approximately **$2.7 billion of $4.6 billion** in original principal (~59%). The 2020–2025 DPL series typically lacks sector percentage data; it is excluded from sector allocation calculations. P178320 (COVID-19 Vaccines, Terminated, $0 original principal) has sector metadata in the API but is excluded from dollar-allocation totals because the IBRD statement records its original principal as $0. Sector allocations are therefore a partial, non-representative view of the portfolio.
 
 ---
 

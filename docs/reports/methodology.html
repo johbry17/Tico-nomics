@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Bryan C. Johns">
-<meta name="dcterms.date" content="2026-11-06">
+<meta name="dcterms.date" content="2026-11-08">
 
 <title>Methodology – Tico-nomics</title>
 <style>
@@ -85,9 +85,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-4b721e6ad85ebea0c181a306c565fca7.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-48623ea6fe61c695f80a61c40dc8b690.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-e00a248abe5654bd5efa31501140cbed.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
 <link href="../site_libs/bootstrap/bootstrap-dark-47a944a041b2155960c7855fd8e9c238.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
-<link href="../site_libs/bootstrap/bootstrap-48623ea6fe61c695f80a61c40dc8b690.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-e00a248abe5654bd5efa31501140cbed.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -393,7 +393,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 6, 2026</p>
+      <p class="date">November 8, 2026</p>
     </div>
   </div>
   
@@ -459,6 +459,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td>MIGA Projects CSV</td>
 <td>MIGA historical guarantees</td>
 <td>11/02/2026</td>
+</tr>
+<tr class="odd">
+<td><strong><code>data/manual/instrument_overrides.csv</code></strong></td>
+<td>Documented manual corrections to instrument classification</td>
+<td>Maintained in repository</td>
 </tr>
 </tbody>
 </table>
@@ -641,7 +646,41 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<p>All other projects are classified as Investment Project Financing. The NPL code (one loan) maps directly to DPL/adjustment.</p>
+<p>All other projects are classified as Investment Project Financing.</p>
+<p><strong>Manual override table:</strong> <code>data/manual/instrument_overrides.csv</code></p>
+<p>A small number of projects require manual overrides that cannot be reliably captured by automated name or loan-type rules. Manual overrides are stored separately from the automated rules, so the automated result remains visible for auditing. The final classification (<code>instrument_group</code>) uses the override where one exists; <code>instrument_group_auto</code> preserves the automated result.</p>
+<p>Current overrides:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Project</th>
+<th>Auto result</th>
+<th>Final (override)</th>
+<th>Reason</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>P006919 (Highway, 1980)</td>
+<td>DPL (NPL rule)</td>
+<td><strong>IPF</strong></td>
+<td>Road rehabilitation and equipment financing; NPL loan type alone does not establish policy-based character. Manual check confirmed investment lending.</td>
+</tr>
+<tr class="even">
+<td>P006922 (Export Dev., 1983)</td>
+<td>IPF (default)</td>
+<td><strong>DPL</strong></td>
+<td>SAL-era companion adjustment operation. Classified as DPL on analytical grounds: the operation supported export-sector liberalisation as part of the structural adjustment programme.</td>
+</tr>
+</tbody>
+</table>
+<p>The instrument classification review table is saved to <code>data/derived/instrument_classification_review.csv</code> and includes every in-scope project, its loan type codes, automated basis, final classification, and any override reason. The NPL loan type is flagged in that review as requiring individual examination, since P006919 demonstrates that NPL alone is not sufficient to establish DPL status.</p>
 <p>Note: Several 1980s-era projects (P006933 Technical Assistance, P006924 Atlantic Agriculture, P006926 Transport Sector, P006938 Basic Education, P006941 Water Supply, P006954 Health Sector) had supplemental SCPD companion loans — a “policy tranche” common in the SAL era — but are classified as Investment Project Financing because the primary CPL loan funded investment activity. Only the pure SAL/structural adjustment operations are classified as DPL.</p>
 <hr>
 </section>
@@ -649,9 +688,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="sector-classification">7. Sector classification</h2>
 <p>Sector information comes from two sources: 1. <strong>WB Projects API V2</strong> (<code>sector1</code>, <code>sector2</code>, <code>sector3</code> with name and percentage) 2. <strong>Projects &amp; Operations List</strong> (Sector 1, 2, 3 — name only, no percentages)</p>
 <p>API sector data is preferred; Projects List names supplement where API is unavailable.</p>
-<p>Where sector percentages are available, project financing is allocated proportionally across sectors. For example, a $100M project with Sector 1 at 60% and Sector 2 at 40% contributes $60M and $40M respectively to sector totals. This avoids double-counting.</p>
-<p><strong>Limitation:</strong> Sector data is available for <strong>22 of 35</strong> in-scope IBRD projects. The 2020–2025 DPL series lacks sector percentage data in the API, significantly understating the financial weight of those operations in the sector analysis.</p>
-<p>Ten broad sector groups are defined in <code>functions.R</code>:<code>group_sector()</code>.</p>
+<p>Where sector percentages are available and approximately complete, project financing is allocated proportionally across sectors. For example, a $100M project with Sector 1 at 60% and Sector 2 at 40% contributes $60M and $40M respectively to sector totals. This avoids double-counting project principal.</p>
+<p><strong>Coverage:</strong> Sector data is available for <strong>22 of 35</strong> in-scope IBRD projects, representing approximately $2.7 billion of $4.6 billion in original principal (~59%). The 2020–2025 DPL series lacks sector percentage data, significantly understating recent operations in sector charts.</p>
+<p><strong>P178320 treatment:</strong> The API records sector allocations for P178320 (COVID-19 Vaccines, Terminated), but the IBRD statement records its original principal as $0. That project is excluded from dollar-allocation totals but retained in project counts where sector names appear.</p>
+<p>Ten broad sector groups are defined in <code>functions.R</code>: <code>group_sector()</code>.</p>
 <hr>
 </section>
 <section id="inflation-adjustment" class="level2">
@@ -661,16 +701,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><strong>Coverage:</strong> 1960–2025, no missing years.</p>
 <p><strong>Why GDP deflator (not CPI):</strong> CPI measures consumer price changes affecting US households; the GDP deflator measures price changes across all US-produced final goods and services. For comparing the real scale of historical dollar-denominated financial commitments, the GDP deflator is more appropriate.</p>
 <p><strong>Limitations:</strong> - Neither index measures the local purchasing power of lending in Costa Rica. - The 2025 deflator value is <strong>preliminary</strong> and may be revised in future WB data vintages. - A $100M loan in 1985 purchased different quantities of Costa Rican infrastructure than $100M in 2020.</p>
-<p><strong>Validation:</strong> The 1980→2025 multiplier is approximately 3.275, consistent with the Phase 1 reference check (~$328M in 2025 USD per $100M in 1980).</p>
+<p><strong>Validation:</strong> The 1980→2025 multiplier is approximately 3.275 (~$328M in 2025 USD per $100M in 1980).</p>
 <hr>
 </section>
 <section id="ifc-methodology" class="level2">
 <h2 class="anchored" data-anchor-id="ifc-methodology">9. IFC methodology</h2>
 <p>IFC investment amounts represent <strong>IFC’s own-account investment in private entities</strong> and are fundamentally different from IBRD sovereign loan principal. They are never combined with IBRD figures.</p>
-<p><strong>Date caveat:</strong> Only 2 IFC projects (Advisory Services) have actual <code>Approval Date</code> values. All Investment projects show <code>Projected Board Date</code> — a planned date, not an actual approval confirmation. Year assignments from IFC data are approximate and should not be used for precise annual time-series claims.</p>
+<p><strong>Date caveat:</strong> Only 2 IFC projects (Advisory Services) have actual <code>Approval Date</code> values. All Investment projects show <code>Projected Board Date</code> — a planned date, not an actual approval confirmation. Year assignments from IFC data are approximate.</p>
 <p><strong>Amount parsing:</strong> The <code>Investment as Approved by The Board</code> field in the IFC Excel contains text such as “15.0 million (USD)…”. Investment amounts are extracted by parsing the leading number.</p>
 <p><strong>Deduplication:</strong> The source file contains 40 rows for 30 unique project numbers (10 projects have multiple disclosure documents). The final dataset uses one row per project number, taking the first non-missing value for each field.</p>
-<p><strong>Known issues documented in <code>05_prepare_ifc.R</code>:</strong> BAC CR Green ($200M, 2025), Coopenae ($15M, 2011), Aeropuerto Juan Santamaría ($35M, 2000), Corporacion Supermercados Unidos ($40M, multi-country), Insulet CR ($97M, pipeline/excluded).</p>
+<p><strong>Known issues documented in <code>05_prepare_ifc.R</code>:</strong> BAC CR Green ($200M, 2025 — $30M unfunded guarantee line excluded from investment amount), Coopenae ($15M IFC of $30M total package), Aeropuerto Juan Santamaría ($35M), Corporacion Supermercados Unidos ($40M, multi-country scope), Insulet CR ($97M, pipeline/excluded).</p>
 <hr>
 </section>
 <section id="miga-methodology" class="level2">

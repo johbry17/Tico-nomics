@@ -164,7 +164,22 @@ write_csv(instr_summary, file.path(DER, "instrument_by_period.csv"))
 
 cat("\n=== C. SECTOR ANALYSIS ===\n")
 
-# Build sector data (sector fields already in ibrd_scope from 03_prepare_ibrd.R)
+# P178320 (COVID-19 Vaccines, Terminated): The API reports $120M project amount
+# and sector allocations summing to 100%, but the IBRD statement records
+# original_principal = 0 (the loan was never signed). Using P178320's
+# API-reported total_principal ($120M is what the API shows in totalamt, but
+# ibrd_projects.total_principal = 0 from the financial statement) would
+# overstate committed financing. We exclude it from dollar-allocation totals
+# but retain it in project counts where it has sector names.
+p178320_excluded_from_dollar_alloc <- TRUE
+cat(
+  "NOTE: P178320 (COVID Vaccines, Terminated) excluded from sector dollar allocations.\n",
+  "  IBRD statement records original_principal = $0 (loan never became effective).\n",
+  "  API sector metadata retained for project-count purposes only.\n"
+)
+
+# Build sector data: use total_principal from ibrd_projects (financial statement source)
+# P178320 has total_principal = 0, so alloc_principal will be 0 even if pcts exist.
 sector_data <- ibrd_scope |>
   select(
     project_id,
@@ -261,11 +276,35 @@ sector_long2 <- bind_rows(
   arrange(approval_year, project_id, slot)
 
 cat("Sector long table:", nrow(sector_long2), "rows\n")
-cat("Projects with sector data:", n_distinct(sector_long2$project_id), "\n")
+n_sec_proj <- n_distinct(sector_long2$project_id)
+n_insco <- nrow(ibrd_scope)
+cat("Projects with any sector metadata:", n_sec_proj, "/", n_insco, "\n")
+cat("Projects WITHOUT sector data:     ", n_insco - n_sec_proj, "\n")
+
+# Coverage: how much principal is represented by projects with sector data?
+principal_with_sector <- sum(
+  ibrd_scope$total_principal[
+    ibrd_scope$project_id %in% sector_long2$project_id
+  ],
+  na.rm = TRUE
+)
+principal_total <- sum(ibrd_scope$total_principal, na.rm = TRUE)
+cat(sprintf(
+  "Principal covered by sector data: %s of %s (%.0f%%)\n",
+  fmt_billions(principal_with_sector),
+  fmt_billions(principal_total),
+  100 * principal_with_sector / principal_total
+))
+
+# Of those, how many have percentages that allow dollar allocation?
+alloc_proj <- sector_long2 |>
+  filter(!is.na(alloc_principal)) |>
+  pull(project_id) |>
+  unique()
+cat("Projects with reliable pct-based alloc:", length(alloc_proj), "\n")
+cat("NOTE: Sector dollar allocations represent a partial, non-representative\n")
 cat(
-  "Projects WITHOUT sector data:",
-  nrow(ibrd_scope) - n_distinct(sector_long2$project_id),
-  "\n"
+  "  share of the portfolio. The 2020-2025 DPL series lacks sector pct data.\n"
 )
 
 # Sector group totals (using allocated amounts where available, else count)

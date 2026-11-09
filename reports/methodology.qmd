@@ -28,6 +28,7 @@ The analysis is explicitly **not a causal study**. It does not test whether Worl
 | IBRD Loans Summary by Status | Global aggregate validation only | 10/31/2026 (filename) |
 | IFC Projects Excel | IFC companion analysis — disclosures | 11/02/2026 |
 | MIGA Projects CSV | MIGA historical guarantees | 11/02/2026 |
+| **`data/manual/instrument_overrides.csv`** | Documented manual corrections to instrument classification | Maintained in repository |
 
 The Projects & Operations List supersedes the API as the authoritative project catalogue. The API-only extract used in earlier phases of this project omitted 43 projects, including the $420 million P148435 health insurance loan (2016).
 
@@ -114,7 +115,20 @@ IBRD loan types in the Statement (`CPL`, `FSL`, `NPL`, `SCL`, `SCPD`) are **fina
 | P181372 (2024) | "Social Risk Management DPL DDO" |
 | P508347 (2025) | "Fiscal Management and Green Growth" — confirmed DPL in project description |
 
-All other projects are classified as Investment Project Financing. The NPL code (one loan) maps directly to DPL/adjustment.
+All other projects are classified as Investment Project Financing.
+
+**Manual override table:** `data/manual/instrument_overrides.csv`
+
+A small number of projects require manual overrides that cannot be reliably captured by automated name or loan-type rules. Manual overrides are stored separately from the automated rules, so the automated result remains visible for auditing. The final classification (`instrument_group`) uses the override where one exists; `instrument_group_auto` preserves the automated result.
+
+Current overrides:
+
+| Project | Auto result | Final (override) | Reason |
+|---|---|---|---|
+| P006919 (Highway, 1980) | DPL (NPL rule) | **IPF** | Road rehabilitation and equipment financing; NPL loan type alone does not establish policy-based character. Manual check confirmed investment lending. |
+| P006922 (Export Dev., 1983) | IPF (default) | **DPL** | SAL-era companion adjustment operation. Classified as DPL on analytical grounds: the operation supported export-sector liberalisation as part of the structural adjustment programme. |
+
+The instrument classification review table is saved to `data/derived/instrument_classification_review.csv` and includes every in-scope project, its loan type codes, automated basis, final classification, and any override reason. The NPL loan type is flagged in that review as requiring individual examination, since P006919 demonstrates that NPL alone is not sufficient to establish DPL status.
 
 Note: Several 1980s-era projects (P006933 Technical Assistance, P006924 Atlantic Agriculture, P006926 Transport Sector, P006938 Basic Education, P006941 Water Supply, P006954 Health Sector) had supplemental SCPD companion loans — a "policy tranche" common in the SAL era — but are classified as Investment Project Financing because the primary CPL loan funded investment activity. Only the pure SAL/structural adjustment operations are classified as DPL.
 
@@ -128,11 +142,13 @@ Sector information comes from two sources:
 
 API sector data is preferred; Projects List names supplement where API is unavailable.
 
-Where sector percentages are available, project financing is allocated proportionally across sectors. For example, a $100M project with Sector 1 at 60% and Sector 2 at 40% contributes $60M and $40M respectively to sector totals. This avoids double-counting.
+Where sector percentages are available and approximately complete, project financing is allocated proportionally across sectors. For example, a $100M project with Sector 1 at 60% and Sector 2 at 40% contributes $60M and $40M respectively to sector totals. This avoids double-counting project principal.
 
-**Limitation:** Sector data is available for **22 of 35** in-scope IBRD projects. The 2020–2025 DPL series lacks sector percentage data in the API, significantly understating the financial weight of those operations in the sector analysis.
+**Coverage:** Sector data is available for **22 of 35** in-scope IBRD projects, representing approximately $2.7 billion of $4.6 billion in original principal (~59%). The 2020–2025 DPL series lacks sector percentage data, significantly understating recent operations in sector charts.
 
-Ten broad sector groups are defined in `functions.R`:`group_sector()`.
+**P178320 treatment:** The API records sector allocations for P178320 (COVID-19 Vaccines, Terminated), but the IBRD statement records its original principal as $0. That project is excluded from dollar-allocation totals but retained in project counts where sector names appear.
+
+Ten broad sector groups are defined in `functions.R`: `group_sector()`.
 
 ---
 
@@ -151,7 +167,7 @@ Ten broad sector groups are defined in `functions.R`:`group_sector()`.
 - The 2025 deflator value is **preliminary** and may be revised in future WB data vintages.
 - A $100M loan in 1985 purchased different quantities of Costa Rican infrastructure than $100M in 2020.
 
-**Validation:** The 1980→2025 multiplier is approximately 3.275, consistent with the Phase 1 reference check (~$328M in 2025 USD per $100M in 1980).
+**Validation:** The 1980→2025 multiplier is approximately 3.275 (~$328M in 2025 USD per $100M in 1980).
 
 ---
 
@@ -159,13 +175,13 @@ Ten broad sector groups are defined in `functions.R`:`group_sector()`.
 
 IFC investment amounts represent **IFC's own-account investment in private entities** and are fundamentally different from IBRD sovereign loan principal. They are never combined with IBRD figures.
 
-**Date caveat:** Only 2 IFC projects (Advisory Services) have actual `Approval Date` values. All Investment projects show `Projected Board Date` — a planned date, not an actual approval confirmation. Year assignments from IFC data are approximate and should not be used for precise annual time-series claims.
+**Date caveat:** Only 2 IFC projects (Advisory Services) have actual `Approval Date` values. All Investment projects show `Projected Board Date` — a planned date, not an actual approval confirmation. Year assignments from IFC data are approximate.
 
 **Amount parsing:** The `Investment as Approved by The Board` field in the IFC Excel contains text such as "15.0 million (USD)...". Investment amounts are extracted by parsing the leading number.
 
 **Deduplication:** The source file contains 40 rows for 30 unique project numbers (10 projects have multiple disclosure documents). The final dataset uses one row per project number, taking the first non-missing value for each field.
 
-**Known issues documented in `05_prepare_ifc.R`:** BAC CR Green ($200M, 2025), Coopenae ($15M, 2011), Aeropuerto Juan Santamaría ($35M, 2000), Corporacion Supermercados Unidos ($40M, multi-country), Insulet CR ($97M, pipeline/excluded).
+**Known issues documented in `05_prepare_ifc.R`:** BAC CR Green ($200M, 2025 — $30M unfunded guarantee line excluded from investment amount), Coopenae ($15M IFC of $30M total package), Aeropuerto Juan Santamaría ($35M), Corporacion Supermercados Unidos ($40M, multi-country scope), Insulet CR ($97M, pipeline/excluded).
 
 ---
 

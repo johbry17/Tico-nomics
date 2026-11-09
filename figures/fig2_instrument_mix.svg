@@ -24,61 +24,62 @@
 <rect x='0.000000000000064' y='-0.00000000000011' width='720.00' height='468.00' style='stroke-width: 1.07; stroke: none; fill: #F7F5F2;' />
 </g>
 <defs>
-  <clipPath id='cpNjYuODB8NzA0LjA2fDUwLjMwfDM2NS44NQ=='>
-    <rect x='66.80' y='50.30' width='637.26' height='315.55' />
+  <clipPath id='cpNjcuMzF8NzA0LjA2fDUyLjM1fDM1MC4yNQ=='>
+    <rect x='67.31' y='52.35' width='636.75' height='297.90' />
   </clipPath>
 </defs>
-<g clip-path='url(#cpNjYuODB8NzA0LjA2fDUwLjMwfDM2NS44NQ==)'>
-<rect x='66.80' y='50.30' width='637.26' height='315.55' style='stroke-width: 1.07; stroke: none; fill: #F7F5F2;' />
-<polyline points='66.80,365.85 704.06,365.85 ' style='stroke-width: 0.85; stroke: #E0DDD8; stroke-linecap: butt;' />
-<polyline points='66.80,252.95 704.06,252.95 ' style='stroke-width: 0.85; stroke: #E0DDD8; stroke-linecap: butt;' />
-<polyline points='66.80,140.04 704.06,140.04 ' style='stroke-width: 0.85; stroke: #E0DDD8; stroke-linecap: butt;' />
-<polyline points='140.33,365.85 140.33,50.30 ' style='stroke-width: 0.85; stroke: #E0DDD8; stroke-linecap: butt;' />
-<polyline points='262.88,365.85 262.88,50.30 ' style='stroke-width: 0.85; stroke: #E0DDD8; stroke-linecap: butt;' />
-<polyline points='385.43,365.85 385.43,50.30 ' style='stroke-width: 0.85; stroke: #E0DDD8; stroke-linecap: butt;' />
-<polyline points='507.98,365.85 507.98,50.30 ' style='stroke-width: 0.85; stroke: #E0DDD8; stroke-linecap: butt;' />
-<polyline points='630.53,365.85 630.53,50.30 ' style='stroke-width: 0.85; stroke: #E0DDD8; stroke-linecap: butt;' />
-<rect x='96.21' y='332.69' width='88.24' height='23.17' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #C87D2F;' />
-<rect x='96.21' y='355.86' width='88.24' height='9.99' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #1A6B72;' />
-<rect x='218.76' y='335.14' width='88.24' height='11.29' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #C87D2F;' />
-<rect x='218.76' y='346.43' width='88.24' height='19.42' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #1A6B72;' />
-<rect x='341.31' y='281.50' width='88.24' height='63.79' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #C87D2F;' />
-<rect x='341.31' y='345.29' width='88.24' height='20.56' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #1A6B72;' />
-<rect x='463.86' y='295.85' width='88.24' height='70.00' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #1A6B72;' />
-<rect x='586.41' y='65.33' width='88.24' height='198.71' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #C87D2F;' />
-<rect x='586.41' y='264.04' width='88.24' height='101.81' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #1A6B72;' />
+<g clip-path='url(#cpNjcuMzF8NzA0LjA2fDUyLjM1fDM1MC4yNQ==)'>
+<rect x='67.31' y='52.35' width='636.75' height='297.90' style='stroke-width: 1.07; stroke: none; fill: #F7F5F2;' />
+<polyline points='67.31,350.25 704.06,350.25 ' style='stroke-width: 0.85; stroke: #E0DDD8; stroke-linecap: butt;' />
+<polyline points='67.31,243.66 704.06,243.66 ' style='stroke-width: 0.85; stroke: #E0DDD8; stroke-linecap: butt;' />
+<polyline points='67.31,137.07 704.06,137.07 ' style='stroke-width: 0.85; stroke: #E0DDD8; stroke-linecap: butt;' />
+<polyline points='140.78,350.25 140.78,52.35 ' style='stroke-width: 0.85; stroke: #E0DDD8; stroke-linecap: butt;' />
+<polyline points='263.23,350.25 263.23,52.35 ' style='stroke-width: 0.85; stroke: #E0DDD8; stroke-linecap: butt;' />
+<polyline points='385.68,350.25 385.68,52.35 ' style='stroke-width: 0.85; stroke: #E0DDD8; stroke-linecap: butt;' />
+<polyline points='508.14,350.25 508.14,52.35 ' style='stroke-width: 0.85; stroke: #E0DDD8; stroke-linecap: butt;' />
+<polyline points='630.59,350.25 630.59,52.35 ' style='stroke-width: 0.85; stroke: #E0DDD8; stroke-linecap: butt;' />
+<rect x='96.69' y='318.95' width='88.17' height='21.87' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #C87D2F;' />
+<rect x='96.69' y='340.82' width='88.17' height='9.43' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #1A6B72;' />
+<rect x='219.15' y='321.26' width='88.17' height='10.66' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #C87D2F;' />
+<rect x='219.15' y='331.92' width='88.17' height='18.33' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #1A6B72;' />
+<rect x='341.60' y='270.62' width='88.17' height='60.22' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #C87D2F;' />
+<rect x='341.60' y='330.84' width='88.17' height='19.41' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #1A6B72;' />
+<rect x='464.05' y='284.17' width='88.17' height='66.09' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #1A6B72;' />
+<rect x='586.51' y='66.54' width='88.17' height='187.60' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #C87D2F;' />
+<rect x='586.51' y='254.14' width='88.17' height='96.12' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #1A6B72;' />
 </g>
 <g clip-path='url(#cpMC4wMHw3MjAuMDB8MC4wMHw0NjguMDA=)'>
-<polyline points='66.80,365.85 66.80,50.30 ' style='stroke-width: 0.85; stroke: #C0BBB5; stroke-linecap: butt;' />
-<text x='58.88' y='369.20' text-anchor='end' style='font-size: 9.35px;fill: #6B6B6B; font-family: "Arial";' textLength='18.18px' lengthAdjust='spacingAndGlyphs'>$0M</text>
-<text x='58.88' y='256.29' text-anchor='end' style='font-size: 9.35px;fill: #6B6B6B; font-family: "Arial";' textLength='33.78px' lengthAdjust='spacingAndGlyphs'>$1000M</text>
-<text x='58.88' y='143.39' text-anchor='end' style='font-size: 9.35px;fill: #6B6B6B; font-family: "Arial";' textLength='33.78px' lengthAdjust='spacingAndGlyphs'>$2000M</text>
-<polyline points='63.81,365.85 66.80,365.85 ' style='stroke-width: 0.85; stroke: #C0BBB5; stroke-linecap: butt;' />
-<polyline points='63.81,252.95 66.80,252.95 ' style='stroke-width: 0.85; stroke: #C0BBB5; stroke-linecap: butt;' />
-<polyline points='63.81,140.04 66.80,140.04 ' style='stroke-width: 0.85; stroke: #C0BBB5; stroke-linecap: butt;' />
-<polyline points='66.80,365.85 704.06,365.85 ' style='stroke-width: 0.85; stroke: #C0BBB5; stroke-linecap: butt;' />
-<polyline points='140.33,368.84 140.33,365.85 ' style='stroke-width: 0.85; stroke: #C0BBB5; stroke-linecap: butt;' />
-<polyline points='262.88,368.84 262.88,365.85 ' style='stroke-width: 0.85; stroke: #C0BBB5; stroke-linecap: butt;' />
-<polyline points='385.43,368.84 385.43,365.85 ' style='stroke-width: 0.85; stroke: #C0BBB5; stroke-linecap: butt;' />
-<polyline points='507.98,368.84 507.98,365.85 ' style='stroke-width: 0.85; stroke: #C0BBB5; stroke-linecap: butt;' />
-<polyline points='630.53,368.84 630.53,365.85 ' style='stroke-width: 0.85; stroke: #C0BBB5; stroke-linecap: butt;' />
-<text x='140.33' y='380.46' text-anchor='middle' style='font-size: 9.35px;fill: #6B6B6B; font-family: "Arial";' textLength='46.79px' lengthAdjust='spacingAndGlyphs'>1980–1989</text>
-<text x='262.88' y='380.46' text-anchor='middle' style='font-size: 9.35px;fill: #6B6B6B; font-family: "Arial";' textLength='46.79px' lengthAdjust='spacingAndGlyphs'>1990–1999</text>
-<text x='385.43' y='380.46' text-anchor='middle' style='font-size: 9.35px;fill: #6B6B6B; font-family: "Arial";' textLength='46.79px' lengthAdjust='spacingAndGlyphs'>2000–2009</text>
-<text x='507.98' y='380.46' text-anchor='middle' style='font-size: 9.35px;fill: #6B6B6B; font-family: "Arial";' textLength='46.79px' lengthAdjust='spacingAndGlyphs'>2010–2019</text>
-<text x='630.53' y='380.46' text-anchor='middle' style='font-size: 9.35px;fill: #6B6B6B; font-family: "Arial";' textLength='46.79px' lengthAdjust='spacingAndGlyphs'>2020–2025</text>
-<text x='385.43' y='398.52' text-anchor='middle' style='font-size: 9.90px;fill: #2D2D2D; font-family: "Arial";' textLength='28.59px' lengthAdjust='spacingAndGlyphs'>Period</text>
-<text transform='translate(16.10,208.08) rotate(-90)' text-anchor='middle' style='font-size: 9.90px;fill: #2D2D2D; font-family: "Arial";' textLength='165.47px' lengthAdjust='spacingAndGlyphs'>Commitments (US$ millions, nominal)</text>
-<rect x='210.01' y='414.51' width='350.84' height='28.24' style='stroke-width: 1.07; stroke: none; fill: #F7F5F2;' />
-<text x='215.49' y='431.97' style='font-size: 9.35px; font-weight: bold;fill: #2D2D2D; font-family: "Arial";' textLength='70.11px' lengthAdjust='spacingAndGlyphs'>Instrument type</text>
-<rect x='291.08' y='419.99' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #F7F5F2;' />
-<rect x='291.43' y='420.34' width='16.57' height='16.57' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #C87D2F;' />
-<rect x='419.12' y='419.99' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #F7F5F2;' />
-<rect x='419.47' y='420.34' width='16.57' height='16.57' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #1A6B72;' />
-<text x='313.84' y='431.78' style='font-size: 8.80px;fill: #6B6B6B; font-family: "Arial";' textLength='99.80px' lengthAdjust='spacingAndGlyphs'>Development Policy Loan</text>
-<text x='441.88' y='431.78' style='font-size: 8.80px;fill: #6B6B6B; font-family: "Arial";' textLength='113.49px' lengthAdjust='spacingAndGlyphs'>Investment Project Financing</text>
-<text x='7.97' y='37.25' style='font-size: 10.45px;fill: #6B6B6B; font-family: "Arial";' textLength='301.66px' lengthAdjust='spacingAndGlyphs'>IBRD commitments by period and instrument type (nominal USD)</text>
-<text x='7.97' y='23.24' style='font-size: 13.75px; font-weight: bold;fill: #2D2D2D; font-family: "Arial";' textLength='421.08px' lengthAdjust='spacingAndGlyphs'>Instrument Mix: Investment Loans vs Development Policy Loans</text>
-<text x='7.97' y='459.20' style='font-size: 7.92px;fill: #909090; font-family: "Arial";' textLength='838.07px' lengthAdjust='spacingAndGlyphs'>Source: World Bank Projects &amp; Operations List; IBRD Statement of Loans and Guarantees (DS00047, snapshot 09/30/2026). DPLs provide budget support tied to policy conditions. IPF finances specific investment or programmatic activities.</text>
+<polyline points='67.31,350.25 67.31,52.35 ' style='stroke-width: 0.85; stroke: #C0BBB5; stroke-linecap: butt;' />
+<text x='59.39' y='353.60' text-anchor='end' style='font-size: 9.35px;fill: #6B6B6B; font-family: "Arial";' textLength='18.18px' lengthAdjust='spacingAndGlyphs'>$0M</text>
+<text x='59.39' y='247.01' text-anchor='end' style='font-size: 9.35px;fill: #6B6B6B; font-family: "Arial";' textLength='33.78px' lengthAdjust='spacingAndGlyphs'>$1000M</text>
+<text x='59.39' y='140.42' text-anchor='end' style='font-size: 9.35px;fill: #6B6B6B; font-family: "Arial";' textLength='33.78px' lengthAdjust='spacingAndGlyphs'>$2000M</text>
+<polyline points='64.32,350.25 67.31,350.25 ' style='stroke-width: 0.85; stroke: #C0BBB5; stroke-linecap: butt;' />
+<polyline points='64.32,243.66 67.31,243.66 ' style='stroke-width: 0.85; stroke: #C0BBB5; stroke-linecap: butt;' />
+<polyline points='64.32,137.07 67.31,137.07 ' style='stroke-width: 0.85; stroke: #C0BBB5; stroke-linecap: butt;' />
+<polyline points='67.31,350.25 704.06,350.25 ' style='stroke-width: 0.85; stroke: #C0BBB5; stroke-linecap: butt;' />
+<polyline points='140.78,353.24 140.78,350.25 ' style='stroke-width: 0.85; stroke: #C0BBB5; stroke-linecap: butt;' />
+<polyline points='263.23,353.24 263.23,350.25 ' style='stroke-width: 0.85; stroke: #C0BBB5; stroke-linecap: butt;' />
+<polyline points='385.68,353.24 385.68,350.25 ' style='stroke-width: 0.85; stroke: #C0BBB5; stroke-linecap: butt;' />
+<polyline points='508.14,353.24 508.14,350.25 ' style='stroke-width: 0.85; stroke: #C0BBB5; stroke-linecap: butt;' />
+<polyline points='630.59,353.24 630.59,350.25 ' style='stroke-width: 0.85; stroke: #C0BBB5; stroke-linecap: butt;' />
+<text x='140.78' y='364.86' text-anchor='middle' style='font-size: 9.35px;fill: #6B6B6B; font-family: "Arial";' textLength='46.79px' lengthAdjust='spacingAndGlyphs'>1980–1989</text>
+<text x='263.23' y='364.86' text-anchor='middle' style='font-size: 9.35px;fill: #6B6B6B; font-family: "Arial";' textLength='46.79px' lengthAdjust='spacingAndGlyphs'>1990–1999</text>
+<text x='385.68' y='364.86' text-anchor='middle' style='font-size: 9.35px;fill: #6B6B6B; font-family: "Arial";' textLength='46.79px' lengthAdjust='spacingAndGlyphs'>2000–2009</text>
+<text x='508.14' y='364.86' text-anchor='middle' style='font-size: 9.35px;fill: #6B6B6B; font-family: "Arial";' textLength='46.79px' lengthAdjust='spacingAndGlyphs'>2010–2019</text>
+<text x='630.59' y='364.86' text-anchor='middle' style='font-size: 9.35px;fill: #6B6B6B; font-family: "Arial";' textLength='46.79px' lengthAdjust='spacingAndGlyphs'>2020–2025</text>
+<text x='385.68' y='383.37' text-anchor='middle' style='font-size: 10.45px;fill: #2D2D2D; font-family: "Arial";' textLength='30.17px' lengthAdjust='spacingAndGlyphs'>Period</text>
+<text transform='translate(16.54,201.30) rotate(-90)' text-anchor='middle' style='font-size: 10.45px;fill: #2D2D2D; font-family: "Arial";' textLength='174.59px' lengthAdjust='spacingAndGlyphs'>Commitments (US$ millions, nominal)</text>
+<rect x='201.60' y='399.41' width='368.16' height='28.24' style='stroke-width: 1.07; stroke: none; fill: #F7F5F2;' />
+<text x='207.08' y='417.07' style='font-size: 9.90px; font-weight: bold;fill: #2D2D2D; font-family: "Arial";' textLength='74.21px' lengthAdjust='spacingAndGlyphs'>Instrument type</text>
+<rect x='286.77' y='404.89' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #F7F5F2;' />
+<rect x='287.13' y='405.25' width='16.57' height='16.57' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #C87D2F;' />
+<rect x='421.00' y='404.89' width='17.28' height='17.28' style='stroke-width: 1.07; stroke: none; fill: #F7F5F2;' />
+<rect x='421.35' y='405.25' width='16.57' height='16.57' style='stroke-width: 0.53; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #1A6B72;' />
+<text x='309.53' y='416.88' style='font-size: 9.35px;fill: #6B6B6B; font-family: "Arial";' textLength='105.98px' lengthAdjust='spacingAndGlyphs'>Development Policy Loan</text>
+<text x='443.75' y='416.88' style='font-size: 9.35px;fill: #6B6B6B; font-family: "Arial";' textLength='120.53px' lengthAdjust='spacingAndGlyphs'>Investment Project Financing</text>
+<text x='7.97' y='39.18' style='font-size: 11.55px;fill: #6B6B6B; font-family: "Arial";' textLength='333.75px' lengthAdjust='spacingAndGlyphs'>IBRD commitments by period and instrument type (nominal USD)</text>
+<text x='7.97' y='24.15' style='font-size: 14.85px; font-weight: bold;fill: #2D2D2D; font-family: "Arial";' textLength='454.66px' lengthAdjust='spacingAndGlyphs'>Instrument Mix: Investment Loans vs Development Policy Loans</text>
+<text x='7.97' y='445.01' style='font-size: 9.02px;fill: #909090; font-family: "Arial";' textLength='670.67px' lengthAdjust='spacingAndGlyphs'>Source: World Bank Projects &amp; Operations List; IBRD Statement of Loans and Guarantees (DS00047, snapshot 09/30/2026). DPLs provide budget support tied to policy</text>
+<text x='7.97' y='459.08' style='font-size: 9.02px;fill: #909090; font-family: "Arial";' textLength='282.02px' lengthAdjust='spacingAndGlyphs'>conditions. IPF finances specific investment or programmatic activities.</text>
 </g>
 </svg>

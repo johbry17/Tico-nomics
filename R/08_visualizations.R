@@ -225,7 +225,7 @@ fig3 <- ggplot(sec_plot, aes(x = period, y = pct, fill = sg)) +
   scale_fill_manual(
     values = SECTOR_COLOURS,
     name = "Sector",
-    guide = guide_legend(ncol = 2)
+    guide = guide_legend(ncol = 1)
   ) +
   scale_y_continuous(
     labels = label_percent(scale = 1),

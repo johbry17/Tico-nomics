@@ -5,6 +5,7 @@
 library(ggplot2)
 library(scales)
 library(glue)
+library(stringr)
 
 # ---------------------------------------------------------------------------
 # Colour palette
@@ -77,7 +78,7 @@ theme_tico <- function(base_size = 11, base_family = "sans") {
       axis.text = element_text(colour = PALETTE$grey_mid, size = rel(0.85)),
       axis.title = element_text(
         colour = PALETTE$grey_dark,
-        size = rel(0.9),
+        size = rel(0.95),
         margin = margin(t = 4, r = 4)
       ),
       axis.title.x = element_text(margin = margin(t = 8)),
@@ -86,10 +87,10 @@ theme_tico <- function(base_size = 11, base_family = "sans") {
       # --- Legend ---
       legend.background = element_rect(fill = PALETTE$grey_bg, colour = NA),
       legend.key = element_rect(fill = PALETTE$grey_bg, colour = NA),
-      legend.text = element_text(colour = PALETTE$grey_mid, size = rel(0.8)),
+      legend.text = element_text(colour = PALETTE$grey_mid, size = rel(0.85)),
       legend.title = element_text(
         colour = PALETTE$grey_dark,
-        size = rel(0.85),
+        size = rel(0.9),
         face = "bold"
       ),
       legend.position = "bottom",
@@ -98,21 +99,21 @@ theme_tico <- function(base_size = 11, base_family = "sans") {
       # --- Text hierarchy ---
       plot.title = element_text(
         colour = PALETTE$grey_dark,
-        size = rel(1.25),
+        size = rel(1.35),
         face = "bold",
         hjust = 0,
         margin = margin(b = 4)
       ),
       plot.subtitle = element_text(
         colour = PALETTE$grey_mid,
-        size = rel(0.95),
+        size = rel(1.05),
         hjust = 0,
         lineheight = 1.3,
         margin = margin(b = 12)
       ),
       plot.caption = element_text(
         colour = "#909090",
-        size = rel(0.72),
+        size = rel(0.82),
         hjust = 0,
         lineheight = 1.3,
         margin = margin(t = 10)
@@ -141,24 +142,31 @@ theme_set(theme_tico())
 # Standard caption text
 # ---------------------------------------------------------------------------
 
+wrap_caption <- function(text, width = 165) {
+  stringr::str_wrap(text, width = width)
+}
+
 caption_wb <- function(extra = NULL) {
-  base <- "Source: World Bank Projects & Operations List; IBRD Statement of Loans and Guarantees (DS00047, snapshot 09/30/2026)"
-  if (!is.null(extra)) glue("{base}. {extra}") else base
+  base <- paste(
+    "Source: World Bank Projects & Operations List;",
+    "IBRD Statement of Loans and Guarantees (DS00047, snapshot 09/30/2026)"
+  )
+  wrap_caption(if (!is.null(extra)) paste(base, extra, sep = ". ") else base)
 }
 
 caption_ifc <- function(extra = NULL) {
   base <- "Source: IFC Project Disclosures (disclosures.ifc.org)"
-  if (!is.null(extra)) glue("{base}. {extra}") else base
+  wrap_caption(if (!is.null(extra)) paste(base, extra, sep = ". ") else base)
 }
 
 caption_miga <- function(extra = NULL) {
   base <- "Source: MIGA Project Briefs (miga.org)"
-  if (!is.null(extra)) glue("{base}. {extra}") else base
+  wrap_caption(if (!is.null(extra)) paste(base, extra, sep = ". ") else base)
 }
 
 caption_wdi <- function(extra = NULL) {
   base <- "Source: World Development Indicators via World Bank API"
-  if (!is.null(extra)) glue("{base}. {extra}") else base
+  wrap_caption(if (!is.null(extra)) paste(base, extra, sep = ". ") else base)
 }
 
 # ---------------------------------------------------------------------------

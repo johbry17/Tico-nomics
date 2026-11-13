@@ -244,6 +244,33 @@ thead th {
   border-radius: 4px;
 }
 
+/* --- Expandable project descriptions --- */
+
+.project-details summary {
+  cursor: pointer;
+  color: $sage-mid;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-color: rgba(116, 186, 134, 0.4);
+  text-underline-offset: 3px;
+  transition: color 0.15s ease;
+}
+
+.project-details summary:hover {
+  color: $sage-bright;
+}
+
+.project-detail-body {
+  margin-top: 0.5rem;
+  padding: 0.6rem 0.8rem;
+  border-left: 3px solid $forest-muted;
+  background: rgba(90, 158, 107, 0.08);
+  line-height: 1.5;
+  white-space: normal;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
 // --- Figures ---
 figcaption,
 .quarto-float-caption,

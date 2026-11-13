@@ -15,7 +15,51 @@ library(scales)
 library(knitr)
 library(kableExtra)
 library(patchwork)
+library(htmltools)
 source(here("R", "functions.R"))
+
+render_details_cell <- function(text, label = "Read abstract") {
+    vapply(
+        text,
+        function(x) {
+            if (is.null(x) || is.na(x) || !nzchar(trimws(x))) {
+                return("Unavailable")
+            }
+
+            cleaned <- trimws(x)
+            cleaned <- gsub("\\s+", " ", cleaned)
+            cleaned <- htmlEscape(cleaned)
+
+            paste0(
+                '<details class="project-details"><summary>',
+                label,
+                '</summary><div class="project-detail-body">',
+                cleaned,
+                '</div></details>'
+            )
+        },
+        character(1)
+    )
+}
+
+add_miga_ellipsis <- function(text) {
+    vapply(
+        text,
+        function(x) {
+            if (is.null(x) || is.na(x) || !nzchar(trimws(x))) {
+                return(NA_character_)
+            }
+
+            cleaned <- trimws(x)
+            if (grepl("[.!?…]$", cleaned)) {
+                return(cleaned)
+            }
+
+            paste0(cleaned, "…")
+        },
+        character(1)
+    )
+}
 
 ibrd_annual <- read_csv(
     here("data", "derived", "ibrd_annual.csv"),
@@ -89,6 +133,35 @@ ibrd_scope <- ibrd_proj |>
         approval_year <= 2025
     ) |>
     mutate(period = factor(period, levels = period_levels))
+
+api_raw <- jsonlite::fromJSON(
+    here("data", "raw", "world_bank_costa_rica_filtered.json"),
+    simplifyDataFrame = FALSE
+)
+api_abstracts <- tibble::tibble(
+    project_id = vapply(
+        api_raw[["projects"]],
+        function(p) as.character(p[["id"]]),
+        character(1)
+    ),
+    project_abstract = vapply(
+        api_raw[["projects"]],
+        function(p) {
+            entry <- p[["project_abstract"]]
+            if (is.null(entry) || length(entry) == 0) {
+                return(NA_character_)
+            }
+            if (!is.null(entry[["cdata!"]])) {
+                return(as.character(entry[["cdata!"]]))
+            }
+            if (!is.null(entry[["cdata"]])) {
+                return(as.character(entry[["cdata"]]))
+            }
+            NA_character_
+        },
+        character(1)
+    )
+)
 
 instr_period <- instr_period |>
     filter(period %in% period_levels) |>
@@ -362,12 +435,14 @@ For additional detail, see the [full list of IFC projects](#ifc-projects) in the
 
 ```{r all-projects-table}
 #| echo: false
-ibrd_scope |>
+ibrd_html <- ibrd_scope |>
     arrange(approval_year) |>
+    left_join(api_abstracts, by = "project_id") |>
     mutate(
         total_principal = fmt_millions(total_principal),
         real_principal_2025 = fmt_millions(real_principal_2025),
-        net_principal = fmt_millions(net_principal)
+        net_principal = fmt_millions(net_principal),
+        Abstract = render_details_cell(project_abstract, "Read abstract")
     ) |>
     select(
         `Project ID` = project_id,
@@ -377,12 +452,45 @@ ibrd_scope |>
         `Real 2025` = real_principal_2025,
         `Net` = net_principal,
         `Instrument` = instrument_group,
+        Abstract,
         `Status` = loan_status_summary
-    ) |>
-    kable(
-        caption = "All IBRD in-scope projects, 1980–2025 (nominal and real 2025 USD)"
-    ) |>
-    kable_styling(bootstrap_options = c("striped", "condensed"), font_size = 10)
+    )
+
+withTags({
+  table(
+    class = "table table-striped table-condensed",
+    caption = "All IBRD in-scope projects, 1980–2025 (nominal and real 2025 USD)",
+    thead(
+      tr(
+        th("Project ID"),
+        th("Project name"),
+        th("Year"),
+        th("Nominal"),
+        th("Real 2025"),
+        th("Net"),
+        th("Instrument"),
+        th("Abstract"),
+        th("Status")
+      )
+    ),
+    tbody(
+      lapply(seq_len(nrow(ibrd_html)), function(i) {
+        row <- ibrd_html[i, ]
+        tr(
+          td(row[["Project ID"]]),
+          td(row[["Project name"]]),
+          td(as.character(row[["Year"]])),
+          td(row[["Nominal"]]),
+          td(row[["Real 2025"]]),
+          td(row[["Net"]]),
+          td(row[["Instrument"]]),
+          td(HTML(as.character(row[["Abstract"]]))),
+          td(row[["Status"]])
+        )
+      })
+    )
+  )
+})
 ```
 
 ### Top 30 most frequent words in IBRD project abstracts {#top-30-words}
@@ -405,7 +513,7 @@ word_counts |>
 
 ```{r ifc-table}
 #| echo: false
-ifc_proj |>
+ifc_html <- ifc_proj |>
     filter(is_investment, in_scope, !is_pipeline) |>
     arrange(best_year) |>
     mutate(
@@ -413,7 +521,8 @@ ifc_proj |>
             is.na(ifc_invest_usd_m),
             "—",
             paste0("$", ifc_invest_usd_m, "M")
-        )
+        ),
+        Description = render_details_cell(description, "Read description")
     ) |>
     select(
         `Project #` = project_number,
@@ -422,12 +531,43 @@ ifc_proj |>
         `Date type` = date_type,
         `IFC own-acct` = amt_m,
         Sector = sector_group,
+        Description,
         Status = status
-    ) |>
-    kable(
-        caption = "IFC investments in Costa Rica (indicative dates; amounts in nominal USD)"
-    ) |>
-    kable_styling(bootstrap_options = c("striped", "condensed"), font_size = 11)
+    )
+
+withTags({
+  table(
+    class = "table table-striped table-condensed",
+    caption = "IFC investments in Costa Rica (indicative dates; amounts in nominal USD)",
+    thead(
+      tr(
+        th("Project #"),
+        th("Project name"),
+        th("Ind. year"),
+        th("Date type"),
+        th("IFC own-acct"),
+        th("Sector"),
+        th("Description"),
+        th("Status")
+      )
+    ),
+    tbody(
+      lapply(seq_len(nrow(ifc_html)), function(i) {
+        row <- ifc_html[i, ]
+        tr(
+          td(row[["Project #"]]),
+          td(row[["Project name"]]),
+          td(as.character(row[["Ind. year"]])),
+          td(row[["Date type"]]),
+          td(row[["IFC own-acct"]]),
+          td(row[["Sector"]]),
+          td(HTML(as.character(row[["Description"]]))),
+          td(row[["Status"]])
+        )
+      })
+    )
+  )
+})
 ```
 
 > **Date caveat:** Only 2 IFC projects (Advisory Services) have actual Approval Dates. All investment projects show Projected Board Dates — planned, not confirmed. Year assignments are approximate. Do not use for precise annual trend analysis.
@@ -439,21 +579,53 @@ ifc_proj |>
 names(miga) <- gsub("[^a-zA-Z0-9]", "_", tolower(names(miga)))
 names(miga) <- gsub("_+", "_", names(miga))
 names(miga) <- gsub("_$", "", names(miga))
-miga |>
+miga_html <- miga |>
     arrange(fiscal_year) |>
-    mutate(gross_exposure_up_to = paste0("$", gross_exposure_up_to, "M")) |>
+    mutate(
+        gross_exposure_up_to = paste0("$", gross_exposure_up_to, "M"),
+        Description = render_details_cell(add_miga_ellipsis(description), "Read description")
+    ) |>
     select(
         `Proj. ID` = project_id,
         Title = title,
         Sector = sector,
         `FY` = fiscal_year,
         `Peak exposure` = gross_exposure_up_to,
+        Description,
         `Investor country` = investor_country
-    ) |>
-    kable(
-        caption = "MIGA historical guarantees in Costa Rica (deduplicated; project 3639 shown at FY2003 maximum). 'Peak exposure' = maximum MIGA liability under issued contracts, not a loan."
-    ) |>
-    kable_styling(bootstrap_options = c("striped", "condensed"), font_size = 11)
+    )
+
+withTags({
+  table(
+    class = "table table-striped table-condensed",
+    caption = "MIGA historical guarantees in Costa Rica (deduplicated; project 3639 shown at FY2003 maximum). 'Peak exposure' = maximum MIGA liability under issued contracts, not a loan.",
+    thead(
+      tr(
+        th("Proj. ID"),
+        th("Title"),
+        th("Sector"),
+        th("FY"),
+        th("Peak exposure"),
+        th("Description"),
+        th("Investor country")
+      )
+    ),
+    tbody(
+      lapply(seq_len(nrow(miga_html)), function(i) {
+        row <- miga_html[i, ]
+        tr(
+          td(row[["Proj. ID"]]),
+          td(row[["Title"]]),
+          td(row[["Sector"]]),
+          td(as.character(row[["FY"]])),
+          td(row[["Peak exposure"]]),
+          td(HTML(as.character(row[["Description"]]))),
+          td(row[["Investor country"]])
+        )
+      })
+    )
+  )
+})
 ```
 
 > MIGA uses **fiscal years** (July–June). FY2008 = July 2007 – June 2008. Gross exposure represents the maximum MIGA liability under issued guarantee contracts — not capital transferred to Costa Rica.

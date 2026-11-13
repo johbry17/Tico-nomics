@@ -1,6 +1,7 @@
 ﻿---
 title: "The World Bank Group in Costa Rica"
 subtitle: "A 45-year story of development finance, shifting priorities, and an evolving institutional relationship"
+author: "Bryan Johns"
 date: today
 ---
 

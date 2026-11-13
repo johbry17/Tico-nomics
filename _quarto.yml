@@ -7,12 +7,12 @@ project:
     - reports/data-dictionary.qmd
     - reports/methodology.qmd
 
-author: "Bryan C. Johns"
-
 website:
   title: "Tico-nomics"
   description: "The World Bank Group in Costa Rica: Development Finance, Shifting Priorities, and 45 Years of an Evolving Relationship"
   favicon: images/landmark-solid.ico
+  open-graph: true
+  twitter-card: true
   navbar:
     left:
       - href: reports/index.qmd
@@ -39,6 +39,7 @@ website:
 
 format:
   html:
+    author-meta: "Bryan C. Johns"
     shortcodes:
       - year.lua
     theme:

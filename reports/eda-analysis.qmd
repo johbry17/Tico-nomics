@@ -1,7 +1,6 @@
 ---
 title: "Analysis"
 subtitle: "Evidence behind the story — full tables and charts"
-date: today
 ---
 
 ```{r setup}

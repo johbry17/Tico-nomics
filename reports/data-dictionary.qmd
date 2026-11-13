@@ -1,7 +1,6 @@
 ---
 title: "Data Dictionary"
 subtitle: "Variables in the analytical datasets"
-date: today
 ---
 
 ```{r setup}

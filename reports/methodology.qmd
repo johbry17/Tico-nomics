@@ -1,7 +1,6 @@
 ---
 title: "Methodology"
 subtitle: "Research design, source hierarchy, and analytical decisions"
-date: today
 ---
 
 ## 1. Research design

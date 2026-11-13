@@ -226,9 +226,9 @@ Rendering the Quarto site does not independently execute the full analytical pip
 
 ## Licenses
 
-The source code and scripts in this repository are licensed under the [MIT License](LICENSE).
+The source code and scripts in this repository are licensed under the [MIT License](LICENSE-CODE).
 
-Original written content, documentation, and visualizations created for this project are licensed under the [Creative Commons Attribution 4.0 International License (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/). You are free to share and adapt this material, including for commercial purposes, provided appropriate credit is given, a link to the license is included, and changes are indicated.
+Original written content, documentation, and visualizations created for this project are licensed under the [Creative Commons Attribution 4.0 International License (CC BY 4.0)](LICENSE.md). You are free to share and adapt this material, including for commercial purposes, provided appropriate credit is given, a link to the license is included, and changes are indicated.
 
 World Bank Group data, datasets, documentation, and other third-party materials remain subject to their respective terms, licenses, and attribution requirements. They are not relicensed under the terms above.
 

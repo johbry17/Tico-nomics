@@ -617,7 +617,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td>P006919, P006922, P006923, P006927, P006952</td>
+<td>P006922, P006923, P006927, P006952</td>
 <td>Structural Adjustment Loans (SAL I, II, III) or SAL-era policy lending</td>
 </tr>
 <tr class="even">
@@ -691,7 +691,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Where sector percentages are available and approximately complete, project financing is allocated proportionally across sectors. For example, a $100M project with Sector 1 at 60% and Sector 2 at 40% contributes $60M and $40M respectively to sector totals. This avoids double-counting project principal.</p>
 <p><strong>Coverage:</strong> Sector data is available for <strong>22 of 35</strong> in-scope IBRD projects, representing approximately $2.7 billion of $4.6 billion in original principal (~59%). The 2020–2025 DPL series lacks sector percentage data, significantly understating recent operations in sector charts.</p>
 <p><strong>P178320 treatment:</strong> The API records sector allocations for P178320 (COVID-19 Vaccines, Terminated), but the IBRD statement records its original principal as $0. That project is excluded from dollar-allocation totals but retained in project counts where sector names appear.</p>
-<p>Ten broad sector groups are defined in <code>functions.R</code>: <code>group_sector()</code>.</p>
+<p>Eleven broad sector groups are defined in <code>functions.R</code>: <code>group_sector()</code>.</p>
 <hr>
 </section>
 <section id="inflation-adjustment" class="level2">
@@ -758,8 +758,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="odd">
 <td>P508347, P504033 amount discrepancy (API vs loan statement)</td>
-<td>Minor; affects a 2025 project outside primary window</td>
-<td>Use loan statement values ($300M and $120M respectively)</td>
+<td>Minor; manually verified</td>
+<td>Resolved; use loan statement values ($300M and $120M respectively)</td>
 </tr>
 <tr class="even">
 <td>Sector data missing for 13 of 35 in-scope projects</td>

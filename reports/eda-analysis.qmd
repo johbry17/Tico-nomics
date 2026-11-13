@@ -1,6 +1,6 @@
 ---
 title: "Analysis"
-subtitle: "Evidence behind the Field Note — full tables and charts"
+subtitle: "Evidence behind the story — full tables and charts"
 date: today
 ---
 
@@ -232,7 +232,6 @@ sec_totals |>
         Projects = n_projects,
         `Allocated (nominal)` = alloc_principal,
         `Allocated (real 2025)` = alloc_real,
-        `% with pct data` = pct_with_alloc
     ) |>
     kable(
         caption = "Sector group totals (allocated where sector percentages available)"

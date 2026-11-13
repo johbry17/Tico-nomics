@@ -331,79 +331,172 @@ theme_colours <- c(
   "Disaster_Risk" = "#7a4488"
 )
 
-theme_plot <- theme_pres |>
-  mutate(
-    theme_label = theme_labels[theme],
-    # Convert period factor to numeric for x-axis so annotate("rect") works
-    period_num = as.numeric(factor(period, levels = period_levels))
+# theme_plot <- theme_pres |>
+#   mutate(
+#     theme_label = theme_labels[theme],
+#     # Convert period factor to numeric for x-axis so annotate("rect") works
+#     period_num = as.numeric(factor(period, levels = period_levels))
+#   )
+
+# # Period labels for x-axis
+# period_breaks <- seq_along(period_levels)
+
+# fig5 <- ggplot(
+#   theme_plot,
+#   aes(x = period_num, y = pct, colour = theme, group = theme)
+# ) +
+#   # Shaded "no data" band for 1990s (integer position 2 of 5)
+#   annotate(
+#     "rect",
+#     xmin = 1.5,
+#     xmax = 2.5,
+#     ymin = -Inf,
+#     ymax = Inf,
+#     fill = PALETTE$grey_light,
+#     alpha = 0.35
+#   ) +
+#   annotate(
+#     "text",
+#     x = 2,
+#     y = 55,
+#     label = "No abstracts\navailable",
+#     size = 2.8,
+#     colour = PALETTE$grey_mid,
+#     hjust = 0.5,
+#     lineheight = 1.1
+#   ) +
+#   geom_line(linewidth = 1.1, alpha = 0.9, na.rm = TRUE) +
+#   geom_point(aes(size = n_with_abstract), alpha = 0.9, na.rm = TRUE) +
+#   scale_x_continuous(
+#     breaks = period_breaks,
+#     labels = period_levels,
+#     expand = expansion(add = 0.4)
+#   ) +
+#   scale_colour_manual(
+#     values = theme_colours,
+#     labels = theme_labels,
+#     name = "Thematic area",
+#     guide = guide_legend(
+#       ncol = 2,
+#       override.aes = list(size = 3, linewidth = 1.5)
+#     )
+#   ) +
+#   scale_size_continuous(range = c(3, 7), guide = "none") +
+#   scale_y_continuous(
+#     labels = label_percent(scale = 1),
+#     limits = c(0, 105),
+#     expand = expansion(mult = c(0, 0))
+#   ) +
+#   labs(
+#     title = "Development Priorities in the Bank's Own Words",
+#     subtitle = paste0(
+#       "% of projects with available abstracts mentioning each theme, by period\n",
+#       "Shaded column: 1990\u20131999 has no project abstracts in the API extract \u2014 not analysed."
+#     ),
+#     x = "Period",
+#     y = "Projects mentioning theme (% of those with abstracts)",
+#     caption = caption_wb(
+#       "Keyword search on project abstracts (WB Projects API). Point size = projects with abstracts in that period. Lines do not cross the 1990s gap."
+#     )
+#   ) +
+#   theme_tico() +
+#   theme(legend.position = "bottom")
+
+# save_fig(fig5, "fig5_abstract_themes", width = 11, height = 7)
+# cat("  Saved fig5_abstract_themes\n")
+
+# Abstract coverage by period
+abstract_coverage <- theme_pres |>
+  distinct(
+    period = as.character(period),
+    n_abstracts = n_with_abstract
   )
 
-# Period labels for x-axis
-period_breaks <- seq_along(period_levels)
+# Complete theme-period grid, retaining missing periods
+theme_plot <- theme_pres |>
+  mutate(period = as.character(period)) |>
+  select(period, theme, pct) |>
+  tidyr::complete(
+    period = period_levels,
+    theme = names(theme_labels)
+  ) |>
+  left_join(abstract_coverage, by = "period") |>
+  mutate(
+    period = factor(period, levels = period_levels),
+    theme = factor(theme, levels = rev(names(theme_labels))),
+    cell_label = if_else(
+      is.na(pct), "",
+      paste0(round(pct), "%")
+    ),
+    text_colour = if_else(
+      !is.na(pct) & pct >= 55, "white", "dark"
+    )
+  )
+
+period_labels <- c(
+  "1980–1989\nn = 2",
+  "1990–1999\nNo abstracts",
+  "2000–2009\nn = 7",
+  "2010–2019\nn = 1",
+  "2020–2025\nn = 9"
+)
+names(period_labels) <- period_levels
 
 fig5 <- ggplot(
   theme_plot,
-  aes(x = period_num, y = pct, colour = theme, group = theme)
+  aes(x = period, y = theme, fill = pct)
 ) +
-  # Shaded "no data" band for 1990s (integer position 2 of 5)
-  annotate(
-    "rect",
-    xmin = 1.5,
-    xmax = 2.5,
-    ymin = -Inf,
-    ymax = Inf,
-    fill = PALETTE$grey_light,
-    alpha = 0.35
+  geom_tile(
+    colour = "white",
+    linewidth = 1
   ) +
-  annotate(
-    "text",
-    x = 2,
-    y = 55,
-    label = "No abstracts\navailable",
-    size = 2.8,
-    colour = PALETTE$grey_mid,
-    hjust = 0.5,
-    lineheight = 1.1
+  geom_text(
+    aes(label = cell_label, colour = text_colour),
+    size = 3.5,
+    fontface = "bold"
   ) +
-  geom_line(linewidth = 1.1, alpha = 0.9, na.rm = TRUE) +
-  geom_point(aes(size = n_with_abstract), alpha = 0.9, na.rm = TRUE) +
-  scale_x_continuous(
-    breaks = period_breaks,
-    labels = period_levels,
-    expand = expansion(add = 0.4)
+  scale_fill_gradient(
+    low = "#edf3f3",
+    high = "#176b73",
+    limits = c(0, 100),
+    breaks = c(0, 25, 50, 75, 100),
+    labels = scales::label_percent(scale = 1),
+    na.value = PALETTE$grey_light,
+    name = "% of abstracts"
   ) +
   scale_colour_manual(
-    values = theme_colours,
-    labels = theme_labels,
-    name = "Thematic area",
-    guide = guide_legend(
-      ncol = 2,
-      override.aes = list(size = 3, linewidth = 1.5)
-    )
+    values = c(dark = "#263238", white = "white"),
+    guide = "none"
   ) +
-  scale_size_continuous(range = c(3, 7), guide = "none") +
-  scale_y_continuous(
-    labels = label_percent(scale = 1),
-    limits = c(0, 105),
-    expand = expansion(mult = c(0, 0))
+  scale_x_discrete(
+    labels = period_labels,
+    drop = FALSE
+  ) +
+  scale_y_discrete(
+    labels = theme_labels
   ) +
   labs(
     title = "Development Priorities in the Bank's Own Words",
-    subtitle = paste0(
-      "% of projects with available abstracts mentioning each theme, by period\n",
-      "Shaded column: 1990\u20131999 has no project abstracts in the API extract \u2014 not analysed."
+    subtitle = paste(
+      "Share of available project abstracts mentioning each theme.",
+      "Sample sizes vary substantially across periods."
     ),
-    x = "Period",
-    y = "Projects mentioning theme (% of those with abstracts)",
+    x = NULL,
+    y = NULL,
     caption = caption_wb(
-      "Keyword search on project abstracts (WB Projects API). Point size = projects with abstracts in that period. Lines do not cross the 1990s gap."
+      "Keyword search of WB Projects API abstracts. Grey indicates no abstracts available. Percentages use only projects with available abstracts; they do not measure project expenditure or outcomes."
     )
   ) +
   theme_tico() +
-  theme(legend.position = "bottom")
+  theme(
+    legend.position = "right",
+    axis.text.x = element_text(size = 9),
+    axis.text.y = element_text(size = 10),
+    panel.grid = element_blank()
+  )
 
-save_fig(fig5, "fig5_abstract_themes", width = 11, height = 7)
-cat("  Saved fig5_abstract_themes\n")
+save_fig(fig5, "fig5_abstract_themes", width = 11, height = 6.5)
+
 
 # ---------------------------------------------------------------------------
 # FIG 6 — Costa Rica development trajectory

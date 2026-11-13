@@ -1,5 +1,5 @@
 ---
-title: "EDA & Analysis"
+title: "Analysis"
 subtitle: "Evidence behind the Field Note — full tables and charts"
 date: today
 ---
@@ -136,6 +136,8 @@ ibrd_period |>
 
 ### Top 10 projects
 
+For additional detail, see the [full list of IBRD projects](#ibrd-projects) in the Appendix.
+
 ```{r top10-table}
 #| echo: false
 top10 |>
@@ -160,33 +162,6 @@ top10 |>
         caption = "Top 10 IBRD projects by original principal (nominal USD, 1980–2025)"
     ) |>
     kable_styling(bootstrap_options = c("striped", "condensed"), font_size = 11)
-```
-
-### All in-scope projects
-
-```{r all-projects-table}
-#| echo: false
-ibrd_scope |>
-    arrange(approval_year) |>
-    mutate(
-        total_principal = fmt_millions(total_principal),
-        real_principal_2025 = fmt_millions(real_principal_2025),
-        net_principal = fmt_millions(net_principal)
-    ) |>
-    select(
-        `Project ID` = project_id,
-        `Project name` = project_name,
-        Year = approval_year,
-        `Nominal` = total_principal,
-        `Real 2025` = real_principal_2025,
-        `Net` = net_principal,
-        `Instrument` = instrument_group,
-        `Status` = loan_status_summary
-    ) |>
-    kable(
-        caption = "All IBRD in-scope projects, 1980–2025 (nominal and real 2025 USD)"
-    ) |>
-    kable_styling(bootstrap_options = c("striped", "condensed"), font_size = 10)
 ```
 
 ---
@@ -276,19 +251,7 @@ sec_totals |>
 knitr::include_graphics(here("figures", "fig5_abstract_themes.png"))
 ```
 
-```{r word-table}
-#| echo: false
-word_counts |>
-    head(30) |>
-    rename(Word = word, Frequency = n) |>
-    kable(
-        caption = "30 most frequent words in project abstracts (stop words removed, in-scope projects only)"
-    ) |>
-    kable_styling(
-        bootstrap_options = c("striped", "condensed"),
-        full_width = FALSE
-    )
-```
+For additional detail, see the [top 30 words](#top-30-words) identified in the project abstracts.
 
 ```{r theme-table}
 #| echo: false
@@ -373,6 +336,72 @@ wdi |>
 knitr::include_graphics(here("figures", "fig7_ifc_investments.png"))
 ```
 
+```{r ifc-sector-table}
+#| echo: false
+ifc_sector |>
+    mutate(total_m = paste0("$", round(total_m, 0), "M")) |>
+    rename(
+        `Sector group` = sector_group,
+        Projects = n,
+        `Total IFC investment` = total_m
+    ) |>
+    kable(
+        caption = "IFC investments by sector (indicative amounts, nominal USD)"
+    ) |>
+    kable_styling(bootstrap_options = c("striped", "condensed"))
+```
+
+For additional detail, see the [full list of IFC projects](#ifc-projects) in the Appendix.
+
+---
+
+## Appendix
+
+### All in-scope IBRD projects {#ibrd-projects}
+
+```{r all-projects-table}
+#| echo: false
+ibrd_scope |>
+    arrange(approval_year) |>
+    mutate(
+        total_principal = fmt_millions(total_principal),
+        real_principal_2025 = fmt_millions(real_principal_2025),
+        net_principal = fmt_millions(net_principal)
+    ) |>
+    select(
+        `Project ID` = project_id,
+        `Project name` = project_name,
+        Year = approval_year,
+        `Nominal` = total_principal,
+        `Real 2025` = real_principal_2025,
+        `Net` = net_principal,
+        `Instrument` = instrument_group,
+        `Status` = loan_status_summary
+    ) |>
+    kable(
+        caption = "All IBRD in-scope projects, 1980–2025 (nominal and real 2025 USD)"
+    ) |>
+    kable_styling(bootstrap_options = c("striped", "condensed"), font_size = 10)
+```
+
+### Top 30 most frequent words in IBRD project abstracts {#top-30-words}
+
+```{r word-table}
+#| echo: false
+word_counts |>
+    head(30) |>
+    rename(Word = word, Frequency = n) |>
+    kable(
+        caption = "30 most frequent words in project abstracts (stop words removed, in-scope projects only)"
+    ) |>
+    kable_styling(
+        bootstrap_options = c("striped", "condensed"),
+        full_width = FALSE
+    )
+```
+
+### All in-scope IFC investment projects {#ifc-projects}
+
 ```{r ifc-table}
 #| echo: false
 ifc_proj |>
@@ -402,24 +431,7 @@ ifc_proj |>
 
 > **Date caveat:** Only 2 IFC projects (Advisory Services) have actual Approval Dates. All investment projects show Projected Board Dates — planned, not confirmed. Year assignments are approximate. Do not use for precise annual trend analysis.
 
-```{r ifc-sector-table}
-#| echo: false
-ifc_sector |>
-    mutate(total_m = paste0("$", round(total_m, 0), "M")) |>
-    rename(
-        `Sector group` = sector_group,
-        Projects = n,
-        `Total IFC investment` = total_m
-    ) |>
-    kable(
-        caption = "IFC investments by sector (indicative amounts, nominal USD)"
-    ) |>
-    kable_styling(bootstrap_options = c("striped", "condensed"))
-```
-
----
-
-## H. MIGA historical guarantees
+### MIGA historical guarantees
 
 ```{r miga-table}
 #| echo: false

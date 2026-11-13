@@ -611,7 +611,7 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 </div>
-<p>In real 2025 dollars, the 1980s SAL era (4 policy-based projects, ~$235M nominal) represented approximately <strong>$772M</strong> — substantially larger than the nominal figure suggests. The 2009 $500M DPL was approximately $728M in 2025 dollars. The recent 2020–2025 operations lose some of their comparative magnitude once inflation-adjusted.</p>
+<p>In real 2025 dollars, the eight 1980s operations (~$294M nominal total) represented approximately <strong>$772M</strong> — substantially larger than the nominal figure suggests. Of that total, three policy-based adjustment operations (SAL I, SAL II, and the Export Development loan) accounted for roughly $205M nominal, or about 70% of the decade’s lending. The 2009 $500M DPL was approximately $728M in 2025 dollars. The recent 2020–2025 operations lose some of their comparative magnitude once inflation-adjusted.</p>
 <p><em>Real amounts use the US GDP deflator (NY.GDP.DEFL.ZS, base 2020=100). The 2025 deflator value is preliminary.</em></p>
 <hr>
 </section>
@@ -717,7 +717,7 @@ ul.task-list li input[type="checkbox"] {
 </table>
 </div>
 </div>
-<p><strong>Instrument note:</strong> Structural Adjustment Loans (SAL I, SAL II, SAL III) and the 1980 Rural Roads Non-Project Loan are classified as Development Policy Lending. The Export Development loan (1983) is similarly classified as adjustment-era policy lending. The Catastrophe DDO (2008), Public Finance and Competitiveness DPL-DDO (2009), and all Fiscal and Decarbonization DPLs (2020–2025) are Development Policy Loans. All others are Investment Project Financing or equivalent.</p>
+<p><strong>Instrument classification note:</strong> Structural Adjustment Loans (SAL I, SAL II, SAL III) are classified as Development Policy Lending. The Export Development loan (1983, P006922) is classified as adjustment-era policy lending via a manual override in <code>data/manual/instrument_overrides.csv</code>. The 1980 Highway Project (P006919) carries an NPL loan-type code but is classified as Investment Project Financing — its abstract confirms it financed road rehabilitation and equipment, not policy conditions (also a manual override). The Catastrophe DDO (2008), Public Finance and Competitiveness DPL-DDO (2009), and all Fiscal and Decarbonization DPLs (2020–2025) are Development Policy Loans. All others are Investment Project Financing or equivalent.</p>
 <hr>
 </section>
 <section id="d.-sectoral-composition" class="level2">
@@ -839,7 +839,7 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <blockquote class="blockquote">
-<p>Sector data is available for <strong>22 of 35</strong> in-scope projects (via the Projects API), representing approximately <strong>$2.7 billion of $4.6 billion</strong> in original principal (~59%). The 2020–2025 DPL series typically lacks sector percentage data; it is excluded from sector allocation calculations. P178320 (COVID-19 Vaccines, Terminated, $0 original principal) has sector metadata in the API but is excluded from dollar-allocation totals because the IBRD statement records its original principal as $0. Sector allocations are therefore a partial, non-representative view of the portfolio.</p>
+<p><strong>Two distinct coverage figures:</strong> Sector <em>metadata</em> is available for <strong>22 of 35</strong> in-scope projects, whose combined original principal is approximately <strong>$2.7 billion</strong> (~59% of the $4.6B total). However, not all of those projects have complete sector <em>percentages</em> — only projects with reliable allocation percentages contribute to the dollar totals shown here. The actual amounts allocated across the sector categories sum to roughly <strong>$2.2 billion</strong>, the difference being projects with sector names but missing or zero percentages. The 2020–2025 DPL series largely lacks sector percentages in the API; it is excluded from allocation calculations. P178320 (COVID-19 Vaccines, Terminated, $0 original principal) is excluded from dollar totals. Sector allocations are a partial, non-representative view of the portfolio — treat with appropriate caution.</p>
 </blockquote>
 <hr>
 </section>
@@ -1091,7 +1091,8 @@ ul.task-list li input[type="checkbox"] {
 </div>
 </div>
 <blockquote class="blockquote">
-<p><strong>Abstract coverage:</strong> The 1990–1999 period has <strong>zero</strong> project abstracts available in the WB Projects API extract; that period is absent from theme calculations. Totals for other periods: 1980–1989: 2 abstracts of 8 projects; 2000–2009: 7 of 7; 2010–2019: 1 of 2; 2020–2025: 9 of 12. Percentages are shares of projects with available abstracts, not all in-scope IBRD projects.</p>
+<p><strong>Abstract coverage and interpretation:</strong> The 1990–1999 period has <strong>zero</strong> project abstracts available in the WB Projects API extract. Other periods: 1980–1989: <strong>2 abstracts of 8 projects</strong>; 2000–2009: <strong>7 of 7</strong>; 2010–2019: <strong>1 of 2</strong>; 2020–2025: <strong>9 of 12</strong>. The 1980s and 2010s figures are extremely sparse — drawing conclusions from 2 or 1 abstract respectively is inadvisable. Percentages are shares of projects <em>with available abstracts</em>, not all in-scope IBRD projects.</p>
+<p><strong>What the table does and does not tell us:</strong> Infrastructure language appears at 100% in every period with available abstracts — but this reflects keyword matching (the words “road”, “transport”, “energy” appear widely), not that every project was an infrastructure investment. Environment/Climate keywords appear in the 2000s (57%) and 2020s (89%) but are absent in the 1980s (0%) and 2010s (0% from a single abstract). Governance/Fiscal language is absent in the 1980s, then consistently present from the 2000s onward. These patterns reflect stated language in project abstracts — not project expenditure, project effects, or Bank institutional priorities more broadly.</p>
 </blockquote>
 <hr>
 </section>
@@ -1109,7 +1110,7 @@ ul.task-list li input[type="checkbox"] {
 <div class="cell">
 <div class="cell-output-display">
 <table class="table table-striped table-condensed caption-top table-sm small">
-<caption>Costa Rica selected WDI indicators (contextual only). GDP per capita is in current US dollars — not inflation-adjusted. Do not interpret year-over-year changes as real economic growth without accounting for dollar inflation.</caption>
+<caption>Costa Rica selected WDI indicators (contextual only). GDP per capita is current US dollars — not inflation-adjusted. Life expectancy is available through 2024; 2025 is not yet published. Gini: 2024 value is 45.8; a preliminary 2025 estimate (45.5) is available from the WB API but may be revised.</caption>
 <thead>
 <tr class="header">
 <th style="text-align: right;" data-quarto-table-cell-role="th">Year</th>

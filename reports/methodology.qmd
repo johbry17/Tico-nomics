@@ -14,7 +14,7 @@ The analysis is explicitly **not a causal study**. It does not test whether Worl
 
 **Geographic scope:** Costa Rica only. Findings are not representative of the World Bank Group's global portfolio or of developing-country experience generally.
 
-**Study period:** 1980–2025 inclusive. Pre-1980 records are retained for reference but excluded from primary totals and charts. Three projects approved in 2025 are included. Records from 2026 are outside scope.
+**Study period:** 1980–2025 inclusive. Pre-1980 records are retained for reference but excluded from primary totals and charts. Two IBRD projects approved in 2025 are included (P504033, Program for Sustainable and Competitive Agriculture, and P508347, Costa Rica Fiscal Management and Green Growth). A third 2025 record in the Projects & Operations List (P179757, EnABLE) is a grant, not an IBRD loan, and is excluded from the IBRD analytical sample. Records from 2026 are outside scope.
 
 ---
 

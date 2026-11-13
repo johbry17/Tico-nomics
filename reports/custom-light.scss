@@ -337,6 +337,34 @@ hr {
   color: $slate-mid;
 }
 
+/* Footer layout */
+.nav-footer { align-items: center; }
+
+/* Footer links */
+.nav-footer a {
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.nav-footer a:hover {
+  color: $forest-mid;
+  text-decoration: underline;
+}
+
+/* Mobile footer */
+@media (max-width: 767px) {
+  .nav-footer {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    // gap: 0.5rem;
+  }
+
+  .nav-footer-center { order: 1; }
+  .nav-footer-right { order: 2; }
+  .nav-footer-left { order: 3; }
+}
+
 // --- Scrollbar styling (Webkit) ---
 ::-webkit-scrollbar { width: 7px; height: 7px; }
 ::-webkit-scrollbar-track { background: $parchment-light; }

@@ -26,9 +26,21 @@ website:
     right:
       - icon: github
         href: https://github.com/johbry17/Tico-nomics
+  page-footer:
+    left: "Data sources: World Bank"
+    center: "© {{< current-year >}} Bryan C. Johns"
+    right:
+      - text: Portfolio
+        href: https://informedwanderer.com
+      - text: LinkedIn
+        href: https://www.linkedin.com/in/b-johns/
+      - text: GitHub
+        href: https://github.com/johbry17
 
 format:
   html:
+    shortcodes:
+      - year.lua
     theme:
       light: reports/custom-light.scss
       dark:  reports/custom-dark.scss

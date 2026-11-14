@@ -6,6 +6,7 @@ project:
     - reports/analysis.qmd
     - reports/data-dictionary.qmd
     - reports/methodology.qmd
+  post-render: python scripts/fix_titles.py
 
 website:
   title: "Tico-nomics"
@@ -41,7 +42,7 @@ format:
   html:
     author-meta: "Bryan C. Johns"
     shortcodes:
-      - year.lua
+      - scripts/year.lua
     theme:
       light: reports/custom-light.scss
       dark:  reports/custom-dark.scss

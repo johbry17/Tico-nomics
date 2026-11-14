@@ -144,11 +144,13 @@ Raw source files are retained unchanged in `data/raw/`. US GDP deflator (NY.GDP.
 Tico-nomics/
 ├── _quarto.yml
 ├── README.md
+│
 ├── data/
 │   ├── raw/              # Unmodified source files
 │   ├── processed/        # Cleaned analytical datasets
 │   ├── derived/          # Summary tables
 │   └── manual/           # Instrument classification overrides
+│
 ├── R/
 │   ├── functions.R       # Theme, palette, shared helpers
 │   ├── 00_setup.R        # Packages and paths
@@ -161,13 +163,19 @@ Tico-nomics/
 │   ├── 07_analysis.R
 │   ├── 08_visualizations.R
 │   └── 09_validation.R
+│
 ├── reports/              # Four public-facing Quarto pages
-│   ├── index.qmd         # Overview
-│   ├── eda-analysis.qmd  # Analysis
+│   ├── overview.qmd
+│   ├── analysis.qmd
 │   ├── data-dictionary.qmd
-│   └── methodology.qmd
+│   ├── methodology.qmd
+│   ├── custom-light.scss
+│   └── custom-dark.scss
+│
 ├── figures/              # Generated figures (PNG + SVG)
+├── scripts/              # Build utility scripts
 ├── archive/              # Phase 0 and Phase 1 historical scripts
+│
 └── docs/                 # Rendered Quarto site
 ```
 

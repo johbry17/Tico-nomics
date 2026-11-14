@@ -323,7 +323,7 @@ The 2010s illustrate this limitation particularly clearly: the $200 million High
 
 The 2020–2025 DPL series largely lacks sector percentages in the API; it is excluded from allocation calculations. P178320 (COVID-19 Vaccines, Terminated, $0 original principal) is excluded from dollar totals. 
 
-> Sector allocations are a partial, non-representative view of the portfolio — treat with appropriate caution.
+**Sector allocations are a partial, non-representative view of the portfolio — treat with appropriate caution.**
 
 ---
 

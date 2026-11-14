@@ -319,11 +319,11 @@ sec_totals |>
 
 The actual **recorded amounts allocated across the sector categories sum to roughly $2.2 billion**, the difference being projects with sector names but missing or zero percentages. Sector *metadata* is available for 22 of 35 in-scope projects, whose combined original principal is approximately $2.7 billion (~59% of the $4.6B total). However, not all of those projects have complete sector *percentages* — only projects with reliable allocation percentages contribute to the dollar totals shown here.
 
+**Sector allocations are a partial, non-representative view of the portfolio — treat with appropriate caution.**
+
 The 2010s illustrate this limitation particularly clearly: the $200 million Higher Education Improvement Project appears in the chart, but the $420 million Strengthening Universal Health Insurance operation does not, because no usable sector allocation percentages are available for it. The $16 million shown in the Health category comes from other projects; it does not represent the 2016 health-insurance loan.
 
 The 2020–2025 DPL series largely lacks sector percentages in the API; it is excluded from allocation calculations. P178320 (COVID-19 Vaccines, Terminated, $0 original principal) is excluded from dollar totals. 
-
-**Sector allocations are a partial, non-representative view of the portfolio — treat with appropriate caution.**
 
 ---
 

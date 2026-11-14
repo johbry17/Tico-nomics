@@ -204,4 +204,4 @@ Between 1995 and FY2008, MIGA issued guarantee contracts covering **`r nrow(miga
 
 ---
 
-*Explore the evidence in the [Analysis](eda-analysis.qmd) section, check the sources and methods in [Methodology](methodology.qmd), and look up variable definitions in the [Data Dictionary](data-dictionary.qmd).*
+*Explore the evidence in the [Analysis](analysis.qmd) section, check the sources and methods in [Methodology](methodology.qmd), and look up variable definitions in the [Data Dictionary](data-dictionary.qmd).*

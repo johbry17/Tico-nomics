@@ -251,3 +251,7 @@ quarto render
 Scripts requiring internet access: `02_prepare_wdi.R` (World Bank API calls for deflator and WDI indicators). All other scripts read only from `data/raw/` or earlier pipeline outputs in `data/processed/`.
 
 Raw files in `data/raw/` must be preserved unchanged. The `archive/` directory contains historical exploratory scripts from Phase 0 and Phase 1; they are not part of the active pipeline.
+
+---
+
+*Return to [Overview](overview.qmd) · [Technical Analysis](analysis.qmd) · [Data Dictionary](data-dictionary.qmd)*

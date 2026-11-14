@@ -2,8 +2,8 @@ project:
   type: website
   output-dir: docs
   render:
-    - reports/index.qmd
-    - reports/eda-analysis.qmd
+    - reports/overview.qmd
+    - reports/analysis.qmd
     - reports/data-dictionary.qmd
     - reports/methodology.qmd
 
@@ -15,9 +15,9 @@ website:
   twitter-card: true
   navbar:
     left:
-      - href: reports/index.qmd
+      - href: reports/overview.qmd
         text: Overview
-      - href: reports/eda-analysis.qmd
+      - href: reports/analysis.qmd
         text: Analysis
       - href: reports/data-dictionary.qmd
         text: Data

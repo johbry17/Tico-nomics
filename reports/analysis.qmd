@@ -628,3 +628,7 @@ withTags({
 ```
 
 > MIGA uses **fiscal years** (July–June). FY2008 = July 2007 – June 2008. Gross exposure represents the maximum MIGA liability under issued guarantee contracts — not capital transferred to Costa Rica.
+
+---
+
+*See [Data Dictionary](data-dictionary.qmd) for source documentation and [Methodology](methodology.qmd) for research design.*

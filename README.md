@@ -38,8 +38,8 @@ The analysis is descriptive. It documents patterns in a 45-year lending and inve
 
 | Page | Contents |
 |---|---|
-| [Overview](https://johbry17.github.io/Tico-nomics/reports/) | The story — what happened across four decades |
-| [Analysis](https://johbry17.github.io/Tico-nomics/reports/eda-analysis.html) | Full tables, charts, and evidence |
+| [Overview](https://johbry17.github.io/Tico-nomics/reports/overview.html) | The story — what happened across four decades |
+| [Analysis](https://johbry17.github.io/Tico-nomics/reports/analysis.html) | Full tables, charts, and evidence |
 | [Data](https://johbry17.github.io/Tico-nomics/reports/data-dictionary.html) | Variable definitions and source documentation |
 | [Methods](https://johbry17.github.io/Tico-nomics/reports/methodology.html) | Research design, data decisions, and reproducibility |
 

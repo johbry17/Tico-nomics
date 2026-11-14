@@ -224,3 +224,7 @@ real_2025 = nominal * (defl[year==2025] / defl[year==approval_year])
 | `govt_debt_pct_gdp` | GC.DOD.TOTL.GD.ZS | Central govt debt % GDP | 6/46 years (very sparse; not used in main analysis) |
 
 > These indicators are contextual only. They do not establish that World Bank lending caused any observed changes in these measures.
+
+---
+
+*Return to the [Overview](overview.qmd) · [Technical Analysis](analysis.qmd) · [Methodology](methodology.qmd)*

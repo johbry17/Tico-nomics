@@ -84,7 +84,7 @@ cat("Saved: data/processed/us_gdp_deflator.csv\n\n")
 cat("--- WDI Contextual Indicators ---\n")
 
 wdi_indicators <- c(
-  "NY.GDP.PCAP.CD", # GDP per capita (current USD)
+  "NY.GDP.PCAP.KD", # GDP per capita (constant 2015 USD)
   "NY.GDP.MKTP.KD.ZG", # GDP growth (%)
   "SI.POV.GINI", # Gini index
   "SP.DYN.LE00.IN", # Life expectancy
@@ -151,7 +151,7 @@ wdi_wide <- wdi_long |>
 # Rename for clarity
 wdi_clean <- wdi_wide |>
   rename(
-    gdp_per_capita_usd = any_of("NY.GDP.PCAP.CD"),
+    gdp_per_capita_usd = any_of("NY.GDP.PCAP.KD"),
     gdp_growth_pct = any_of("NY.GDP.MKTP.KD.ZG"),
     gini = any_of("SI.POV.GINI"),
     life_expectancy_years = any_of("SP.DYN.LE00.IN"),

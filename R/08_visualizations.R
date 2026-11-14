@@ -148,12 +148,12 @@ fig2 <- ggplot(
     expand = expansion(mult = c(0, 0.05))
   ) +
   labs(
-    title = "Instrument Mix: Investment Loans vs Development Policy Loans",
+    title = "Instrument Mix: Investment Loans vs Policy-Based Loans",
     subtitle = "IBRD commitments by period and instrument type (nominal USD)",
     x = "Period",
     y = "Commitments (US$ millions, nominal)",
     caption = caption_wb(
-      "DPLs provide budget support tied to policy conditions. IPF finances specific investment or programmatic activities."
+      "IPF finances specific investment or programmatic activities. DPLs provide budget support tied to policy conditions. Earlier policy-based loans are grouped with DPLs for comparison."
     )
   ) +
   theme_tico() +
@@ -519,7 +519,7 @@ p6a <- ggplot(
     expand = expansion(mult = c(0, 0.08))
   ) +
   labs(
-    subtitle = "GDP per capita (current US$ — not inflation-adjusted)",
+    subtitle = "GDP per capita (constant 2015 US$)",
     x = NULL,
     y = NULL
   ) +

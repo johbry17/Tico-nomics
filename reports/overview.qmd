@@ -1,6 +1,6 @@
 ﻿---
 title: "The World Bank Group in Costa Rica"
-subtitle: "A 45-year story of development finance, shifting priorities, and an evolving institutional relationship"
+subtitle: "A 45-year story of development finance, shifting priorities, and a changing relationship"
 author: "Bryan Johns"
 date: today
 ---
@@ -41,11 +41,15 @@ le_2024    <- wdi$life_expectancy_years[wdi$year==2024]
 
 ## A small country with an unusual story
 
-Costa Rica occupies a narrow strip of land between Nicaragua and Panama, home to roughly five million people and an extraordinary diversity of wildlife. It abolished its army in 1948. By the early 2000s it had achieved life expectancy comparable to the United States and near-universal access to education and healthcare, all on an income level that placed it squarely in the middle of the global middle class.
+Costa Rica occupies a narrow strip of land between Nicaragua and Panama, home to roughly five million people and an extraordinary diversity of wildlife. It abolished its army in 1948 and spent much of the following decades building an unusually extensive system of public education, healthcare, and social insurance. By the early 2000s, life expectancy had reached levels comparable to those in the United States, despite a substantially lower income per person.
 
-It is also a country that has borrowed substantially from the World Bank for 45 years.
+That social model was already well established when this study begins in 1980. Costa Rica was not starting from scratch, nor was it simply following a development blueprint supplied by international lenders. It entered the decade with strong public institutions and a substantial state role in economic and social life — precisely the arrangements that would come under pressure during the debt crisis and structural adjustment that followed.
 
-This project examines that borrowing, not as a simple story of a donor and a recipient, but as an evolving relationship between two institutions responding to shifting circumstances, changing ideas about development, and their own strategic priorities. The central question is:
+Over the next 45 years, Costa Rica would liberalize its economy, attract foreign investment, diversify its exports, expand its environmental ambitions, and eventually become a high-income economy. Throughout that period, the World Bank remained an important financing partner, although the nature of the relationship changed considerably.
+
+This project examines that relationship, not as a simple story of a lender and a borrower, but as an evolving interaction between a country's development choices and an international institution's changing priorities.
+
+The central question is:
 
 > **How did the World Bank's financing relationship with Costa Rica change from 1980 to 2025 — in its scale, its instruments, and its stated priorities — and what does it reveal about the changing practice of international development finance?**
 
@@ -57,23 +61,23 @@ The analysis is descriptive. It documents patterns in a 45-year lending record a
 
 The term "World Bank" can be confusing because it refers to several related but distinct institutions. This project covers three of them.
 
-**IBRD — the core lender.** The International Bank for Reconstruction and Development makes long-maturity loans to creditworthy middle-income governments. Costa Rica has been an IBRD borrower throughout the study period. This is the main subject of the analysis.
+**IBRD — the sovereign lender.** The International Bank for Reconstruction and Development provides loans and other financial products to creditworthy middle-income and higher-income governments. Costa Rica has been an IBRD borrower throughout the study period. This is the main subject of the analysis.
 
-**IFC — the private-sector arm.** The International Finance Corporation invests in private companies — banks, manufacturers, energy producers, agribusinesses — not governments. It operates separately from the IBRD and reports different kinds of amounts. IFC investment in Costa Rica is substantial and concentrated in financial services and clean energy.
+**IFC — the private-sector arm.** The International Finance Corporation invests in private companies — including banks, manufacturers, energy producers, and agribusinesses — rather than lending directly to governments. Its investments operate under a different mandate and use different financial measures. In Costa Rica, the recorded portfolio is concentrated in financial services, with additional investments in energy and other sectors.
 
-**MIGA — the guarantee agency.** The Multilateral Investment Guarantee Agency issues political-risk guarantees to private investors. MIGA does not lend money; it backs private investment decisions by absorbing certain political risks. Its Costa Rica portfolio spans tourism, infrastructure, and banking.
+**MIGA — the political-risk insurer.** The Multilateral Investment Guarantee Agency provides guarantees against certain political and non-commercial risks associated with private investment. It does not make conventional loans; it helps protect investors against specified risks. Its Costa Rica portfolio spans tourism, infrastructure, and banking.
 
-> **Important:** These institutions' numbers cannot be added together. An IBRD loan, an IFC equity investment, and a MIGA guarantee exposure are three different things — different instruments, different financial measures, different kinds of risk. This analysis presents them separately.
+These institutions' financial figures cannot be added together. An IBRD loan, an IFC investment, and a MIGA guarantee exposure represent different instruments, financial measures, and kinds of risk. This analysis presents them separately.
 
-A note on IDA: a fourth institution, the International Development Association, provides concessional financing to the world's poorest countries. Costa Rica graduated long ago; its last IDA credit was in [FY1962](https://ida.worldbank.org/en/about/borrowing-countries/ida-graduates). The 1980–2025 analysis is entirely IBRD.
+**A note on IDA**: The International Development Association provides concessional financing to the world's poorest countries. Costa Rica's last IDA credit was in FY1962, well before this study period. The 1980–2025 IBRD analysis therefore covers no IDA lending.
 
 ---
 
-## Four decades of IBRD lending
+## 45 years of IBRD lending
 
 Between 1980 and 2025, the IBRD approved **`r n_projects` projects** in Costa Rica with a combined original principal of **`r fmt_billions(total_nom)`** in nominal US dollars — roughly **`r fmt_billions(total_real)`** in constant 2025 values.
 
-Thirty-four of those projects involved financial commitments; the thirty-fifth (a COVID-19 vaccine operation approved in 2022) was terminated before the loan agreement was signed, so its original principal in the IBRD's records is $0.
+Thirty-four of the 35 operations had an amount approved by the Bank's Board. But approval did not always mean money was delivered: two 1990s projects, including the $100 million Third Structural Adjustment Loan (SAL III), were cancelled without disbursing funds. The thirty-fifth operation, a COVID-19 vaccine project approved in 2022, was terminated before its loan agreement was signed and had no original principal.
 
 ```{r fig1}
 #| fig-cap: "Annual IBRD commitments to Costa Rica, 1980--2025. Each bar shows original principal at board approval (the amount approved by the IBRD Board). Lighter bars show the same amounts adjusted to constant 2025 USD using the US GDP deflator. The 2022 near-zero bar reflects a vaccine operation that was board-approved but terminated before the loan agreement was signed."
@@ -84,32 +88,52 @@ The lending record divides into four broad periods, each shaped by distinct cond
 
 ### The 1980s: debt crisis and structural adjustment
 
-Costa Rica entered the 1980s in economic distress. Between 1979 and 1982, GDP contracted sharply, inflation approached 90%, and the country defaulted on its external debt — the result of commodity price shocks, rising US interest rates, and regional instability. The World Bank, working alongside the International Monetary Fund and USAID, responded with a series of Structural Adjustment Loans.
+Costa Rica entered the 1980s in severe economic distress. A deterioration in its terms of trade, rising international interest rates, and domestic fiscal imbalances, exacerbated by commodity price shocks and regional instability, combined to produce a balance-of-payments and debt crisis. In August 1981, the government suspended debt-service payments to commercial creditors. GDP contracted sharply, unemployment rose, and inflation reached approximately 90% in 1982.
 
-Structural adjustment remains controversial. The loans provided foreign currency to keep the government solvent; in exchange, Costa Rica agreed to reform its trade policy, reduce state involvement in markets, and restructure public enterprises. SAL I arrived in 1985, SAL II in 1988, and SAL III — extending into the following decade — in 1993.
+The crisis exposed weaknesses in Costa Rica's state-led, relatively inward-looking economic model. Beginning in 1983, successive governments pursued stabilization and structural reforms with support from the International Monetary Fund, the World Bank, and bilateral donors.
 
-The Bank also financed more conventional investment alongside adjustment: water supply, petroleum sector assistance, and road rehabilitation. In total, the 1980s saw eight IBRD projects worth **`r fmt_millions(nom_1980s)`** in nominal terms — roughly **`r fmt_millions(real_1980s)`** in today's dollars. Around 70% of that sum, by original principal, went to policy-based adjustment lending; the remainder financed identifiable infrastructure and investment activities.
+The World Bank's contribution included a series of policy-based loans. An Export Development Loan arrived in 1983, followed by Structural Adjustment Loans I and II in 1985 and 1988. A third structural adjustment loan followed in 1993. These operations supported changes to trade policy, export promotion, public-sector management, and the role of the state in the economy.
+
+Structural adjustment remains controversial, particularly over its social costs and the consequences of economic liberalization. Costa Rica's experience, however, was not a wholesale abandonment of its existing social model. The country liberalized trade and encouraged private investment while retaining major public institutions, including its healthcare and education systems.
+
+The Bank also financed more conventional investments in water supply, petroleum-sector assistance, and road rehabilitation. In total, the 1980s saw eight IBRD projects worth **`r fmt_millions(nom_1980s)`** in nominal terms — roughly **`r fmt_millions(real_1980s)`** in today's dollars. About 70% of the decade's original principal went to the three policy-based operations approved in 1983, 1985, and 1988; the remainder financed identifiable infrastructure and investment activities.
 
 ### The 1990s and 2000s: investment and diversification
 
-The 1990s marked a transition away from the most concentrated period of structural adjustment. Through the 1990s and 2000s, the IBRD shifted toward identifiable projects: health system reform, education equity, payment for environmental services, environmental policy, and urban infrastructure. A "catastrophe deferred drawdown option" credit in 2008 provided a disaster-risk buffer that could be called on after a major natural disaster.
+By the 1990s, the Bank's active lending portfolio was moving away from the concentrated structural adjustment operations of the previous decade. But the transition included one significant, ultimately unsuccessful attempt to continue that approach. Approved in 1993, the $100 million Third Structural Adjustment Loan (SAL III) never became effective: after the 1994 election, the incoming administration did not meet its conditions, and the Bank cancelled the loan in March 1995 without disbursing any funds. SAL III therefore appears in the 1990s record of Board-approved operations, even though it did not become financing delivered to Costa Rica.
 
-A distinctive thread through this period was environmental finance. In 2000, the Bank provided $33 million for the Ecomarkets project, supporting Costa Rica's pioneering program of payments to landowners for maintaining forest cover. This form of conservation finance — paying for ecosystem services — was largely novel at the time. When the global financial crisis hit in 2008–2009, the Bank approved a $500 million Development Policy Loan for public finance and competitiveness, one of two $500 million operations in the entire portfolio.
+The Bank's other lending during the 1990s and 2000s increasingly included identifiable investments in health, education, water, environmental management, and urban infrastructure.
+
+A distinctive thread was environmental finance. Costa Rica had established its national Payments for Environmental Services (PSA) program in 1997, compensating landowners for maintaining forests and providing ecosystem services. In 2000, the World Bank approved a $32.6 million loan for the Ecomarkets project, which supported the existing program and helped strengthen its institutional and financial foundations. The project became effective in 2001.
+
+Ecomarkets is an interesting example of the Bank supporting a policy innovation that originated within the borrowing country, rather than introducing an entirely new development model.
+
+The period also illustrates that policy-based lending never disappeared entirely. When the global financial crisis hit in 2008–2009, the Bank approved a $500 million Development Policy Loan for public finance and competitiveness in 2009 — one of the two largest IBRD operations in the entire portfolio.
+
+Policy-based lending returned to the active portfolio in 2008, but in a different form. The $65 million Catastrophe Deferred Drawdown Option (CAT DDO) provided rapid access to funds after major disasters. It was followed in 2009 by a separate $500 million DPL supporting public finances and competitiveness during the global financial crisis. The two operations reflected a different use of policy-based lending: disaster-response liquidity in 2008 and broader fiscal and economic support in 2009.
 
 ### The 2010s: two large investments
 
-A decade that might appear lean on the charts was not. It held only two IBRD projects — but they were substantial.
+The 2010s saw only two IBRD project approvals, but they were substantial: together, they accounted for $620 million in original principal.
 
-The 2012 Higher Education Improvement loan ($200 million) supported Costa Rica's public university system. The 2016 Strengthening Universal Health Insurance loan ($420 million) supported the Caja Costarricense del Seguro Social (CCSS), which administers Costa Rica's universal health care system. The health insurance loan is the single largest investment-type operation in the entire 1980–2025 portfolio, and its inclusion changes the picture of an otherwise quiet decade.
+The 2012 Higher Education Improvement loan ($200 million) supported Costa Rica's public university system. The 2016 Strengthening Universal Health Insurance loan ($420 million) supported the Caja Costarricense del Seguro Social (CCSS), which administers the country's public health insurance system.
+
+At $420 million, the health insurance operation was the largest investment-project-financing operation in the entire 1980–2025 portfolio. The decade's relatively small project count therefore conceals a substantial concentration of lending in two major public institutions.
 
 ### The 2020s: fiscal reform, climate, and pandemic
 
-The 2020–2025 period accounts for **`r round(pct_2020s, 1)`% of all nominal 1980–2025 commitments** — twelve projects totalling $2.66 billion. Several forces converged: the COVID-19 crisis, Costa Rica's long-building fiscal consolidation (anchored by a 2018 tax reform), and the country's national Decarbonization Plan targeting net-zero emissions by 2050.
+The 2020–2025 period accounts for **`r round(pct_2020s, 1)`% of all nominal 1980–2025 commitments** — twelve projects totalling $2.66 billion. Several forces converged: the COVID-19 pandemic and its economic disruption, Costa Rica's ongoing fiscal consolidation following the 2018 tax reform, and the country's 2019 National Decarbonization Plan, which established a pathway toward net-zero emissions by 2050.
 
-The Bank's response included a series of large Development Policy Loans that linked fiscal reform directly to climate objectives — the Fiscal and Decarbonization DPL series. This pattern — budget support tied simultaneously to fiscal adjustment and green investment — reflects changes in both World Bank strategy and in how Costa Rica frames its own development priorities.
+The Bank's engagement included a series of large Development Policy Loans linking fiscal management and structural reforms with climate objectives. These operations provided budget support tied to policy commitments, rather than financing specific green investments. Their design reflects an increasingly prominent approach in development finance: integrating climate objectives into broader economic and public-sector policy.
+
+The chronology is important. Costa Rica had articulated its decarbonization ambitions before these loans were approved. The Bank was therefore supporting and potentially reinforcing an existing national agenda, not introducing the objective itself.
+
+The period also included substantial investment financing for education, disaster resilience, territorial development, and social protection. Not every operation followed the same model: the portfolio combined policy-based budget support with conventional project financing.
+
+One proposed COVID-19 vaccine operation was approved in 2022 but terminated before the loan agreement was signed. It appears in the approval record with zero original principal, a useful reminder that a board-approved operation is not necessarily a completed financing commitment.
 
 ```{r fig2}
-#| fig-cap: "IBRD lending by instrument type. Development Policy Loans (DPLs) provide budget support tied to policy commitments; Investment Project Financing (IPF) funds identifiable programs and capital projects."
+#| fig-cap: "IBRD lending by instrument type. Development Policy Loans (DPLs) provide budget support tied to policy commitments; Investment Project Financing (IPF) funds identifiable programs and capital projects. The DPL category also includes earlier structural adjustment and policy-based lending operations that served a similar function before the modern instrument was established."
 knitr::include_graphics(here("figures","fig2_instrument_mix.png"))
 ```
 
@@ -117,31 +141,41 @@ knitr::include_graphics(here("figures","fig2_instrument_mix.png"))
 
 ## Where the money went (with caveats)
 
-The chart below shows how lending was distributed across sectors — with an important limitation. The 2020–2025 DPL series, which accounts for more than half of that period's lending by value, does not come with traditional sector percentages, because DPLs operate through government policy rather than specific investment activities. The chart therefore represents only the portion of the portfolio where sector allocations are recorded, covering about 59% of total original principal ($2.7 billion of $4.6 billion).
+Sector data provides a partial view of the portfolio. The World Bank records sector allocations for 22 of the 35 in-scope projects, representing approximately $2.7 billion in original principal. However, incomplete or missing allocation percentages mean that only about $2.2 billion can be assigned to the sector categories shown here.
 
 ```{r fig3}
-#| fig-cap: "Sectoral composition of IBRD lending where sector data is available. The chart covers 22 of 35 in-scope projects, representing approximately $2.7 billion --- roughly 59% of total original principal. The 2020--2025 DPL series is largely excluded because DPLs are not assigned traditional sector percentages."
+#| fig-cap: "Recorded IBRD sector allocations by category, nominal USD. The amounts shown sum to approximately $2.2 billion in recorded allocations, drawn from a subset of projects with usable sector percentages. They do not represent the full original principal of those projects or the complete portfolio. Large operations may be absent where allocation percentages are unavailable."
 knitr::include_graphics(here("figures","fig3_sector_composition.png"))
 ```
 
-Within this partial picture — and it is very partial, since recent DPL operations largely lack sector breakdowns — the data shows public administration dominated the portfolio measured by allocated amounts, driven by fiscal management and government systems components in the DPL series. Among the earlier projects with identifiable sector allocations, water and sanitation, education, and agriculture were persistent targets. The 2010s data covers only a single project (the Higher Education loan), so conclusions about that decade's sector composition are unavoidable limited.
+The gap is particularly important for the 2020–2025 period. Many of the large Development Policy Loans lack traditional sector allocation percentages. Because these operations provide budget support in exchange for policy commitments rather than financing discrete investment activities, their full value cannot be distributed meaningfully across conventional project sectors.
+
+The 2010s also illustrate the limitations of the sectoral data: the chart omits the decade's largest operation (of two). Although the 2012 higher-education project appears, the $420 million 2016 health-insurance loan has no usable sector allocations in the data.
+
+Within the recorded allocations, public administration is the largest category, followed by education and ICT/trade. Water and sanitation, agriculture, energy, and transportation also appear across multiple projects.
+
+These figures describe the Bank's recorded sector allocations, not necessarily actual expenditure or the ultimate economic destination of every dollar. They also represent a partial, non-random subset of the portfolio. They should not be interpreted as a complete picture of where the Bank's financing went.
 
 ---
 
 ## What the Bank said it was doing
 
-The Bank publishes a project abstract for many operations — a statement of objectives and intended activities. The chart below tracks how often certain thematic areas appeared in those abstracts, by period.
+World Bank project abstracts describe the objectives and intended activities of individual operations. I used keyword matching to examine how often selected development themes appeared in those descriptions, and how that language varied across periods.
 
-This is an analysis of *institutional language*, not of outcomes or priorities. The 1990s are entirely absent because no abstracts are available for that decade in the data source used here.
+This is an analysis of *institutional language*, not project outcomes, actual expenditure, or a comprehensive measure of Bank priorities. Abstract availability also varies substantially: the World Bank provides project abstracts for 19 of the 35 operations in this study. No abstracts are available for the 1990s in the source used here, and coverage is particularly limited in the 1980s and 2010s.
 
 ```{r fig5}
-#| fig-cap: "Thematic keyword presence in project abstracts by period. The shaded 1990--1999 column has no available abstracts and is excluded. Percentages are shares of projects with available abstracts, not all in-scope projects. Themes are not mutually exclusive."
+#| fig-cap: "Selected development themes in available project abstracts, by period. The shaded 1990--1999 column has no available abstracts and is excluded. Percentages are shares of projects with available abstracts, not all in-scope projects. Themes are not mutually exclusive."
 knitr::include_graphics(here("figures","fig5_abstract_themes.png"))
 ```
 
-The World Bank provides project abstracts for 19 of the 35 operations in this study. Coverage varies substantially by period, with no abstracts available for the 1990s and very limited coverage in the 1980s and 2010s.
+The patterns are interesting, but the uneven coverage matters. Infrastructure-related keywords appear in every period with available abstracts. That is unsurprising: infrastructure terminology occurs in many kinds of development projects, including those not primarily classified as infrastructure investments.
 
-With those caveats in mind, the chart does reveal some genuine patterns — but not the ones that are easiest to describe. Infrastructure-related keywords appear across all periods with available abstracts: this mostly tells us that World Bank projects involve infrastructure, which is not surprising. More informative is what changes. Environment and climate language is absent from the two 1980s abstracts, appears in 57% of the 2000s abstracts, dips to zero in the single 2010s abstract, and climbs to 89% of the 2020s abstracts. Governance and fiscal language is likewise absent in the 1980s, then appears consistently in the 2000s onward. Disaster risk language shows up surprisingly in both 1980s abstracts — but the keyword matching picks up any use of the word "risk," which shows up in structural adjustment documents discussing economic risk, not natural disasters. All of this reflects stated language in project documents, not project effectiveness or actual expenditure.
+More revealing is the appearance of environmental and climate language. These terms occur in 57% of available abstracts in the 2000s and 89% in the 2020s, compared with none of the two available 1980s abstracts. No such terms appear in the single available 2010s abstract, an education-focused project. The 2010s result is too sparse to support a meaningful conclusion about the decade as a whole.
+
+Governance and fiscal language likewise appears consistently from the 2000s onward, while the disaster-risk category requires particular caution. Both available 1980s abstracts match this category, but the keyword method also captures general references to economic risk in structural adjustment documents, not just natural-disaster risk.
+
+Taken together, the abstracts suggest a change in the language used to describe development objectives, particularly the increased prominence of environmental and climate concerns. They do not establish when those priorities emerged within the institution, how much financing they received, or whether the resulting projects achieved their stated objectives.
 
 ---
 
@@ -152,11 +186,11 @@ With those caveats in mind, the chart does reveal some genuine patterns — but 
 knitr::include_graphics(here("figures","fig6_development_trajectory.png"))
 ```
 
-Costa Rica's improvement on most standard development measures over this period has been substantial. GDP per capita — in current US dollars, unadjusted for inflation — grew from roughly **`r dollar(gdp_1980, accuracy=100)`** in 1980 to **`r dollar(gdp_2024, accuracy=100)`** in 2024. Life expectancy rose from **`r round(le_1980,0)`** years to **`r round(le_2024,0)`** years.
+The lending record unfolded alongside substantial changes in Costa Rica's economy and society. Over the study period, life expectancy increased from approximately **`r round(le_1980,0)`** years to **`r round(le_2024,0)`** years, while income per person rose substantially in real terms, from roughly **`r dollar(gdp_1980, accuracy=100)`** in 1980 to **`r dollar(gdp_2024, accuracy=100)`** in 2024. The country also experienced major changes in its export structure, foreign investment, and environmental policy.
 
-Inequality is more complicated. The Gini index reached its historically highest recorded level around 51.8 in 2002 before declining through the 2000s and 2010s. It rose modestly in 2020 during the COVID-19 pandemic, then resumed declining to 45.8 in 2024 — the lowest since the 1990s. A preliminary 2025 estimate from the World Bank API (45.5) suggests continued decline, but that value is not yet confirmed.
+Inequality followed a less straightforward path. The Gini index reached approximately 51.8 in 2002, declined during the following two decades, and stood at 45.8 in 2024 in the WDI series used here. A preliminary 2025 estimate from the World Bank API (45.5) suggests continued decline, but that value is not yet confirmed, still subject to revision.
 
-What none of this tells us is *why* these things happened. World Bank lending may have contributed to Costa Rica's development record — or it may have been incidental to changes driven by Costa Rica's own institutions, demographic trends, trade patterns, and policy choices. The correlation between lending episodes and development trends is worth noting; establishing causation from these data is not possible.
+What none of this tells us is *why* these things happened. These indicators provide context, not an evaluation of World Bank performance. Costa Rica's development trajectory reflects the interaction of domestic institutions, public policy, demographic change, international trade, private investment, and many other factors. The lending record alone cannot establish the Bank's contribution to those outcomes. Correlation is not causation.
 
 ---
 
@@ -174,33 +208,50 @@ total_ifc <- sum(ifc_scope$ifc_invest_usd_m, na.rm=TRUE)
 knitr::include_graphics(here("figures","fig7_ifc_investments.png"))
 ```
 
-Alongside IBRD lending, IFC has made **`r n_ifc` investments** in Costa Rican businesses with indicative own-account amounts totalling approximately **$`r round(total_ifc,0)` million** (nominal USD). The portfolio is dominated by financial services — commercial banks, SME lenders, housing finance institutions — consistent with IFC's mandate in middle-income countries. The largest single non-financial investment is the $100 million Reventazon hydroelectric project (2012).
+Alongside IBRD lending, IFC records **`r n_ifc` investments** in Costa Rican businesses with indicative own-account amounts totalling approximately **$`r round(total_ifc,0)` million** in nominal US dollars. Financial services account for the largest share: 17 investments totaling approximately $678 million. Other recorded investments span energy, transportation, health, and additional sectors. The largest single non-financial investment is the $100 million Reventazón hydroelectric project (2012).
 
-IFC invests in private entities on commercial terms. Its amounts cannot be compared with IBRD principal or summed to produce a "World Bank Group total."
+This is a distinct channel of World Bank Group engagement: rather than financing sovereign government programs, IFC works directly with private-sector entities. Its recorded amounts and investment dates are not directly comparable with IBRD loan principal.
 
 ---
 
 ## MIGA: de-risking private capital
 
-Between 1995 and FY2008, MIGA issued guarantee contracts covering **`r nrow(miga)` Costa Rica projects** (deduplicated). The portfolio spans tourism, banking, power generation, manufacturing, and transportation. MIGA's financial measure — *gross exposure* — is the maximum potential liability under issued guarantees, not a loan or a disbursement. The largest guarantee ($158.5 million) covered an investment in the Autopistas del Sol toll road concession (FY2008).
+Between 1995 and FY2008, MIGA's records identify guarantee contracts covering **`r nrow(miga)` Costa Rica projects**, after deduplication. The portfolio spans tourism, banking, power generation, manufacturing, and transportation.
+
+MIGA's financial measure — *gross exposure* — represents its potential liability under issued guarantees. It is not a loan, an investment disbursement, or the total value of the underlying private investment. The largest recorded guarantee exposure ($158.5 million) covered the Autopistas del Sol toll road concession (FY2008).
 
 ---
 
 ## What we can and cannot say
 
+The 45-year record reveals a substantial change in the character of the World Bank's financing relationship with Costa Rica. The portfolio moved from adjustment-era policy lending in the 1980s, through a broader mix of public investment and environmental finance, to large policy-based operations addressing fiscal management and decarbonization in the 2020s.
+
+This was not a simple progression from one development philosophy to another. The Bank approved a third structural adjustment loan in 1993, but it never became effective and delivered no funds. Policy-based lending returned to the active portfolio in 2008 with a disaster-contingent credit line, followed in 2009 by a much larger operation supporting public finances and competitiveness during the global financial crisis. Investment financing continued alongside these instruments, and policy-based operations became especially prominent again in the 2020s.
+
+The Bank's instruments and stated objectives changed, but different approaches to development finance repeatedly coexisted. The history is less a linear shift from adjustment to investment to climate finance than a series of changing responses to Costa Rica's economic circumstances and policy priorities.
+
 **What the evidence supports:**
 
-- IBRD engagement with Costa Rica has been continuous across four decades but has changed character substantially: from adjustment lending in the 1980s, to project investment in health, education, and environment, to large policy-based operations for fiscal reform and decarbonization in the 2020s.
-- Environmental and climate language became prominent in the 2000s and 2020s, absent in the 1980s and in the single available 2010s abstract — consistent with the actual project portfolio shift toward environmental finance after 2000, but caution is needed given sparse abstract coverage.
-- Both 2009 and 2023 saw $500 million IBRD commitments, tied respectively to global financial crisis response and the Fiscal and Decarbonization DPL series.
-- IFC's presence complements IBRD lending by working in the private sector; the two operate under different mandates and their financial measures are not interchangeable.
+- IBRD lending spans every decade of the study period, but its scale and composition changed substantially. The 2020–2025 period accounts for 57.9% of nominal original principal.
+- Policy-based lending was prominent in the 1980s, returned in a different form with the 2008 CAT DDO and 2009 fiscal and competitiveness DPL, and became a major component of the 2020s portfolio. The 1993 SAL III approval did not become effective and delivered no funds.
+- Environmental and climate language became much more prominent in the available project abstracts from the 2000s onward, particularly in the 2020s. Uneven abstract coverage limits comparisons across periods.
+- Both 2009 and 2023 saw $500 million IBRD operations, reflecting different policy and economic contexts.
+- IFC and MIGA provide additional channels of World Bank Group engagement with the private sector, using financial instruments that cannot be combined with IBRD lending figures.
 
-**What the evidence cannot tell us:**
+**What the evidence cannot establish:**
 
-- Whether World Bank lending *caused* improvements in Costa Rica's health, education, or environmental outcomes.
-- Whether structural adjustment conditions of the 1980s and 1990s helped or hurt Costa Rican workers and households.
-- Whether the Bank's current climate-focused DPL structure is driving Costa Rica's decarbonization ambitions or largely ratifying ambitions the country was already pursuing.
-- How this portfolio compares to comparable countries, or what it would look like if either party had made different choices.
+- Whether World Bank lending caused improvements in Costa Rica's health, education, environmental, or economic outcomes.
+- Whether the structural adjustment reforms of the 1980s and 1990s ultimately helped or harmed particular workers, households, or sectors.
+- How much the Bank shaped Costa Rica's development priorities, as opposed to financing policies the country had already chosen.
+- Whether the fiscal and climate conditions attached to recent DPLs materially changed the country's policy trajectory or accelerated its decarbonization.
+- Whether IFC investments and MIGA guarantees generated additional private investment that would not otherwise have occurred.
+- How Costa Rica's experience compares with that of similar countries or what might have happened under different financing arrangements.
+
+Costa Rica's development story is not reducible to the institutions that financed it. Its social institutions predated this study, its economic model changed through domestic political choices and international pressures, and its environmental ambitions developed through policies of its own making.
+
+The World Bank was part of that history — sometimes financing investment, sometimes supporting policy reform, and increasingly engaging with climate and fiscal priorities.
+
+The interesting question is not whether the Bank made Costa Rica what it is today. This lending record cannot answer that. It is how the relationship between a country with its own distinctive development model and an evolving international institution changed over 45 years.
 
 ---
 

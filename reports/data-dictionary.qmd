@@ -216,7 +216,7 @@ real_2025 = nominal * (defl[year==2025] / defl[year==approval_year])
 
 | Variable | Indicator | Unit | Coverage in scope |
 |---|---|---|---|
-| `gdp_per_capita_usd` | NY.GDP.PCAP.CD | Current US$ per person | 46/46 years (1980–2025) |
+| `gdp_per_capita_usd` | NY.GDP.PCAP.KD | Constant 2015 US$ per person | 46/46 years (1980–2025) |
 | `gdp_growth_pct` | NY.GDP.MKTP.KD.ZG | Annual % | 46/46 years (1980–2025) |
 | `gini` | SI.POV.GINI | Gini index (0–100) | 39/46 years; 2025 observation is a preliminary WB API estimate, not yet confirmed from survey |
 | `life_expectancy_years` | SP.DYN.LE00.IN | Years | 45/46 years — available through 2024 only; 2025 not yet published |

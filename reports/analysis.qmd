@@ -169,7 +169,7 @@ instr_period <- instr_period |>
 
 ## A. Portfolio chronology and scale
 
-### Annual commitments (nominal and real)
+### Annual approvals (nominal and real)
 
 ```{r fig1}
 knitr::include_graphics(here("figures", "fig1_ibrd_timeline.png"))
@@ -205,6 +205,8 @@ ibrd_period |>
     ) |>
     kable_styling(bootstrap_options = c("striped", "condensed"))
 ```
+
+> Original principal represents the amount recorded at Board approval, not necessarily the amount ultimately signed, disbursed, or spent. Net principal reflects cancellations. Two fully cancelled projects account for the difference between original and net principal in the 1990s: the $100 million SAL III and the $41 million Agriculture Sector Investment project. The 2022 COVID-19 vaccine operation is included in the project count but has zero original principal because the loan agreement was never signed.
 
 ### Top 10 projects
 
@@ -244,9 +246,9 @@ top10 |>
 knitr::include_graphics(here("figures", "fig8_nominal_vs_real.png"))
 ```
 
-In real 2025 dollars, the eight 1980s operations (~$294M nominal total) represented approximately **`r scales::dollar(ibrd_period$real_principal[ibrd_period$period=="1980–1989"], scale=1e-6, suffix="M", accuracy=1)`** — substantially larger than the nominal figure suggests. Of that total, three policy-based adjustment operations (SAL I, SAL II, and the Export Development loan) accounted for roughly $205M nominal, or about 70% of the decade's lending. The 2009 $500M DPL was approximately $728M in 2025 dollars. The recent 2020–2025 operations lose some of their comparative magnitude once inflation-adjusted.
+In real 2025 dollars, the eight 1980s operations (~$294M nominal total) represented approximately **`r scales::dollar(ibrd_period$real_principal[ibrd_period$period=="1980–1989"], scale=1e-6, suffix="M", accuracy=1)`** — substantially larger than the nominal figure suggests. Of that total, three policy-based adjustment operations (SAL I, SAL II, and the Export Development loan) accounted for roughly $205M nominal, or about 70% of the decade's lending. The 2009 $500M DPL was approximately $728M in 2025 dollars. The 2020–2025 period remains the largest in inflation-adjusted terms, but its share of the cumulative portfolio is smaller in real-dollar terms than its 57.9% share of nominal principal suggests.
 
-*Real amounts use the US GDP deflator (NY.GDP.DEFL.ZS, base 2020=100). The 2025 deflator value is preliminary.*
+*Real values use the US GDP deflator (NY.GDP.DEFL.ZS), rebased to constant 2025 US dollars. This adjusts historical nominal dollar amounts for changes in US prices; it does not measure their purchasing power within Costa Rica. The 2025 deflator observation is preliminary.*
 
 ---
 
@@ -255,6 +257,8 @@ In real 2025 dollars, the eight 1980s operations (~$294M nominal total) represen
 ```{r fig2}
 knitr::include_graphics(here("figures", "fig2_instrument_mix.png"))
 ```
+
+*Classification note: DPL is used here as an analytical category, not strictly as a contemporaneous World Bank instrument label. Several earlier operations—particularly the 1980s and early-1990s Structural Adjustment Loans and related policy-based lending—predate the modern Development Policy Loan framework. They are grouped with DPLs because of their policy-oriented purpose and role in the Bank's lending relationship with Costa Rica. This retrospective classification facilitates comparison across the study period but should not be read as implying that these operations were formally issued as DPLs.*
 
 ```{r instr-table}
 #| echo: false
@@ -280,7 +284,9 @@ instr_period |>
     kable_styling(bootstrap_options = c("striped", "condensed"))
 ```
 
-**Instrument classification note:** Structural Adjustment Loans (SAL I, SAL II, SAL III) are classified as Development Policy Lending. The Export Development loan (1983, P006922) is classified as adjustment-era policy lending via a manual override in `data/manual/instrument_overrides.csv`. The 1980 Highway Project (P006919) carries an NPL loan-type code but is classified as Investment Project Financing — its abstract confirms it financed road rehabilitation and equipment, not policy conditions (also a manual override). The Catastrophe DDO (2008), Public Finance and Competitiveness DPL-DDO (2009), and all Fiscal and Decarbonization DPLs (2020–2025) are Development Policy Loans. All others are Investment Project Financing or equivalent.
+> Instrument counts reflect Board-approved operations, not necessarily loans that became effective or disbursed. The 1990s include two fully cancelled projects: the decade's only DPL, the $100 million SAL III, and a $41 million IPF, all of which had zero net disbursement.
+
+**The portfolio does not show a simple progression** from adjustment lending to investment financing and then back to policy lending. Policy-based operations appear in the 1980s, 1990s, 2000s, and 2020s, although their objectives and economic contexts differ. The 2010s stand out for their exclusive reliance on investment-project financing and concentration in two large operations.
 
 ---
 
@@ -311,16 +317,26 @@ sec_totals |>
     kable_styling(bootstrap_options = c("striped", "condensed"))
 ```
 
-> **Two distinct coverage figures:** Sector *metadata* is available for **22 of 35** in-scope projects, whose combined original principal is approximately **$2.7 billion** (~59% of the $4.6B total). However, not all of those projects have complete sector *percentages* — only projects with reliable allocation percentages contribute to the dollar totals shown here. The actual amounts allocated across the sector categories sum to roughly **$2.2 billion**, the difference being projects with sector names but missing or zero percentages. The 2020–2025 DPL series largely lacks sector percentages in the API; it is excluded from allocation calculations. P178320 (COVID-19 Vaccines, Terminated, $0 original principal) is excluded from dollar totals. Sector allocations are a partial, non-representative view of the portfolio — treat with appropriate caution.
+The actual **recorded amounts allocated across the sector categories sum to roughly $2.2 billion**, the difference being projects with sector names but missing or zero percentages. Sector *metadata* is available for 22 of 35 in-scope projects, whose combined original principal is approximately $2.7 billion (~59% of the $4.6B total). However, not all of those projects have complete sector *percentages* — only projects with reliable allocation percentages contribute to the dollar totals shown here.
+
+The 2010s illustrate this limitation particularly clearly: the $200 million Higher Education Improvement Project appears in the chart, but the $420 million Strengthening Universal Health Insurance operation does not, because no usable sector allocation percentages are available for it. The $16 million shown in the Health category comes from other projects; it does not represent the 2016 health-insurance loan.
+
+The 2020–2025 DPL series largely lacks sector percentages in the API; it is excluded from allocation calculations. P178320 (COVID-19 Vaccines, Terminated, $0 original principal) is excluded from dollar totals. 
+
+> Sector allocations are a partial, non-representative view of the portfolio — treat with appropriate caution.
 
 ---
 
-## E. Development priorities in project language
+## E. Selected themes in project abstracts
 
 ```{r fig5}
 #| fig-cap: "Theme keyword presence by period. Only periods with available abstracts are shown. The 1990–1999 period has zero project abstracts in the API and is excluded. Percentages are shares of projects WITH available abstracts that mention the theme."
 knitr::include_graphics(here("figures", "fig5_abstract_themes.png"))
 ```
+
+> **Abstract coverage and interpretation:** The 1990–1999 period has **zero** project abstracts available in the WB Projects API extract. Other periods: 1980–1989: **2 abstracts of 8 projects**; 2000–2009: **7 of 7**; 2010–2019: **1 of 2**; 2020–2025: **9 of 12**. The 1980s and 2010s figures are extremely sparse — drawing conclusions from 2 or 1 abstract respectively is inadvisable. Percentages are shares of projects *with available abstracts*, not all in-scope IBRD projects.
+
+**What the table does and does not tell us:** Infrastructure language appears at 100% in every period with available abstracts — but this reflects keyword matching (the words "road", "transport", "energy" appear widely), not that every project was an infrastructure investment. Environment/Climate keywords appear in the 2000s (57%) and 2020s (89%) but are absent in the 1980s (0%) and 2010s (0% from a single abstract). Governance/Fiscal language is absent in the 1980s, then consistently present from the 2000s onward. These patterns reflect stated language in project abstracts — not project expenditure, project effects, or Bank institutional priorities more broadly.
 
 For additional detail, see the [top 30 words](#top-30-words) identified in the project abstracts.
 
@@ -354,10 +370,6 @@ theme_pres |>
     ) |>
     collapse_rows(columns = 1, valign = "top")
 ```
-
-> **Abstract coverage and interpretation:** The 1990–1999 period has **zero** project abstracts available in the WB Projects API extract. Other periods: 1980–1989: **2 abstracts of 8 projects**; 2000–2009: **7 of 7**; 2010–2019: **1 of 2**; 2020–2025: **9 of 12**. The 1980s and 2010s figures are extremely sparse — drawing conclusions from 2 or 1 abstract respectively is inadvisable. Percentages are shares of projects *with available abstracts*, not all in-scope IBRD projects.
->
-> **What the table does and does not tell us:** Infrastructure language appears at 100% in every period with available abstracts — but this reflects keyword matching (the words "road", "transport", "energy" appear widely), not that every project was an infrastructure investment. Environment/Climate keywords appear in the 2000s (57%) and 2020s (89%) but are absent in the 1980s (0%) and 2010s (0% from a single abstract). Governance/Fiscal language is absent in the 1980s, then consistently present from the 2000s onward. These patterns reflect stated language in project abstracts — not project expenditure, project effects, or Bank institutional priorities more broadly.
 
 ---
 
@@ -396,7 +408,7 @@ wdi |>
         `Life expectancy` = life_expectancy_years
     ) |>
     kable(
-        caption = "Costa Rica selected WDI indicators (contextual only). GDP per capita is current US dollars — not inflation-adjusted. Life expectancy is available through 2024; 2025 is not yet published. Gini: 2024 value is 45.8; a preliminary 2025 estimate (45.5) is available from the WB API but may be revised."
+        caption = "Costa Rica selected WDI indicators (contextual only). GDP per capita is constant 2015 US dollars. Life expectancy is available through 2024; 2025 is not yet published. Gini: 2024 value is 45.8; a preliminary 2025 estimate (45.5) is available from the WB API but may be revised."
     ) |>
     kable_styling(bootstrap_options = c("striped", "condensed"))
 ```
@@ -412,16 +424,21 @@ knitr::include_graphics(here("figures", "fig7_ifc_investments.png"))
 ```{r ifc-sector-table}
 #| echo: false
 ifc_sector |>
-    mutate(total_m = paste0("$", round(total_m, 0), "M")) |>
-    rename(
-        `Sector group` = sector_group,
-        Projects = n,
-        `Total IFC investment` = total_m
-    ) |>
-    kable(
-        caption = "IFC investments by sector (indicative amounts, nominal USD)"
-    ) |>
-    kable_styling(bootstrap_options = c("striped", "condensed"))
+  mutate(
+    share = total_m / sum(total_m) * 100,
+    total_m = paste0("$", round(total_m, 0), "M"),
+    share = paste0(round(share, 1), "%")
+  ) |>
+  rename(
+    `Sector group` = sector_group,
+    Projects = n,
+    `Total IFC investment` = total_m,
+    `Share of total` = share
+  ) |>
+  kable(
+    caption = "IFC investments by sector (indicative amounts, nominal USD)"
+  ) |>
+  kable_styling(bootstrap_options = c("striped", "condensed"))
 ```
 
 For additional detail, see the [full list of IFC projects](#ifc-projects) in the Appendix.

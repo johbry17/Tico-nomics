@@ -6,14 +6,18 @@ project:
     - reports/analysis.qmd
     - reports/data-dictionary.qmd
     - reports/methodology.qmd
+  resources:
+    - reports/scripts/site.js
   post-render: python scripts/fix_titles.py
 
 website:
   title: "Tico-nomics"
   description: "The World Bank Group in Costa Rica: Development Finance, Shifting Priorities, and 45 Years of an Evolving Relationship"
+  site-url: "https://johbry17.github.io/Tico-nomics/"
   favicon: images/landmark-solid.ico
   open-graph: true
   twitter-card: true
+  back-to-top-navigation: true
   navbar:
     left:
       - href: reports/overview.qmd
@@ -29,7 +33,7 @@ website:
         href: https://github.com/johbry17/Tico-nomics
   page-footer:
     left: "Data sources: World Bank"
-    center: "© {{< current-year >}} Bryan C. Johns"
+    center: "© <span id='copyright-year'>2026</span> Bryan C. Johns"
     right:
       - text: Portfolio
         href: https://informedwanderer.com
@@ -41,8 +45,6 @@ website:
 format:
   html:
     author-meta: "Bryan C. Johns"
-    shortcodes:
-      - scripts/year.lua
     theme:
       light: reports/custom-light.scss
       dark:  reports/custom-dark.scss
@@ -55,6 +57,10 @@ format:
     fig-height: 6.5
     fig-dpi: 150
     embed-resources: false
+    smooth-scroll: true
+    include-after-body: # site.js for copyright year & back-to-top smooth scroll
+      - text: |
+          <script src="scripts/site.js"></script>
 
 execute:
   echo: false

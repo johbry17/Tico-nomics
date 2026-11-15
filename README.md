@@ -164,13 +164,7 @@ Tico-nomics/
 │   ├── 08_visualizations.R
 │   └── 09_validation.R
 │
-├── reports/              # Four public-facing Quarto pages
-│   ├── overview.qmd
-│   ├── analysis.qmd
-│   ├── data-dictionary.qmd
-│   ├── methodology.qmd
-│   ├── custom-light.scss
-│   └── custom-dark.scss
+├── reports/              # Quarto pages, supporting CSS and JS
 │
 ├── figures/              # Generated figures (PNG + SVG)
 ├── scripts/              # Build utility scripts

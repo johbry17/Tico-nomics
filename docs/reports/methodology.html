@@ -114,6 +114,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<style>html{ scroll-behavior: smooth; }</style>
 
 
 <meta property="og:title" content="Methodology – Tico-nomics">
@@ -812,7 +813,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </section>
 
-</main> <!-- /main -->
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
@@ -899,7 +900,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/johbry17\.github\.io\/Tico-nomics\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -1233,7 +1234,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Data sources: World Bank</p>
 </div>   
     <div class="nav-footer-center">
-<p>© 2026 Bryan C. Johns</p>
+<p>© <span id="copyright-year">2026</span> Bryan C. Johns</p>
 </div>
     <div class="nav-footer-right">
       <ul class="footer-items list-unstyled">
@@ -1256,8 +1257,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     </div>
   </div>
 </footer>
+<script src="scripts/site.js"></script>
 
 
 
 
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

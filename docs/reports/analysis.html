@@ -79,6 +79,7 @@ ul.task-list li input[type="checkbox"] {
     "search-label": "Search"
   }
 }</script>
+<style>html{ scroll-behavior: smooth; }</style>
 <script src="../site_libs/kePrint-0.0.1/kePrint.js"></script>
 
 <link href="../site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
@@ -87,11 +88,15 @@ ul.task-list li input[type="checkbox"] {
 
 <meta property="og:title" content="Analysis – Tico-nomics">
 <meta property="og:description" content="Evidence behind the story — full tables and charts">
-<meta property="og:image" content="../figures/fig1_ibrd_timeline.png">
+<meta property="og:image" content="https://johbry17.github.io/Tico-nomics/figures/fig1_ibrd_timeline.png">
 <meta property="og:site_name" content="Tico-nomics">
+<meta property="og:image:height" content="1950">
+<meta property="og:image:width" content="3300">
 <meta name="twitter:title" content="Analysis – Tico-nomics">
 <meta name="twitter:description" content="Evidence behind the story — full tables and charts">
-<meta name="twitter:image" content="../figures/fig1_ibrd_timeline.png">
+<meta name="twitter:image" content="https://johbry17.github.io/Tico-nomics/figures/fig1_ibrd_timeline.png">
+<meta name="twitter:image-height" content="1950">
+<meta name="twitter:image-width" content="3300">
 <meta name="twitter:card" content="summary_large_image">
 </head>
 
@@ -2576,7 +2581,7 @@ MIGA has issued $158. 5 million in guarantees for the development of a toll road
 </section>
 </section>
 
-</main> <!-- /main -->
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
     // Ensure there is a toggle, if there isn't float one in the top right
@@ -2663,7 +2668,7 @@ MIGA has issued $158. 5 million in guarantees for the development of a toll road
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/johbry17\.github\.io\/Tico-nomics\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
@@ -2997,7 +3002,7 @@ MIGA has issued $158. 5 million in guarantees for the development of a toll road
 <p>Data sources: World Bank</p>
 </div>   
     <div class="nav-footer-center">
-<p>© 2026 Bryan C. Johns</p>
+<p>© <span id="copyright-year">2026</span> Bryan C. Johns</p>
 </div>
     <div class="nav-footer-right">
       <ul class="footer-items list-unstyled">
@@ -3020,8 +3025,10 @@ MIGA has issued $158. 5 million in guarantees for the development of a toll road
     </div>
   </div>
 </footer>
+<script src="scripts/site.js"></script>
 
 
 
 
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
 </body></html>

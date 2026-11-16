@@ -317,12 +317,13 @@ hr {
 
 /* Footer links */
 .nav-footer a {
-  text-decoration: none;
+  color: $link-color;
+  text-decoration: underline;
   transition: color 0.2s ease;
 }
 
 .nav-footer a:hover {
-  color: $sage-mid;
+  color: $link-hover-color;
   text-decoration: underline;
 }
 
@@ -332,6 +333,7 @@ hr {
     display: flex;
     flex-direction: column;
     text-align: center;
+    padding-bottom: 4.5rem !important;
     // gap: 0.5rem;
   }
 

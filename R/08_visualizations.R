@@ -92,7 +92,7 @@ fig1 <- ggplot(ibrd_annual, aes(x = approval_year)) +
     alpha = 0.9
   ) +
   scale_fill_manual(
-    values = c("Nominal USD" = "#1a6b72", "Real 2025 USD" = "#c9a96e"),
+    values = c("Nominal USD" = PALETTE$teal, "Real 2025 USD" = PALETTE$tan),
     name = "Amount",
     guide = guide_legend(override.aes = list(alpha = c(0.9, 0.4)))
   ) +
@@ -118,6 +118,200 @@ fig1 <- ggplot(ibrd_annual, aes(x = approval_year)) +
 
 save_fig(fig1, "fig1_ibrd_timeline", width = 11, height = 6.5)
 cat("  Saved fig1_ibrd_timeline\n")
+
+# ---------------------------------------------------------------------------
+# FIG 1 PERIOD VIEWS — recurring cropped/highlighted timeline panels
+# ---------------------------------------------------------------------------
+
+make_timeline_period <- function(period_start, period_end, highlight_years,
+                                 title, subtitle, annotations = NULL,
+                                 filename) {
+  timeline <- ibrd_annual |>
+    mutate(
+      highlighted = approval_year %in% highlight_years,
+      nominal_m = total_principal / 1e6,
+      real_m = real_principal / 1e6
+    )
+
+  p <- ggplot(timeline, aes(x = approval_year)) +
+    annotate(
+      "rect",
+      xmin = period_start - 0.5,
+      xmax = period_end + 0.5,
+      ymin = 0,
+      ymax = 800,
+      fill = "#e8e5e0",
+      alpha = 0.55
+    ) +
+    geom_col(
+      aes(y = real_m, fill = "Real 2025 USD"),
+      width = 0.85,
+      alpha = 0.4
+    ) +
+    geom_col(
+      aes(
+        y = nominal_m,
+        fill = if_else(highlighted, "Nominal USD", "Other nominal")
+      ),
+      width = 0.85,
+      alpha = 0.9
+    ) +
+    scale_fill_manual(
+      values = c(
+        "Nominal USD" = PALETTE$teal,
+        "Other nominal" = "#c8c6c1",
+        "Real 2025 USD" = PALETTE$tan
+      ),
+      breaks = c("Nominal USD", "Real 2025 USD"),
+      name = "Amount",
+      guide = guide_legend(
+        override.aes = list(alpha = c(0.9, 0.4))
+      )
+    ) +
+    scale_x_continuous(
+      breaks = seq(1980, 2025, 5),
+      limits = c(1979, 2026),
+      expand = expansion(add = 0.5)
+    ) +
+    scale_y_continuous(
+      labels = function(x) paste0("$", x, "M"),
+      limits = c(0, 800),
+      expand = expansion(mult = c(0, 0.02))
+    ) +
+    labs(
+      title = title,
+      subtitle = subtitle,
+      x = "Year of board approval",
+      y = "Approved original principal (US$ millions)",
+      caption = caption_wb(
+        "Nominal = original principal at approval. Real = adjusted using US GDP deflator. Highlighted years are discussed in the narrative."
+      )
+    ) +
+    theme_tico() +
+    theme(
+      legend.position = "top",
+      legend.justification = "left"
+    )
+
+  if (!is.null(annotations)) {
+    p <- p +
+      geom_segment(
+        data = annotations,
+        aes(
+          x = year,
+          xend = year,
+          y = amount_m + offset,
+          yend = amount_m + offset + leader
+        ),
+        inherit.aes = FALSE,
+        colour = PALETTE$grey_dark,
+        linewidth = 0.35
+      ) +
+      geom_text(
+        data = annotations,
+        aes(
+          x = year,
+          y = amount_m + offset + leader,
+          label = label
+        ),
+        inherit.aes = FALSE,
+        hjust = 0.5,
+        vjust = 0,
+        size = 3.2,
+        lineheight = 0.95,
+        colour = PALETTE$grey_dark
+      )
+  }
+
+  save_fig(p, filename, width = 11, height = 6.2)
+  p
+}
+
+timeline_1980s <- tibble(
+  year = c(1983, 1985, 1988),
+  amount_m = c(68, 203, 234),
+  offset = c(38, 38, 48),
+  leader = c(12, 12, 12),
+  label = c("1983  Export Development", "1985  SAL I", "1988  SAL II")
+)
+make_timeline_period(
+  1980, 1989, c(1983, 1985, 1988),
+  "IBRD Lending in the 1980s",
+  "Policy-based lending dominated the decade's approved principal.",
+  timeline_1980s,
+  "fig1_timeline_1980s"
+)
+
+timeline_1990s <- tibble(
+  year = 1993,
+  amount_m = 201,
+  offset = 70,
+  leader = 20,
+  label = "1993  $100M SAL III approved\nCancelled in 1995; never effective or disbursed"
+)
+make_timeline_period(
+  1990, 1999, 1993,
+  "IBRD Lending in the 1990s",
+  "One $100 million adjustment operation was approved, but never became financing.",
+  timeline_1990s,
+  "fig1_timeline_1990s"
+)
+
+timeline_2000s <- tibble(
+  year = c(2000, 2008, 2009),
+  amount_m = c(58, 95, 728),
+  offset = c(35, 35, 42),
+  leader = c(12, 12, 12),
+  label = c(
+    "2000  Ecomarkets\n$32.6M",
+    "2008  CAT DDO\n$65M",
+    "2009  Public Finance\nand Competitiveness DPL\n$500M"
+  )
+)
+make_timeline_period(
+  2000, 2009, c(2000, 2008, 2009),
+  "IBRD Lending in the 2000s",
+  "Environmental finance and policy-based lending both returned.",
+  timeline_2000s,
+  "fig1_timeline_2000s"
+)
+
+timeline_2010s <- tibble(
+  year = c(2012, 2016),
+  amount_m = c(277, 551),
+  offset = c(38, 65),
+  leader = c(12, 12),
+  label = c(
+    "2012  Higher Education\n$200M",
+    "2016  Universal Health Insurance\n$420M"
+  )
+)
+make_timeline_period(
+  2010, 2019, c(2012, 2016),
+  "IBRD Lending in the 2010s",
+  "Only two approvals, both substantial investments in public institutions.",
+  timeline_2010s,
+  "fig1_timeline_2010s"
+)
+
+timeline_2020s <- tibble(
+  year = c(2020, 2021, 2023),
+  amount_m = c(367, 351, 527),
+  offset = c(35, 35, 42),
+  leader = c(12, 12, 12),
+  label = c(
+    "2020  First Fiscal and\nDecarbonization DPL\n$300M",
+    "2021  Second Fiscal and\nDecarbonization DPL\n$300M",
+    "2023  Third Fiscal and\nDecarbonization DPL\n$500M"
+  )
+)
+make_timeline_period(
+  2020, 2025, c(2020, 2021, 2023, 2025),
+  "IBRD Lending in the 2020s",
+  "Fiscal and decarbonization policy loans led the highest-concentration lending period.",
+  timeline_2020s,
+  "fig1_timeline_2020s"
+)
 
 # ---------------------------------------------------------------------------
 # FIG 2 — Instrument mix by period

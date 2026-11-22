@@ -53,7 +53,7 @@ The analysis is descriptive. It documents patterns in a 45-year lending and inve
 
 3. **Abstract language analysis is limited by sparse coverage.** No project abstracts are available for the 1990s in the API extract. The 1980s and 2010s each have only 1–2 abstracts. Environment and climate keywords appear in available abstracts from the 2000s and 2020s, but were not detected in the two available 1980s abstracts. Sparse and uneven coverage limits comparisons across periods.
 
-4. **IFC's Costa Rica portfolio is concentrated in financial services**, with Reventazon HPP ($100M, projected board date 2012) as the largest non-financial investment.
+4. **IFC's Costa Rica portfolio is concentrated in financial services**, with Reventazon HPP ($100M, projected board date 2012) as the largest investment outside financial services.
 
 ---
 
@@ -67,7 +67,7 @@ The study examines the World Bank Group's financing relationship with Costa Rica
 | Study period | 1980–2025 |
 | Geographic scope | Costa Rica |
 | Project universe | 115 projects identified in the World Bank Projects & Operations List |
-| Primary analytical sample | 35 in-scope IBRD projects |
+| Primary analytical sample | 35 IBRD projects approved during 1980–2025 |
 | Primary financial measure | Original principal approved, in nominal and constant 2025 US dollars |
 | Institutional coverage | IBRD (core), IFC (companion), MIGA (historical survey) |
 | Instrument analysis | Development policy financing and investment project financing |
@@ -88,7 +88,6 @@ The 115-project universe is not equivalent to the final IBRD analytical sample. 
 | **IBRD** | Sovereign loans to middle-income governments | Core analysis |
 | **IFC** | Private-sector investment | Companion analysis |
 | **MIGA** | Political-risk guarantees | Historical survey |
-| **IDA** | Concessional financing for lower-income countries | Historical note only (CR graduated [FY1962](https://ida.worldbank.org/en/about/borrowing-countries/ida-graduates)) |
 
 These institutions' financial measures are NOT comparable and are never summed.
 
@@ -99,13 +98,13 @@ These institutions' financial measures are NOT comparable and are never summed.
 | File | Source | Description |
 |---|---|---|
 | `ibrd_statement_of_loans_and_guarantees_*.csv` | [World Bank IBRD Statement DS00047](https://financesone.worldbank.org/ibrd-statement-of-loans-and-guarantees-latest-available-snapshot/DS00047) | 68 loan records, 59 unique project IDs; snapshot 09/30/2026 |
-| `Projects_and_Operations_List.xlsx` | [World Bank Projects Portal](https://projects.worldbank.org/en/projects-operations/projects-summary) | 115 Costa Rica projects; snapshot 11/01/2026 |
-| `world_bank_costa_rica*.json` | [WB Search API V2](https://search.worldbank.org/api/v2/projects?format=json&countrycode=CR&rows=100&fl=id,project_name,totalamt,sector1,sector2,sector3,boardapprovaldate,closingdate,status,project_abstract) | 72-project extract (supplementary) |
-| `IFC_Projects_Costa Rica.xlsx` | [IFC Project Disclosures](https://disclosures.ifc.org) | 40 records, 30 unique projects |
-| `World_Bank_Group_Guarantees_MIGA-projects.csv` | [MIGA Projects](https://www.miga.org/projects) | 12 records, 10 unique projects |
-| WDI indicators | [World Bank API](https://api.worldbank.org/v2/) | GDP, Gini, life expectancy, GDP growth |
+| `Projects_and_Operations_List.xlsx` | [World Bank Projects Portal](https://projects.worldbank.org/en/projects-operations/projects-list?os=0&countryshortname_exact=Costa%20Rica) | 115 Costa Rica projects; snapshot 11/01/2026 |
+| `world_bank_costa_rica.json`; `world_bank_costa_rica_filtered.json` | [WB Search API V2](https://search.worldbank.org/api/v2/projects?format=json&countrycode=CR&rows=100&fl=id,project_name,totalamt,sector1,sector2,sector3,boardapprovaldate,closingdate,status,project_abstract) | 72-project extract (supplementary) |
+| `IFC_Projects_Costa Rica.xlsx` | [IFC Project Disclosures](https://disclosures.ifc.org/search?Country_Description=Costa+Rica&sortBy=Disclosed_Date&sortOrder=desc) | 40 records, 30 unique projects |
+| `World_Bank_Group_Guarantees_MIGA-projects.csv` | [MIGA Projects](https://www.miga.org/projects?f%5B%5D=host_country%3A1882) | 12 records, 10 unique projects |
+| WDI indicators | [World Bank API](https://databank.worldbank.org/source/world-development-indicators) | GDP, Gini, life expectancy, GDP growth |
 
-Raw source files are retained unchanged in `data/raw/`. US GDP deflator (NY.GDP.DEFL.ZS) used to calculate real 2025 dollar values from [World Bank WDI](https://api.worldbank.org/v2/country/US/indicator/NY.GDP.DEFL.ZS).
+Raw source files are retained unchanged in `data/raw/`. US GDP deflator (NY.GDP.DEFL.ZS) used to calculate real 2025 dollar values from [World Bank WDI](https://data.worldbank.org/indicator/NY.GDP.DEFL.ZS).
 
 ---
 
@@ -114,25 +113,28 @@ Raw source files are retained unchanged in `data/raw/`. US GDP deflator (NY.GDP.
 
 ### IBRD commitments over time
 
-![Annual IBRD commitments to Costa Rica, 1980–2025, showing original principal in nominal and constant 2025 US dollars](figures/fig1_ibrd_timeline.png)
+![Annual IBRD commitments to Costa Rica, 1980–2025, showing original principal in nominal and constant 2025 US dollars](figures/fig1_ibrd_timeline.png#gh-light-mode-only)
+![Annual IBRD commitments to Costa Rica, 1980–2025, showing original principal in nominal and constant 2025 US dollars](figures/fig1_ibrd_timeline-dark.png#gh-dark-mode-only)
 
 *Annual IBRD commitments were uneven across the study period, with a pronounced concentration in 2020–2025. Expressing historical commitments in constant 2025 dollars makes earlier lending episodes more comparable.*
 
 ### Changing composition of lending instruments
 
-![Development policy financing and investment project financing as shares of IBRD commitments across five periods, 1980–2025](figures/fig2_instrument_mix.png)
+![Development policy financing and investment project financing as shares of IBRD commitments across five periods, 1980–2025](figures/fig2_instrument_mix.png#gh-light-mode-only)
+![Development policy financing and investment project financing as shares of IBRD commitments across five periods, 1980–2025](figures/fig2_instrument_mix-dark.png#gh-dark-mode-only)
 
 *The balance between investment project financing and development policy lending shifted considerably across periods. Policy-based financing, prominent in the 1980s, regained substantial importance in the 2020s.*
 
 ### Sectoral composition
 
-![Sector composition of IBRD commitments by decade, based on projects with available sector allocation data](figures/fig3_sector_composition.png)
+![Sector composition of IBRD commitments by decade, based on projects with available sector allocation data](figures/fig3_sector_composition.png#gh-light-mode-only)
+![Sector composition of IBRD commitments by decade, based on projects with available sector allocation data](figures/fig3_sector_composition-dark.png#gh-dark-mode-only)
 
 *Sector allocations show the distribution of commitments across public administration, education, infrastructure, and other areas. Coverage is incomplete: allocations are available for 22 of 35 projects, and individual projects may span multiple sectors.*
 
 ### Development priorities in project abstracts
 
-![Keyword-based themes identified in available IBRD project abstracts, showing the share of abstracts mentioning each theme by period](figures/fig5_abstract_themes.png)
+![Keyword-based themes identified in available IBRD project abstracts, showing the share of abstracts mentioning each theme by period](figures/fig5_abstract_themes-dark.png#gh-dark-mode-only)
 
 *Project abstracts provide a complementary view of institutional priorities through the language used to describe operations. Coverage varies substantially across periods: no abstracts are available for the 1990s, and small samples limit comparisons in several other periods.*
 

@@ -123,9 +123,16 @@ cat("  Saved fig1_ibrd_timeline\n")
 # FIG 1 PERIOD VIEWS — recurring cropped/highlighted timeline panels
 # ---------------------------------------------------------------------------
 
-make_timeline_period <- function(period_start, period_end, highlight_years,
-                                 title, subtitle, annotations = NULL,
-                                 filename) {
+make_timeline_period <- function(
+  period_start,
+  period_end,
+  highlight_years,
+  title,
+  subtitle,
+  annotations = NULL,
+  filename,
+  annotation_size = 5
+) {
   timeline <- ibrd_annual |>
     mutate(
       highlighted = approval_year %in% highlight_years,
@@ -170,13 +177,16 @@ make_timeline_period <- function(period_start, period_end, highlight_years,
     ) +
     scale_x_continuous(
       breaks = seq(1980, 2025, 5),
-      limits = c(1979, 2026),
       expand = expansion(add = 0.5)
     ) +
     scale_y_continuous(
       labels = function(x) paste0("$", x, "M"),
-      limits = c(0, 800),
       expand = expansion(mult = c(0, 0.02))
+    ) +
+    coord_cartesian(
+      xlim = c(1979, 2026),
+      ylim = c(0, 800),
+      expand = FALSE
     ) +
     labs(
       title = title,
@@ -194,49 +204,70 @@ make_timeline_period <- function(period_start, period_end, highlight_years,
     )
 
   if (!is.null(annotations)) {
+    # Find the actual top of each year's overlaid bars
+    anchors <- timeline |>
+      transmute(
+        year = approval_year,
+        anchor_m = pmax(nominal_m, real_m, na.rm = TRUE)
+      )
+
+    annotations <- annotations |>
+      left_join(anchors, by = "year")
+
+    if (anyNA(annotations$anchor_m)) {
+      stop("At least one annotation year has no matching annual lending data.")
+    }
+
     p <- p +
+      # Leader lines: from the annual bar to the chosen label position
       geom_segment(
         data = annotations,
         aes(
           x = year,
-          xend = year,
-          y = amount_m + offset,
-          yend = amount_m + offset + leader
+          y = anchor_m + start_offset,
+          xend = leader_x,
+          yend = leader_y
         ),
         inherit.aes = FALSE,
         colour = PALETTE$grey_dark,
-        linewidth = 0.35
+        linewidth = 0.45
       ) +
+      # Labels
       geom_text(
         data = annotations,
         aes(
-          x = year,
-          y = amount_m + offset + leader,
-          label = label
+          x = label_x,
+          y = label_y,
+          label = label,
+          hjust = hjust
         ),
         inherit.aes = FALSE,
-        hjust = 0.5,
         vjust = 0,
-        size = 3.2,
-        lineheight = 0.95,
+        size = annotation_size,
+        lineheight = 1.05,
         colour = PALETTE$grey_dark
       )
   }
 
-  save_fig(p, filename, width = 11, height = 6.2)
+  save_fig(p, filename, width = 11, height = 6.5)
   p
 }
 
 timeline_1980s <- tibble(
   year = c(1983, 1985, 1988),
-  amount_m = c(68, 203, 234),
-  offset = c(38, 38, 48),
-  leader = c(12, 12, 12),
-  label = c("1983  Export Development", "1985  SAL I", "1988  SAL II")
+  label_x = c(1980, 1985, 1993),
+  label_y = c(670, 425, 470),
+  leader_x = c(1981, 1985, 1992.5),
+  leader_y = c(650, 415, 465),
+  start_offset = c(8, 8, 8),
+  hjust = c(0, 0.5, 0),
+  label = c("Export Development\n1983 · $25.2M", "Structural\nAdjustment\nLoan I\n1985 · $80M", "Structural\nAdjustment\nLoan II\n1988 · $100M")
 )
 make_timeline_period(
-  1980, 1989, c(1983, 1985, 1988),
-  "IBRD Lending in the 1980s",
+  1980,
+  1989,
+  c(1983, 1985, 1988),
+  "1980s: The debt crisis and structural adjustment",
   "Policy-based lending dominated the decade's approved principal.",
   timeline_1980s,
   "fig1_timeline_1980s"
@@ -244,71 +275,86 @@ make_timeline_period(
 
 timeline_1990s <- tibble(
   year = 1993,
-  amount_m = 201,
-  offset = 70,
-  leader = 20,
-  label = "1993  $100M SAL III approved\nCancelled in 1995; never effective or disbursed"
+  label_x = 1995.5,
+  label_y = 470,
+  leader_x = 1995.5,
+  leader_y = 465,
+  start_offset = 8,
+  hjust = 0,
+  label = "Structural Adjustment Loan III\nApproved 1993 · $100M\nCancelled in 1995"
 )
 make_timeline_period(
-  1990, 1999, 1993,
-  "IBRD Lending in the 1990s",
-  "One $100 million adjustment operation was approved, but never became financing.",
+  1990,
+  1999,
+  1993,
+  "1990s: The end of structural adjustment",
+  "The final structural adjustment loan was approved but never became effective.",
   timeline_1990s,
   "fig1_timeline_1990s"
 )
 
 timeline_2000s <- tibble(
-  year = c(2000, 2008, 2009),
-  amount_m = c(58, 95, 728),
-  offset = c(35, 35, 42),
-  leader = c(12, 12, 12),
+  year = c(2000, 2009),
+  label_x = c(1999.5, 2006),
+  label_y = c(200, 675),
+  leader_x = c(1997.5, 2006.3),
+  leader_y = c(190, 750),
+  start_offset = c(8, 8),
+  hjust = c(1, 1),
   label = c(
-    "2000  Ecomarkets\n$32.6M",
-    "2008  CAT DDO\n$65M",
-    "2009  Public Finance\nand Competitiveness DPL\n$500M"
+    "Ecomarkets\n2000 · $32.6M",
+    "Public Finance and \nCompetitiveness DPL\n2009 · $500M"
   )
 )
 make_timeline_period(
-  2000, 2009, c(2000, 2008, 2009),
-  "IBRD Lending in the 2000s",
-  "Environmental finance and policy-based lending both returned.",
+  2000,
+  2009,
+  c(2000, 2009),
+  "2000s: Diversification and environmental finance",
+  "Conservation finance, disaster preparedness, and crisis-era budget support.",
   timeline_2000s,
   "fig1_timeline_2000s"
 )
 
 timeline_2010s <- tibble(
   year = c(2012, 2016),
-  amount_m = c(277, 551),
-  offset = c(38, 65),
-  leader = c(12, 12),
+  label_x = c(2012, 2016),
+  label_y = c(390, 660),
+  leader_x = c(2012, 2016),
+  leader_y = c(385, 650),
+  start_offset = c(8, 8),
+  hjust = c(0.5, 0.5),
   label = c(
-    "2012  Higher Education\n$200M",
-    "2016  Universal Health Insurance\n$420M"
+    "Higher Education\nImprovement\n2012 · $200M",
+    "Strengthening\nUniversal Health Insurance\n2016 · $420M"
   )
 )
 make_timeline_period(
-  2010, 2019, c(2012, 2016),
-  "IBRD Lending in the 2010s",
-  "Only two approvals, both substantial investments in public institutions.",
+  2010,
+  2019,
+  c(2012, 2016),
+  "2010s: Investing in the public sector",
+  "Two large investments supported Costa Rica's public university and health systems.",
   timeline_2010s,
   "fig1_timeline_2010s"
 )
 
 timeline_2020s <- tibble(
-  year = c(2020, 2021, 2023),
-  amount_m = c(367, 351, 527),
-  offset = c(35, 35, 42),
-  leader = c(12, 12, 12),
-  label = c(
-    "2020  First Fiscal and\nDecarbonization DPL\n$300M",
-    "2021  Second Fiscal and\nDecarbonization DPL\n$300M",
-    "2023  Third Fiscal and\nDecarbonization DPL\n$500M"
-  )
+  year = 2020,
+  label_x = 2017,
+  label_y = 675,
+  leader_x = 2018,
+  leader_y = 725,
+  start_offset = 8,
+  hjust = 1,
+  label = "Fiscal and Decarbonization Management DPL's\n2020 · $300M | 2021 · $300M | 2023 · $500M",
 )
 make_timeline_period(
-  2020, 2025, c(2020, 2021, 2023, 2025),
-  "IBRD Lending in the 2020s",
-  "Fiscal and decarbonization policy loans led the highest-concentration lending period.",
+  2020,
+  2025,
+  c(2020, 2021, 2023),
+  "2020s: Fiscal reform and decarbonization",
+  "The highest concentration of lending in the 45-year record, alongside continued investment financing.",
   timeline_2020s,
   "fig1_timeline_2020s"
 )
@@ -619,11 +665,14 @@ theme_plot <- theme_pres |>
     period = factor(period, levels = period_levels),
     theme = factor(theme, levels = rev(names(theme_labels))),
     cell_label = if_else(
-      is.na(pct), "",
+      is.na(pct),
+      "",
       paste0(round(pct), "%")
     ),
     text_colour = if_else(
-      !is.na(pct) & pct >= 55, "white", "dark"
+      !is.na(pct) & pct >= 55,
+      "white",
+      "dark"
     )
   )
 

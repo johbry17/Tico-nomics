@@ -146,7 +146,7 @@
 <text x='725.71' y='196.62' style='font-size: 9.35px;fill: #6B6B6B; font-family: "Arial";' textLength='23.90px' lengthAdjust='spacingAndGlyphs'>100%</text>
 <text x='7.97' y='39.18' style='font-size: 11.55px;fill: #6B6B6B; font-family: "Arial";' textLength='552.05px' lengthAdjust='spacingAndGlyphs'>Share of available project abstracts mentioning each theme. Sample sizes vary substantially across periods.</text>
 <text x='7.97' y='24.15' style='font-size: 14.85px; font-weight: bold;fill: #2D2D2D; font-family: "Arial";' textLength='344.02px' lengthAdjust='spacingAndGlyphs'>Development Priorities in the Bank's Own Words</text>
-<text x='7.97' y='445.01' style='font-size: 9.02px;fill: #909090; font-family: "Arial";' textLength='686.19px' lengthAdjust='spacingAndGlyphs'>Source: World Bank Projects &amp; Operations List; IBRD Statement of Loans and Guarantees (DS00047, snapshot 09/30/2026). Keyword search of WB Projects API abstracts.</text>
-<text x='7.97' y='459.08' style='font-size: 9.02px;fill: #909090; font-family: "Arial";' textLength='589.65px' lengthAdjust='spacingAndGlyphs'>Grey indicates no abstracts available. Percentages use only projects with available abstracts; they do not measure project expenditure or outcomes.</text>
+<text x='7.97' y='445.01' style='font-size: 9.02px;fill: #909090; font-family: "Arial";' textLength='644.61px' lengthAdjust='spacingAndGlyphs'>Source: World Bank Projects &amp; Operations List; IBRD Statement of Loans and Guarantees (DS00047, snapshot 09/30/2026). Keyword search of WB Projects API</text>
+<text x='7.97' y='459.08' style='font-size: 9.02px;fill: #909090; font-family: "Arial";' textLength='631.23px' lengthAdjust='spacingAndGlyphs'>abstracts. Grey indicates no abstracts available. Percentages use only projects with available abstracts; they do not measure project expenditure or outcomes.</text>
 </g>
 </svg>

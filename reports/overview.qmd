@@ -2,7 +2,8 @@
 title: "The World Bank Group in Costa Rica"
 subtitle: "A 45-year story of development finance, shifting priorities, and a changing relationship"
 author: "Bryan Johns"
-date: today
+date: "November 2026"
+date-format: "MMMM YYYY"
 ---
 
 ```{r setup}

@@ -142,7 +142,7 @@ theme_set(theme_tico())
 # Standard caption text
 # ---------------------------------------------------------------------------
 
-wrap_caption <- function(text, width = 165) {
+wrap_caption <- function(text, width = 160) {
   stringr::str_wrap(text, width = width)
 }
 

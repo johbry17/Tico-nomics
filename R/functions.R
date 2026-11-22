@@ -25,6 +25,28 @@ PALETTE <- list(
   white = "#ffffff"
 )
 
+# Dark-mode plotting palette. Keep category identities while increasing
+# contrast against the report's deep forest surfaces.
+DARK_PALETTE <- list(
+  teal = "#67AEB3",   # IBRD - brighter teal
+  amber = "#F59E0B",  # ochre accent
+  slate = "#93A7BA",  # IFC - brighter slate
+  sage = "#74BA86",   # MIGA - bright sage
+  rose = "#E58A98",
+  tan = "#F0C68A",
+  grey_dark = "#F2EDE2",
+  grey_mid = "#A8B09F",
+  grey_light = "#243029",
+  grey_bg = "#111D15",
+  white = "#F2EDE2",
+  panel = "#182118",
+  raised = "#1E2B1E",
+  elevated = "#243029",
+  border = "#2A3D30",
+  border_mid = "#3A4E3E",
+  grid = "#3A4E3E"
+)
+
 # Institution colours
 INSTITUTION_COLOURS <- c(
   "IBRD" = "#1a6b72",
@@ -133,6 +155,124 @@ theme_tico <- function(base_size = 11, base_family = "sans") {
       # --- Margins ---
       plot.margin = margin(t = 12, r = 16, b = 8, l = 8)
     )
+}
+
+theme_tico_dark <- function(base_size = 11, base_family = "sans") {
+  theme_minimal(base_size = base_size, base_family = base_family) %+replace%
+    theme(
+      plot.background = element_rect(fill = DARK_PALETTE$grey_bg, colour = NA),
+      panel.background = element_rect(fill = DARK_PALETTE$grey_bg, colour = NA),
+      panel.grid.major = element_line(colour = DARK_PALETTE$grid, linewidth = 0.4),
+      panel.grid.minor = element_blank(),
+      panel.border = element_blank(),
+
+      axis.line = element_line(colour = DARK_PALETTE$border_mid, linewidth = 0.4),
+      axis.ticks = element_line(colour = DARK_PALETTE$border_mid, linewidth = 0.4),
+      axis.ticks.length = unit(3, "pt"),
+      axis.text = element_text(colour = DARK_PALETTE$grey_mid, size = rel(0.85)),
+      axis.title = element_text(
+        colour = DARK_PALETTE$grey_dark,
+        size = rel(0.95),
+        margin = margin(t = 4, r = 4)
+      ),
+      axis.title.x = element_text(margin = margin(t = 8)),
+      axis.title.y = element_text(margin = margin(r = 8), angle = 90),
+
+      legend.background = element_rect(fill = DARK_PALETTE$panel, colour = NA),
+      legend.key = element_rect(fill = DARK_PALETTE$panel, colour = NA),
+      legend.text = element_text(colour = DARK_PALETTE$grey_mid, size = rel(0.85)),
+      legend.title = element_text(
+        colour = DARK_PALETTE$grey_dark,
+        size = rel(0.9),
+        face = "bold"
+      ),
+      legend.position = "bottom",
+      legend.box.margin = margin(t = 4),
+
+      plot.title = element_text(
+        colour = DARK_PALETTE$white,
+        size = rel(1.35),
+        face = "bold",
+        hjust = 0,
+        margin = margin(b = 4)
+      ),
+      plot.subtitle = element_text(
+        colour = DARK_PALETTE$grey_mid,
+        size = rel(1.05),
+        hjust = 0,
+        lineheight = 1.3,
+        margin = margin(b = 12)
+      ),
+      plot.caption = element_text(
+        colour = "#72786F",
+        size = rel(0.82),
+        hjust = 0,
+        lineheight = 1.3,
+        margin = margin(t = 10)
+      ),
+      plot.title.position = "plot",
+      plot.caption.position = "plot",
+
+      strip.background = element_rect(fill = DARK_PALETTE$raised, colour = NA),
+      strip.text = element_text(
+        colour = DARK_PALETTE$grey_dark,
+        face = "bold",
+        size = rel(0.85),
+        margin = margin(4, 4, 4, 4)
+      ),
+
+      plot.margin = margin(t = 12, r = 16, b = 8, l = 8)
+    )
+}
+
+tico_palette <- function(mode = c("light", "dark")) {
+  mode <- match.arg(mode)
+  if (mode == "dark") DARK_PALETTE else PALETTE
+}
+
+tico_theme <- function(mode = c("light", "dark"), base_size = 11, base_family = "sans") {
+  mode <- match.arg(mode)
+  if (mode == "dark") {
+    theme_tico_dark(base_size, base_family)
+  } else {
+    theme_tico(base_size, base_family)
+  }
+}
+
+tico_period_colours <- function(mode = c("light", "dark")) {
+  mode <- match.arg(mode)
+  if (mode == "dark") {
+    c(
+      "1980–1989" = "#D8C09A",
+      "1990–1999" = "#67AEB3",
+      "2000–2009" = "#F59E0B",
+      "2010–2019" = "#93A7BA",
+      "2020–2025" = "#74BA86"
+    )
+  } else {
+    PERIOD_COLOURS
+  }
+}
+
+tico_sector_colours <- function(mode = c("light", "dark")) {
+  mode <- match.arg(mode)
+  if (mode == "dark") {
+    c(
+      "Transportation" = "#67AEB3",
+      "Energy and Extractives" = "#F59E0B",
+      "Public Administration" = "#93A7BA",
+      "Education" = "#74BA86",
+      "Health" = "#E58A98",
+      "Finance" = "#F0C68A",
+      "Water, Sanitation and Waste" = "#79AFC9",
+      "Agriculture, Fishing & Forestry" = "#A8C978",
+      "Social Protection" = "#C59AC7",
+      "ICT / Trade" = "#D8C09A",
+      "Other" = "#A8B09F"
+    )
+  } else {
+    SECTOR_COLOURS
+  }
 }
 
 # Default theme for this project
@@ -244,25 +384,35 @@ group_sector <- function(sector_name) {
 # Save figures
 # ---------------------------------------------------------------------------
 
-save_fig <- function(plot, filename, width = 10, height = 6.5, dpi = 300) {
+save_fig <- function(
+  plot,
+  filename,
+  width = 10,
+  height = 6.5,
+  dpi = 300,
+  mode = c("light", "dark")
+) {
+  mode <- match.arg(mode)
   base <- here::here("figures")
+  export_filename <- if (mode == "dark") paste0(filename, "-dark") else filename
+  palette <- tico_palette(mode)
   # PNG (high-res)
   ggplot2::ggsave(
-    filename = file.path(base, paste0(filename, ".png")),
+    filename = file.path(base, paste0(export_filename, ".png")),
     plot = plot,
     width = width,
     height = height,
     dpi = dpi,
-    bg = PALETTE$grey_bg
+    bg = palette$grey_bg
   )
   # SVG (vector for web)
   ggplot2::ggsave(
-    filename = file.path(base, paste0(filename, ".svg")),
+    filename = file.path(base, paste0(export_filename, ".svg")),
     plot = plot,
     width = width,
     height = height,
     device = svglite::svglite,
-    bg = PALETTE$grey_bg
+    bg = palette$grey_bg
   )
   invisible(plot)
 }

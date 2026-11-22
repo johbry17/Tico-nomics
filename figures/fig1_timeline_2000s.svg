@@ -138,10 +138,10 @@
 <rect x='724.03' y='147.67' width='12.91' height='245.77' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #C8C6C1; fill-opacity: 0.90;' />
 <rect x='739.22' y='114.16' width='12.91' height='279.28' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #C8C6C1; fill-opacity: 0.90;' />
 <rect x='754.41' y='237.04' width='12.91' height='156.40' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #C8C6C1; fill-opacity: 0.90;' />
-<line x1='381.11' y1='368.91' x2='343.13' y2='322.69' style='stroke-width: 0.96; stroke: #2D2D2D; stroke-linecap: butt;' />
+<line x1='381.11' y1='368.91' x2='381.11' y2='322.69' style='stroke-width: 0.96; stroke: #2D2D2D; stroke-linecap: butt;' />
 <line x1='517.82' y1='119.36' x2='476.81' y2='114.16' style='stroke-width: 0.96; stroke: #2D2D2D; stroke-linecap: butt;' />
-<text x='373.51' y='301.04' text-anchor='end' style='font-size: 14.23px;fill: #2D2D2D; font-family: "Arial";' textLength='75.07px' lengthAdjust='spacingAndGlyphs'>Ecomarkets</text>
-<text x='373.51' y='318.96' text-anchor='end' style='font-size: 14.23px;fill: #2D2D2D; font-family: "Arial";' textLength='91.68px' lengthAdjust='spacingAndGlyphs'>2000 · $32.6M</text>
+<text x='381.11' y='301.04' text-anchor='middle' style='font-size: 14.23px;fill: #2D2D2D; font-family: "Arial";' textLength='75.07px' lengthAdjust='spacingAndGlyphs'>Ecomarkets</text>
+<text x='381.11' y='318.96' text-anchor='middle' style='font-size: 14.23px;fill: #2D2D2D; font-family: "Arial";' textLength='91.68px' lengthAdjust='spacingAndGlyphs'>2000 · $32.6M</text>
 <text x='472.25' y='106.23' text-anchor='end' style='font-size: 14.23px;fill: #2D2D2D; font-family: "Arial";' textLength='124.88px' lengthAdjust='spacingAndGlyphs'>Public Finance and </text>
 <text x='472.25' y='124.16' text-anchor='end' style='font-size: 14.23px;fill: #2D2D2D; font-family: "Arial";' textLength='136.72px' lengthAdjust='spacingAndGlyphs'>Competitiveness DPL</text>
 <text x='472.25' y='142.08' text-anchor='end' style='font-size: 14.23px;fill: #2D2D2D; font-family: "Arial";' textLength='87.73px' lengthAdjust='spacingAndGlyphs'>2009 · $500M</text>

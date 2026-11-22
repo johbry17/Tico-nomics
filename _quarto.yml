@@ -8,6 +8,7 @@ project:
     - reports/methodology.qmd
   resources:
     - reports/scripts/site.js
+    - figures/
   post-render: python scripts/fix_titles.py
 
 website:

@@ -364,3 +364,30 @@ hr {
   background: $bg-raised;
   color: $text-primary;
 }
+
+// --- Theme-aware figure pairs ---
+.tico-figure-pair {
+  display: grid;
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
+.tico-figure-pair img {
+  grid-area: 1 / 1;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+}
+
+.tico-figure-pair .tico-dark-figure {
+  display: none;
+}
+
+body.quarto-dark .tico-figure-pair .tico-light-figure {
+  display: none;
+}
+
+body.quarto-dark .tico-figure-pair .tico-dark-figure {
+  display: block;
+}

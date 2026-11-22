@@ -1,6 +1,7 @@
 # 08_visualizations.R
 # Publication-quality figures for the Tico-nomics project.
-# Saves PNG + SVG to figures/. Uses theme_tico() from functions.R.
+# Saves paired PNG + SVG variants to figures/. Uses theme_tico() and
+# theme_tico_dark() through tico_theme() from functions.R.
 
 source(here::here("R", "00_setup.R"))
 
@@ -72,6 +73,9 @@ theme_pres <- theme_pres |>
   filter(period %in% period_levels) |>
   mutate(period = factor(period, levels = period_levels))
 
+for (render_mode in c("light", "dark")) {
+  P <- tico_palette(render_mode)
+
 # ---------------------------------------------------------------------------
 # FIG 1 — IBRD lending timeline: nominal and real commitments
 # ---------------------------------------------------------------------------
@@ -92,7 +96,7 @@ fig1 <- ggplot(ibrd_annual, aes(x = approval_year)) +
     alpha = 0.9
   ) +
   scale_fill_manual(
-    values = c("Nominal USD" = PALETTE$teal, "Real 2025 USD" = PALETTE$tan),
+    values = c("Nominal USD" = P$teal, "Real 2025 USD" = P$tan),
     name = "Amount",
     guide = guide_legend(override.aes = list(alpha = c(0.9, 0.4)))
   ) +
@@ -113,10 +117,10 @@ fig1 <- ggplot(ibrd_annual, aes(x = approval_year)) +
       "Nominal = original principal at approval. Real = adjusted using US GDP deflator (NY.GDP.DEFL.ZS, base 2020=100)."
     )
   ) +
-  theme_tico() +
+  tico_theme(render_mode) +
   theme(legend.position = "top", legend.justification = "left")
 
-save_fig(fig1, "fig1_ibrd_timeline", width = 11, height = 6.5)
+save_fig(fig1, "fig1_ibrd_timeline", width = 11, height = 6.5, mode = render_mode)
 cat("  Saved fig1_ibrd_timeline\n")
 
 # ---------------------------------------------------------------------------
@@ -147,7 +151,7 @@ make_timeline_period <- function(
       xmax = period_end + 0.5,
       ymin = 0,
       ymax = 800,
-      fill = "#e8e5e0",
+      fill = if (render_mode == "dark") "#243029" else "#e8e5e0",
       alpha = 0.55
     ) +
     geom_col(
@@ -165,9 +169,9 @@ make_timeline_period <- function(
     ) +
     scale_fill_manual(
       values = c(
-        "Nominal USD" = PALETTE$teal,
-        "Other nominal" = "#c8c6c1",
-        "Real 2025 USD" = PALETTE$tan
+        "Nominal USD" = P$teal,
+        "Other nominal" = if (render_mode == "dark") "#A8B09F" else "#c8c6c1",
+        "Real 2025 USD" = P$tan
       ),
       breaks = c("Nominal USD", "Real 2025 USD"),
       name = "Amount",
@@ -197,7 +201,7 @@ make_timeline_period <- function(
         "Nominal = original principal at approval. Real = adjusted using US GDP deflator. Highlighted years are discussed in the narrative."
       )
     ) +
-    theme_tico() +
+    tico_theme(render_mode) +
     theme(
       legend.position = "top",
       legend.justification = "left"
@@ -229,7 +233,7 @@ make_timeline_period <- function(
           yend = leader_y
         ),
         inherit.aes = FALSE,
-        colour = PALETTE$grey_dark,
+        colour = P$grey_dark,
         linewidth = 0.45
       ) +
       # Labels
@@ -245,11 +249,11 @@ make_timeline_period <- function(
         vjust = 0,
         size = annotation_size,
         lineheight = 1.05,
-        colour = PALETTE$grey_dark
+        colour = P$grey_dark
       )
   }
 
-  save_fig(p, filename, width = 11, height = 6.5)
+  save_fig(p, filename, width = 11, height = 6.5, mode = render_mode)
   p
 }
 
@@ -295,12 +299,12 @@ make_timeline_period(
 
 timeline_2000s <- tibble(
   year = c(2000, 2009),
-  label_x = c(1999.5, 2006),
+  label_x = c(2000, 2006),
   label_y = c(200, 675),
-  leader_x = c(1997.5, 2006.3),
+  leader_x = c(2000, 2006.3),
   leader_y = c(190, 750),
   start_offset = c(8, 8),
-  hjust = c(1, 1),
+  hjust = c(0.5, 1),
   label = c(
     "Ecomarkets\n2000 · $32.6M",
     "Public Finance and \nCompetitiveness DPL\n2009 · $500M"
@@ -375,11 +379,11 @@ fig2 <- ggplot(
   instr_plot,
   aes(x = period, y = total_principal / 1e6, fill = instrument_group)
 ) +
-  geom_col(width = 0.72, colour = PALETTE$white, linewidth = 0.25) +
+  geom_col(width = 0.72, colour = P$white, linewidth = 0.25) +
   scale_fill_manual(
     values = c(
-      "Development Policy Loan" = PALETTE$amber,
-      "Investment Project Financing" = PALETTE$teal
+      "Development Policy Loan" = P$amber,
+      "Investment Project Financing" = P$teal
     ),
     name = "Instrument type"
   ) +
@@ -396,10 +400,10 @@ fig2 <- ggplot(
       "IPF finances specific investment or programmatic activities. DPLs provide budget support tied to policy conditions. Earlier policy-based loans are grouped with DPLs for comparison."
     )
   ) +
-  theme_tico() +
+  tico_theme(render_mode) +
   theme(legend.position = "bottom")
 
-save_fig(fig2, "fig2_instrument_mix", width = 10, height = 6.5)
+save_fig(fig2, "fig2_instrument_mix", width = 10, height = 6.5, mode = render_mode)
 cat("  Saved fig2_instrument_mix\n")
 
 # ---------------------------------------------------------------------------
@@ -461,9 +465,9 @@ names(sector_pal) <- names(c(
 ))
 
 fig3 <- ggplot(sec_plot, aes(x = period, y = pct, fill = sg)) +
-  geom_col(width = 0.72, colour = PALETTE$white, linewidth = 0.3) +
+  geom_col(width = 0.72, colour = P$white, linewidth = 0.3) +
   scale_fill_manual(
-    values = SECTOR_COLOURS,
+    values = tico_sector_colours(render_mode),
     name = "Sector",
     guide = guide_legend(ncol = 1)
   ) +
@@ -480,10 +484,10 @@ fig3 <- ggplot(sec_plot, aes(x = period, y = pct, fill = sg)) +
       "Based on sector percentages from Projects API. Projects without sector data excluded from allocation."
     )
   ) +
-  theme_tico() +
+  tico_theme(render_mode) +
   theme(legend.position = "right")
 
-save_fig(fig3, "fig3_sector_composition", width = 11, height = 7)
+save_fig(fig3, "fig3_sector_composition", width = 11, height = 7, mode = render_mode)
 cat("  Saved fig3_sector_composition\n")
 
 # ---------------------------------------------------------------------------
@@ -524,9 +528,9 @@ fig4 <- ggplot(
     aes(label = paste0("$", round(total_principal_m), "M  ", approval_year)),
     hjust = -0.05,
     size = 3,
-    colour = PALETTE$grey_dark
+    colour = P$grey_dark
   ) +
-  scale_fill_manual(values = PERIOD_COLOURS, name = "Period") +
+  scale_fill_manual(values = tico_period_colours(render_mode), name = "Period") +
   scale_x_continuous(
     labels = function(x) paste0("$", x, "M"),
     expand = expansion(mult = c(0, 0.22))
@@ -538,14 +542,14 @@ fig4 <- ggplot(
     y = NULL,
     caption = caption_wb()
   ) +
-  theme_tico() +
+  tico_theme(render_mode) +
   theme(
     legend.position = "bottom",
     panel.grid.major.y = element_blank(),
     axis.ticks.y = element_blank()
   )
 
-save_fig(fig4, "fig4_top_projects", width = 11, height = 7)
+save_fig(fig4, "fig4_top_projects", width = 11, height = 7, mode = render_mode)
 cat("  Saved fig4_top_projects\n")
 
 # ---------------------------------------------------------------------------
@@ -563,11 +567,11 @@ theme_labels <- c(
   "Disaster_Risk" = "Disaster Risk"
 )
 theme_colours <- c(
-  "Infrastructure" = PALETTE$teal,
+  "Infrastructure" = P$teal,
   "Environment_Climate" = "#5a8a6a",
-  "Social_Development" = PALETTE$rose,
-  "Governance_Fiscal" = PALETTE$slate,
-  "Competitiveness_Trade" = PALETTE$amber,
+  "Social_Development" = P$rose,
+  "Governance_Fiscal" = P$slate,
+  "Competitiveness_Trade" = P$amber,
   "Disaster_Risk" = "#7a4488"
 )
 
@@ -690,7 +694,7 @@ fig5 <- ggplot(
   aes(x = period, y = theme, fill = pct)
 ) +
   geom_tile(
-    colour = "white",
+    colour = if (render_mode == "dark") P$grey_bg else "white",
     linewidth = 1
   ) +
   geom_text(
@@ -699,16 +703,16 @@ fig5 <- ggplot(
     fontface = "bold"
   ) +
   scale_fill_gradient(
-    low = "#edf3f3",
-    high = "#176b73",
+    low = if (render_mode == "dark") "#243029" else "#edf3f3",
+    high = if (render_mode == "dark") "#67AEB3" else "#176b73",
     limits = c(0, 100),
     breaks = c(0, 25, 50, 75, 100),
     labels = scales::label_percent(scale = 1),
-    na.value = PALETTE$grey_light,
+    na.value = if (render_mode == "dark") "#243029" else PALETTE$grey_light,
     name = "% of abstracts"
   ) +
   scale_colour_manual(
-    values = c(dark = "#263238", white = "white"),
+    values = c(dark = if (render_mode == "dark") "#F2EDE2" else "#263238", white = P$white),
     guide = "none"
   ) +
   scale_x_discrete(
@@ -730,7 +734,7 @@ fig5 <- ggplot(
       "Keyword search of WB Projects API abstracts. Grey indicates no abstracts available. Percentages use only projects with available abstracts; they do not measure project expenditure or outcomes."
     )
   ) +
-  theme_tico() +
+  tico_theme(render_mode) +
   theme(
     legend.position = "right",
     axis.text.x = element_text(size = 9),
@@ -738,7 +742,7 @@ fig5 <- ggplot(
     panel.grid = element_blank()
   )
 
-save_fig(fig5, "fig5_abstract_themes", width = 11, height = 6.5)
+save_fig(fig5, "fig5_abstract_themes", width = 11, height = 6.5, mode = render_mode)
 
 
 # ---------------------------------------------------------------------------
@@ -751,8 +755,8 @@ p6a <- ggplot(
   wdi |> filter(!is.na(gdp_per_capita_usd)),
   aes(x = year, y = gdp_per_capita_usd)
 ) +
-  geom_area(fill = PALETTE$teal, alpha = 0.15) +
-  geom_line(colour = PALETTE$teal, linewidth = 0.9) +
+  geom_area(fill = P$teal, alpha = 0.15) +
+  geom_line(colour = P$teal, linewidth = 0.9) +
   scale_x_continuous(
     breaks = seq(1980, 2025, 5),
     expand = expansion(add = 0.5)
@@ -766,14 +770,14 @@ p6a <- ggplot(
     x = NULL,
     y = NULL
   ) +
-  theme_tico()
+  tico_theme(render_mode)
 
 p6b <- ggplot(
   wdi |> filter(!is.na(life_expectancy_years)),
   aes(x = year, y = life_expectancy_years)
 ) +
-  geom_line(colour = PALETTE$slate, linewidth = 0.9) +
-  geom_point(colour = PALETTE$slate, size = 1.5, shape = 16) +
+  geom_line(colour = P$slate, linewidth = 0.9) +
+  geom_point(colour = P$slate, size = 1.5, shape = 16) +
   scale_x_continuous(
     breaks = seq(1980, 2025, 5),
     expand = expansion(add = 0.5)
@@ -784,11 +788,11 @@ p6b <- ggplot(
     expand = expansion(mult = c(0.02, 0.05))
   ) +
   labs(subtitle = "Life expectancy at birth (years)", x = NULL, y = NULL) +
-  theme_tico()
+  tico_theme(render_mode)
 
 p6c <- ggplot(wdi |> filter(!is.na(gini)), aes(x = year, y = gini)) +
-  geom_point(colour = PALETTE$amber, size = 3, shape = 18) +
-  geom_line(colour = PALETTE$amber, linewidth = 0.5, alpha = 0.5) +
+  geom_point(colour = P$amber, size = 3, shape = 18) +
+  geom_line(colour = P$amber, linewidth = 0.5, alpha = 0.5) +
   scale_x_continuous(
     breaks = seq(1980, 2025, 5),
     expand = expansion(add = 0.5)
@@ -798,17 +802,17 @@ p6c <- ggplot(wdi |> filter(!is.na(gini)), aes(x = year, y = gini)) +
     expand = expansion(mult = c(0, 0.08))
   ) +
   labs(subtitle = "Gini index (income inequality)", x = "Year", y = NULL) +
-  theme_tico()
+  tico_theme(render_mode)
 
 fig6 <- (p6a / p6b / p6c) +
   plot_annotation(
     title = "Costa Rica's Development Trajectory, 1980–2025",
     subtitle = "Context for the lending analysis — not evidence of causation.",
     caption = caption_wdi(),
-    theme = theme_tico()
+    theme = tico_theme(render_mode)
   )
 
-save_fig(fig6, "fig6_development_trajectory", width = 10, height = 11)
+save_fig(fig6, "fig6_development_trajectory", width = 10, height = 11, mode = render_mode)
 cat("  Saved fig6_development_trajectory\n")
 
 # ---------------------------------------------------------------------------
@@ -829,15 +833,15 @@ fig7 <- ggplot(
   geom_point(size = 4, shape = 16, alpha = 0.9) +
   scale_colour_manual(
     values = c(
-      "Financial Services" = PALETTE$slate,
-      "Energy" = PALETTE$amber,
-      "Tourism / Hospitality" = PALETTE$teal,
+      "Financial Services" = P$slate,
+      "Energy" = P$amber,
+      "Tourism / Hospitality" = P$teal,
       "Agriculture / Food" = "#5a8a6a",
-      "Retail" = PALETTE$tan,
+      "Retail" = P$tan,
       "Transportation" = "#4e7fa0",
-      "Health" = PALETTE$rose,
-      "Other" = PALETTE$grey_mid,
-      "Unclassified" = PALETTE$grey_light
+      "Health" = P$rose,
+      "Other" = P$grey_mid,
+      "Unclassified" = P$grey_light
     ),
     name = "Sector"
   ) +
@@ -858,10 +862,10 @@ fig7 <- ggplot(
       "Projected board dates used as approximate year indicator; actual approval years may differ. Excludes pipeline project Insulet CR (2026)."
     )
   ) +
-  theme_tico() +
+  tico_theme(render_mode) +
   theme(legend.position = "right")
 
-save_fig(fig7, "fig7_ifc_investments", width = 11, height = 6.5)
+save_fig(fig7, "fig7_ifc_investments", width = 11, height = 6.5, mode = render_mode)
 cat("  Saved fig7_ifc_investments\n")
 
 # ---------------------------------------------------------------------------
@@ -891,7 +895,7 @@ period_plot <- ibrd_period |>
 fig8 <- ggplot(period_plot, aes(x = period, y = amount_m, fill = value_type)) +
   geom_col(position = position_dodge(width = 0.72), width = 0.65, alpha = 0.9) +
   scale_fill_manual(
-    values = c("Nominal USD" = PALETTE$teal, "Real 2025 USD" = PALETTE$amber),
+    values = c("Nominal USD" = P$teal, "Real 2025 USD" = P$amber),
     name = NULL
   ) +
   scale_y_continuous(
@@ -907,11 +911,12 @@ fig8 <- ggplot(period_plot, aes(x = period, y = amount_m, fill = value_type)) +
       "Real 2025 USD uses US GDP deflator NY.GDP.DEFL.ZS (base 2020=100). 2025 deflator is preliminary."
     )
   ) +
-  theme_tico() +
+  tico_theme(render_mode) +
   theme(legend.position = "top", legend.justification = "left")
 
-save_fig(fig8, "fig8_nominal_vs_real", width = 10, height = 6.5)
+save_fig(fig8, "fig8_nominal_vs_real", width = 10, height = 6.5, mode = render_mode)
 cat("  Saved fig8_nominal_vs_real\n")
 
 cat("\nAll figures saved to figures/\n")
 cat("Visualizations complete.\n")
+}

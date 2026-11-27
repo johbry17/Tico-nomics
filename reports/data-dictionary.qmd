@@ -38,7 +38,7 @@ IBRD guarantees are excluded from the loan analysis. No guarantees were identifi
 
 ## Development indicators
 
-The study uses six World Development Indicators:
+The study uses five World Development Indicators:
 
 | Indicator | Code | Units |
 |---|---|---|
@@ -47,7 +47,6 @@ The study uses six World Development Indicators:
 | Gini index | `SI.POV.GINI` | Index |
 | Life expectancy | `SP.DYN.LE00.IN` | Years |
 | FDI, net inflows | `BX.KLT.DINV.WD.GD.ZS` | Percent of GDP |
-| Government debt | `GC.DOD.TOTL.GD.ZS` | Percent of GDP |
 
 The Gini series is survey-based and has gaps. The 2025 observation is preliminary. Life expectancy data extend through 2024.
 

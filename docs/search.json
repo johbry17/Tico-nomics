@@ -123,7 +123,7 @@
     "href": "reports/analysis.html#f.-economic-and-development-context",
     "title": "Analysis",
     "section": "F. Economic and development context",
-    "text": "F. Economic and development context\n\n\n\n\n\n\n\n\n\n\n\n\nCosta Rica selected WDI indicators (contextual only). GDP per capita is constant 2015 US dollars. Life expectancy is available through 2024; 2025 is not yet published. Gini: 2024 value is 45.8; a preliminary 2025 estimate (45.5) is available from the WB API but may be revised.\n\n\nYear\nGDP per capita\nGDP growth\nGini\nLife expectancy\n\n\n\n\n1980\n$6,200\n0.8%\n—\n73.0\n\n\n1985\n$5,500\n0.7%\n—\n74.8\n\n\n1990\n$6,000\n3.6%\n45.2\n76.1\n\n\n1995\n$7,000\n4.2%\n45.7\n76.4\n\n\n2000\n$7,700\n3.8%\n47.4\n77.3\n\n\n2005\n$8,700\n4%\n47.5\n78.9\n\n\n2010\n$10,300\n5.4%\n48\n79.4\n\n\n2015\n$11,700\n3.7%\n48.4\n80.4\n\n\n2020\n$12,300\n-4.1%\n49.2\n79.7\n\n\n2023\n$14,500\n4.8%\n46.7\n80.8\n\n\n2024\n$15,100\n4.1%\n45.8\n81.0"
+    "text": "F. Economic and development context\n\n\n\n\n\n\n\n\n\n\n\n\nCosta Rica selected WDI indicators (contextual only). GDP per capita is constant 2015 US dollars. FDI is net inflows as a share of GDP. Life expectancy is available through 2024. Gini: a preliminary 2025 estimate is available from the WB API but may be revised.\n\n\nYear\nGDP per capita\nGDP growth\nFDI (% of GDP)\nGini\nLife expectancy\n\n\n\n\n1980\n$6,200\n0.8%\n1.1%\n—\n73.0\n\n\n1985\n$5,500\n0.7%\n1.8%\n—\n74.8\n\n\n1990\n$6,000\n3.6%\n2.8%\n45.2\n76.1\n\n\n1995\n$7,000\n4.2%\n2.9%\n45.7\n76.4\n\n\n2000\n$7,700\n3.8%\n4.8%\n47.4\n77.3\n\n\n2005\n$8,700\n4%\n7.6%\n47.5\n78.9\n\n\n2010\n$10,300\n5.4%\n5.1%\n48\n79.4\n\n\n2015\n$11,700\n3.7%\n5.2%\n48.4\n80.4\n\n\n2020\n$12,300\n-4.1%\n3.3%\n49.2\n79.7\n\n\n2023\n$14,500\n4.8%\n6.1%\n46.7\n80.8\n\n\n2024\n$15,100\n4.1%\n5.6%\n45.8\n81.0"
   },
   {
     "objectID": "reports/analysis.html#g.-ifc-companion-analysis",
@@ -249,7 +249,7 @@
     "href": "reports/data-dictionary.html#development-indicators",
     "title": "Data",
     "section": "Development indicators",
-    "text": "Development indicators\nThe study uses six World Development Indicators:\n\n\n\nIndicator\nCode\nUnits\n\n\n\n\nGDP per capita\nNY.GDP.PCAP.KD\nConstant 2015 USD\n\n\nGDP growth\nNY.GDP.MKTP.KD.ZG\nAnnual percent\n\n\nGini index\nSI.POV.GINI\nIndex\n\n\nLife expectancy\nSP.DYN.LE00.IN\nYears\n\n\nFDI, net inflows\nBX.KLT.DINV.WD.GD.ZS\nPercent of GDP\n\n\nGovernment debt\nGC.DOD.TOTL.GD.ZS\nPercent of GDP\n\n\n\nThe Gini series is survey-based and has gaps. The 2025 observation is preliminary. Life expectancy data extend through 2024."
+    "text": "Development indicators\nThe study uses five World Development Indicators:\n\n\n\nIndicator\nCode\nUnits\n\n\n\n\nGDP per capita\nNY.GDP.PCAP.KD\nConstant 2015 USD\n\n\nGDP growth\nNY.GDP.MKTP.KD.ZG\nAnnual percent\n\n\nGini index\nSI.POV.GINI\nIndex\n\n\nLife expectancy\nSP.DYN.LE00.IN\nYears\n\n\nFDI, net inflows\nBX.KLT.DINV.WD.GD.ZS\nPercent of GDP\n\n\n\nThe Gini series is survey-based and has gaps. The 2025 observation is preliminary. Life expectancy data extend through 2024."
   },
   {
     "objectID": "reports/data-dictionary.html#source-specific-qualifications",

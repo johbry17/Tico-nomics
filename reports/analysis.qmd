@@ -393,6 +393,11 @@ wdi |>
             "—",
             paste0(round(gdp_growth_pct, 1), "%")
         ),
+        fdi_pct_gdp = ifelse(
+            is.na(fdi_pct_gdp),
+            "—",
+            paste0(round(fdi_pct_gdp, 1), "%")
+        ),
         gini = ifelse(is.na(gini), "—", round(gini, 1)),
         life_expectancy_years = ifelse(
             is.na(life_expectancy_years),
@@ -404,11 +409,12 @@ wdi |>
         Year = year,
         `GDP per capita` = gdp_per_capita_usd,
         `GDP growth` = gdp_growth_pct,
+        `FDI (% of GDP)` = fdi_pct_gdp,
         Gini = gini,
         `Life expectancy` = life_expectancy_years
     ) |>
     kable(
-        caption = "Costa Rica selected WDI indicators (contextual only). GDP per capita is constant 2015 US dollars. Life expectancy is available through 2024; 2025 is not yet published. Gini: 2024 value is 45.8; a preliminary 2025 estimate (45.5) is available from the WB API but may be revised."
+        caption = "Costa Rica selected WDI indicators (contextual only). GDP per capita is constant 2015 US dollars. FDI is net inflows as a share of GDP. Life expectancy is available through 2024. Gini: a preliminary 2025 estimate is available from the WB API but may be revised."
     ) |>
     kable_styling(bootstrap_options = c("striped", "condensed"))
 ```

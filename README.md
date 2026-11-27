@@ -134,7 +134,7 @@ Raw source files are retained unchanged in `data/raw/`. US GDP deflator (NY.GDP.
 
 ### Development priorities in project abstracts
 
-![Keyword-based themes identified in available IBRD project abstracts, showing the share of abstracts mentioning each theme by period](figures/fig5_abstract_themes-light.png#gh-light-mode-only)
+![Keyword-based themes identified in available IBRD project abstracts, showing the share of abstracts mentioning each theme by period](figures/fig5_abstract_themes.png#gh-light-mode-only)
 ![Keyword-based themes identified in available IBRD project abstracts, showing the share of abstracts mentioning each theme by period](figures/fig5_abstract_themes-dark.png#gh-dark-mode-only)
 
 *Project abstracts provide a complementary view of institutional priorities through the language used to describe operations. Coverage varies substantially across periods: no abstracts are available for the 1990s, and small samples limit comparisons in several other periods.*

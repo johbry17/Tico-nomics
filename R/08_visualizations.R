@@ -681,11 +681,11 @@ for (render_mode in c("light", "dark")) {
     )
 
   period_labels <- c(
-    "1980–1989\nn = 2",
-    "1990–1999\nNo abstracts",
-    "2000–2009\nn = 7",
-    "2010–2019\nn = 1",
-    "2020–2025\nn = 9"
+    "1980–1989\nn = 2 of 8",
+    "1990–1999\nNo abstracts (of 6)",
+    "2000–2009\nn = 7 of 7",
+    "2010–2019\nn = 1 of 2",
+    "2020–2025\nn = 9 of 12"
   )
   names(period_labels) <- period_levels
 

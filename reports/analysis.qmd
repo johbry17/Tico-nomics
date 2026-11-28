@@ -3,6 +3,10 @@ title: "Analysis"
 subtitle: "Evidence behind the story — full tables and charts"
 ---
 
+The World Bank Group's relationship with Costa Rica changed in scale, composition, and institutional form over 45 years. The evidence does not describe a straightforward progression from structural adjustment to investment to climate finance. Policy-based lending recurred across several decades; large investment operations appeared in concentrated bursts; and the available sector data provide only a partial view of the portfolio.
+
+This analysis examines those patterns alongside Costa Rica's economic trajectory. It distinguishes approved commitments from amounts ultimately retained or disbursed, and treats the IFC and MIGA portfolios separately from IBRD lending.
+
 ```{r setup}
 #| include: false
 library(here)
@@ -167,18 +171,24 @@ instr_period <- instr_period |>
     mutate(period = factor(period, levels = period_levels))
 ```
 
-## A. Portfolio chronology and scale
+## A. IBRD portfolio: scale and concentration
+
+IBRD lending was unevenly distributed across the study period. The 35 projects in the analytical sample account for approximately $4.6 billion in original principal, but the 2020–2025 period alone accounts for 12 projects and $2.7 billion, or 57.9% of the nominal total. The decade-level comparison therefore reflects a pronounced recent concentration, not a steady increase in lending.
+
+The project count and commitment total tell different stories. The 2020s contain more operations than any earlier period, but their average size is also substantially larger. The top-ten portfolio reinforces this concentration: two $500 million development policy loans, approved in 2009 and 2023, and the $420 million health insurance operation approved in 2016 rank among the largest commitments. A relatively small number of large operations account for a substantial share of the portfolio.
 
 ### Annual approvals (nominal and real)
 
-```{r fig1}
+```{r #fig-ibrd-timeline}
+#| fig-cap: "Lending was episodic rather than steady, with several major waves of financing. The 2020–2025 period marks the largest concentration of approved principal. Real values are adjusted to 2025 US dollars."
 knitr::include_graphics(here("figures", "fig1_ibrd_timeline.png"))
 ```
 
 ### Commitments by period
 
-```{r period-table}
+```{r tbl-ibrd-period}
 #| echo: false
+#| tbl-cap: "IBRD commitments by approval period (nominal and real 2025 USD; real uses US GDP deflator NY.GDP.DEFL.ZS)"
 ibrd_period |>
     filter(period %in% period_levels) |>
     mutate(period = factor(period, levels = period_levels)) |>
@@ -200,20 +210,19 @@ ibrd_period |>
         `Real 2025 USD` = real_principal,
         `% nominal` = pct_nominal
     ) |>
-    kable(
-        caption = "IBRD commitments by approval period (nominal and real 2025 USD; real uses US GDP deflator NY.GDP.DEFL.ZS)"
-    ) |>
+    knitr::kable() |>
     kable_styling(bootstrap_options = c("striped", "condensed"))
 ```
 
-> Original principal represents the amount recorded at Board approval, not necessarily the amount ultimately signed, disbursed, or spent. Net principal reflects cancellations. Two fully cancelled projects account for the difference between original and net principal in the 1990s: the $100 million SAL III and the $41 million Agriculture Sector Investment project. The 2022 COVID-19 vaccine operation is included in the project count but has zero original principal because the loan agreement was never signed.
+The distinction between original and net principal matters particularly in the 1990s. Two approved operations, the $100 million Structural Adjustment Loan III and the $41 million Agriculture Sector Investment Project, were fully cancelled. Their original commitments appear in the approval record, but neither contributed to lending ultimately retained. The decade's original commitment total therefore overstates the financing that proceeded.
 
-### Top 10 projects
+The COVID-19 vaccine project also requires care in interpreting project counts. P178320 appears in the project catalogue, but its original principal is zero because the agreement was never signed. It belongs in the project record, not among funded commitments.
 
-For additional detail, see the [full list of IBRD projects](#ibrd-projects) in the Appendix.
+### Top Ten projects
 
-```{r top10-table}
+```{r tbl-ibrd-top10}
 #| echo: false
+#| tbl-cap: "Top ten IBRD projects by original principal (nominal USD, 1980–2025)"
 top10 |>
     mutate(
         total_principal = fmt_millions(total_principal),
@@ -232,36 +241,41 @@ top10 |>
         `Instrument` = instrument_group,
         `Status` = loan_status_summary
     ) |>
-    kable(
-        caption = "Top 10 IBRD projects by original principal (nominal USD, 1980–2025)"
-    ) |>
+    knitr::kable() |>
     kable_styling(bootstrap_options = c("striped", "condensed"), font_size = 11)
 ```
 
+*See @tbl-ibrd-projects for the full list of IBRD projects.*
+
 ---
 
-## B. Nominal versus real: the inflation story
+## B. Nominal and real commitments
 
-```{r fig8}
+Nominal totals exaggerate the apparent difference between recent and earlier lending because a dollar committed in 1980 did not have the same purchasing power as a dollar committed in 2025. Expressed in 2025 dollars using the US GDP deflator, the portfolio totals approximately $6.2 billion, compared with $4.6 billion in nominal terms.
+
+The adjustment changes the scale of historical comparisons, but not the broad pattern. The 1980s' eight operations total approximately $294 million nominally, equivalent to about $772 million in 2025 dollars. The $500 million 2009 development policy loan is equivalent to approximately $728 million. The 2020–2025 period remains the largest lending period in real terms, although its share of the inflation-adjusted portfolio is lower than its 57.9% nominal share.
+
+```{r #fig-nominal-vs-real}
+#| fig-cap: "Inflation adjustment increases the apparent scale of earlier lending, particularly in the 1980s; 2020–2025 remains the largest period in real terms."
 knitr::include_graphics(here("figures", "fig8_nominal_vs_real.png"))
 ```
 
-In real 2025 dollars, the eight 1980s operations (~$294M nominal total) represented approximately **`r scales::dollar(ibrd_period$real_principal[ibrd_period$period=="1980–1989"], scale=1e-6, suffix="M", accuracy=1)`** — substantially larger than the nominal figure suggests. Of that total, three policy-based adjustment operations (SAL I, SAL II, and the Export Development loan) accounted for roughly $205M nominal, or about 70% of the decade's lending. The 2009 $500M DPL was approximately $728M in 2025 dollars. The 2020–2025 period remains the largest in inflation-adjusted terms, but its share of the cumulative portfolio is smaller in real-dollar terms than its 57.9% share of nominal principal suggests.
-
-*Real values use the US GDP deflator (NY.GDP.DEFL.ZS), rebased to constant 2025 US dollars. This adjusts historical nominal dollar amounts for changes in US prices; it does not measure their purchasing power within Costa Rica. The 2025 deflator observation is preliminary.*
+These values adjust for changes in US prices, not Costa Rican purchasing power or the local cost of projects. They are a consistent basis for comparing the dollar value of commitments over time, not a measure of their domestic economic impact.
 
 ---
 
-## C. Instrument mix
+## C. Lending instruments: recurrence, not succession
 
-```{r fig2}
+The instrument mix complicates any account of a linear shift in World Bank priorities. Policy-based lending appears in the 1980s, 1990s, 2000s, and 2020–2025. Investment project financing dominates the 2010s, but that decade contains only two operations. The recent period combines six development policy loans with six investment projects.
+
+```{r #fig-instrument-mix}
+#| fig-cap: "Policy-based lending recurred across four periods rather than giving way permanently to investment financing. The 2010s were the exception, with investment operations alone."
 knitr::include_graphics(here("figures", "fig2_instrument_mix.png"))
 ```
 
-*Classification note: DPL is used here as an analytical category, not strictly as a contemporaneous World Bank instrument label. Several earlier operations—particularly the 1980s and early-1990s Structural Adjustment Loans and related policy-based lending—predate the modern Development Policy Loan framework. They are grouped with DPLs because of their policy-oriented purpose and role in the Bank's lending relationship with Costa Rica. This retrospective classification facilitates comparison across the study period but should not be read as implying that these operations were formally issued as DPLs.*
-
-```{r instr-table}
+```{r tbl-instrument-mix}
 #| echo: false
+#| tbl-cap: "Instrument mix by period — DPL vs Investment Project Financing"
 instr_period |>
     group_by(period) |>
     mutate(pct = round(100 * total_principal / sum(total_principal), 0)) |>
@@ -278,26 +292,30 @@ instr_period |>
         `Real 2025 (US$M)` = real_principal,
         `% of period` = pct
     ) |>
-    kable(
-        caption = "Instrument mix by period — DPL vs Investment Project Financing"
-    ) |>
+    knitr::kable() |>
     kable_styling(bootstrap_options = c("striped", "condensed"))
 ```
 
-> Instrument counts reflect Board-approved operations, not necessarily loans that became effective or disbursed. The 1990s include two fully cancelled projects: the decade's only DPL, the $100 million SAL III, and a $41 million IPF, all of which had zero net disbursement.
+The composition of policy-based lending changed across these periods. The 1980s operations included structural adjustment and export-oriented reforms. The 2009 operation was a large public-finance and competitiveness loan. The 2020s series focused on fiscal management and decarbonization. Grouping these operations makes the instrument pattern comparable, but does not imply that their policy objectives were identical.
 
-**The portfolio does not show a simple progression** from adjustment lending to investment financing and then back to policy lending. Policy-based operations appear in the 1980s, 1990s, 2000s, and 2020s, although their objectives and economic contexts differ. The 2010s stand out for their exclusive reliance on investment-project financing and concentration in two large operations.
+For this comparison, earlier structural adjustment and other policy-oriented loans are classified with development policy lending. This is an analytical grouping, not a claim that the Bank used the same formal instrument label throughout the period.
+
+The 1990s also illustrate why approved commitments should not be read as completed lending. The decade includes a $100 million policy loan that was fully cancelled, while the investment portfolio includes the fully cancelled $41 million agriculture project. Instrument shares based on original commitments describe the approved portfolio; they do not describe financing ultimately delivered.
 
 ---
 
-## D. Sectoral composition
+## D. Sector allocations: a partial view
 
-```{r fig3}
+Public administration is the largest sector group in the available allocation data, with approximately $907 million in nominal allocations. Education, ICT and trade, water and sanitation, energy, and other categories account for smaller amounts. These figures suggest a substantial public-sector and institutional component to the portfolio, alongside infrastructure and service investments.
+
+```{r #fig-sector-composition}
+#| fig-cap: "Public administration accounts for a substantial share of classified allocations, alongside infrastructure and service investments. Incomplete sector data limits the portfolio-wide picture."
 knitr::include_graphics(here("figures", "fig3_sector_composition.png"))
 ```
 
-```{r sector-table}
+```{r tbl-sector}
 #| echo: false
+#| tbl-cap: "Sector group totals (allocated where sector percentages available)"
 sec_totals |>
     mutate(
         alloc_principal = fmt_millions(alloc_principal),
@@ -311,37 +329,36 @@ sec_totals |>
         `Allocated (nominal)` = alloc_principal,
         `Allocated (real 2025)` = alloc_real,
     ) |>
-    kable(
-        caption = "Sector group totals (allocated where sector percentages available)"
-    ) |>
+    knitr::kable() |>
     kable_styling(bootstrap_options = c("striped", "condensed"))
 ```
 
-The actual **recorded amounts allocated across the sector categories sum to roughly $2.2 billion**, the difference being projects with sector names but missing or zero percentages. Sector *metadata* is available for 22 of 35 in-scope projects, whose combined original principal is approximately $2.7 billion (~59% of the $4.6B total). However, not all of those projects have complete sector *percentages* — only projects with reliable allocation percentages contribute to the dollar totals shown here.
+The allocation data cover only part of the portfolio. Sector metadata are available for 22 of the 35 projects, representing approximately $2.7 billion in original principal. Dollar allocations can be calculated only where usable sector percentages are also available. The resulting sector totals sum to approximately $2.2 billion; they are not a complete allocation of all IBRD commitments.
 
-**Sector allocations are a partial, non-representative view of the portfolio — treat with appropriate caution.**
+The gaps affect interpretation. The $420 million universal health insurance operation, for example, has no usable sector allocation percentages and therefore does not appear in the health allocation total. The small health-sector figure should not be read as evidence that health was a minor area of Bank engagement. Similarly, many 2020–2025 development policy loans lack usable sector percentages, limiting what the allocation data can say about the composition of the largest lending period.
 
-The 2010s illustrate this limitation particularly clearly: the $200 million Higher Education Improvement Project appears in the chart, but the $420 million Strengthening Universal Health Insurance operation does not, because no usable sector allocation percentages are available for it. The $16 million shown in the Health category comes from other projects; it does not represent the 2016 health-insurance loan.
-
-The 2020–2025 DPL series largely lacks sector percentages in the API; it is excluded from allocation calculations. P178320 (COVID-19 Vaccines, Terminated, $0 original principal) is excluded from dollar totals. 
+Sector totals are therefore useful for describing the projects with usable allocation data, but not for ranking the Bank's full portfolio by sector. The grouping of individual sectors into broader analytical categories is also a classification choice, not a World Bank classification.
 
 ---
 
-## E. Selected themes in project abstracts
+## E. Themes in project abstracts
 
-```{r fig5}
-#| fig-cap: "Theme keyword presence by period. Only periods with available abstracts are shown. The 1990–1999 period has zero project abstracts in the API and is excluded. Percentages are shares of projects WITH available abstracts that mention the theme."
+Project abstracts provide a second, less quantitative view of changing engagement: the language used to describe what operations were intended to address. The available text suggests recurring attention to infrastructure, while governance and fiscal management become prominent in the later periods represented.
+
+```{r #fig-abstract-themes}
+#| fig-cap: "Governance and fiscal themes remain prominent, while environmental and climate language appears more frequently in recent abstracts. Uneven coverage limits comparisons across periods. Percentages describe keyword presence, not financing or outcomes."
 knitr::include_graphics(here("figures", "fig5_abstract_themes.png"))
 ```
 
-> **Abstract coverage and interpretation:** The 1990–1999 period has **zero** project abstracts available in the WB Projects API extract. Other periods: 1980–1989: **2 abstracts of 8 projects**; 2000–2009: **7 of 7**; 2010–2019: **1 of 2**; 2020–2025: **9 of 12**. The 1980s and 2010s figures are extremely sparse — drawing conclusions from 2 or 1 abstract respectively is inadvisable. Percentages are shares of projects *with available abstracts*, not all in-scope IBRD projects.
+Coverage is uneven. Abstracts are available for 19 of the 35 projects: two from the 1980s, none from the 1990s, seven from the 2000s, one from the 2010s, and nine from 2020–2025. The 2000s and 2020s provide the most useful comparison. In both, governance and fiscal themes appear frequently; environmental and climate language appears in four of seven 2000s abstracts and eight of nine recent abstracts.
 
-**What the table does and does not tell us:** Infrastructure language appears at 100% in every period with available abstracts — but this reflects keyword matching (the words "road", "transport", "energy" appear widely), not that every project was an infrastructure investment. Environment/Climate keywords appear in the 2000s (57%) and 2020s (89%) but are absent in the 1980s (0%) and 2010s (0% from a single abstract). Governance/Fiscal language is absent in the 1980s, then consistently present from the 2000s onward. These patterns reflect stated language in project abstracts — not project expenditure, project effects, or Bank institutional priorities more broadly.
+The apparent increase in climate language is consistent with the greater prominence of climate and disaster-risk concerns in recent project descriptions. It is not, by itself, evidence of a corresponding increase in financing or results. The 1980s and 2010s samples are too small for meaningful comparisons, and the absence of 1990s abstracts prevents a continuous account.
 
-For additional detail, see the [top 30 words](#top-30-words) identified in the project abstracts.
+The analysis identifies manually selected keyword groups in project abstracts (see @tbl-abstract-words). A match indicates that a theme appears in the text, not how much funding it received, how central it was to project design, or whether the project achieved its objectives. These results describe the available abstracts, not the Bank's institutional priorities as a whole.
 
-```{r theme-table}
+```{r tbl-abstract-themes}
 #| echo: false
+#| tbl-cap: "Thematic keyword presence in project abstracts by period. '% of abstracts' is the share of projects with available abstracts that mention the theme — NOT the share of all in-scope projects (e.g., the 1990–1999 period has no available abstracts)."
 theme_labels <- c(
     "Infrastructure" = "Infrastructure",
     "Environment_Climate" = "Environment & Climate",
@@ -361,9 +378,7 @@ theme_pres |>
         `With theme` = n_with_theme,
         `% of abstracts` = pct
     ) |>
-    kable(
-        caption = "Thematic keyword presence in project abstracts by period. '% of abstracts' is the share of projects with available abstracts that mention the theme — NOT the share of all in-scope projects. The 1990–1999 period has no abstracts in the API extract."
-    ) |>
+    knitr::kable() |>
     kable_styling(
         bootstrap_options = c("striped", "condensed"),
         font_size = 11
@@ -373,14 +388,18 @@ theme_pres |>
 
 ---
 
-## F. Economic and development context
+## F. Costa Rica's development trajectory
 
-```{r fig6}
+IBRD lending took place alongside a substantial transformation in Costa Rica's economy. GDP per capita, measured in constant 2015 US dollars, increased from approximately $6,224 in 1980 to $15,053 in 2024. Life expectancy rose from 73 to 81 years over the same period. Foreign direct investment became a more prominent feature—rising from roughly 1–3% of GDP in the 1980s to more than 8% in 2007, then stabilizing around 4–6% through the following decade—reflecting Costa Rica's deeper integration into international investment and production networks. These long-run changes provide context for the lending relationship, but cannot be attributed to World Bank financing.
+
+```{r #fig-development-trajectory}
+#| fig-cap: "Costa Rica's development trajectory over time. GDP per capita and life expectancy increased steadily. FDI growth signals global network integration. Gini fluctuated modestly."
 knitr::include_graphics(here("figures", "fig6_development_trajectory.png"))
 ```
 
-```{r wdi-table}
+```{r tbl-wdi}
 #| echo: false
+#| tbl-cap: "Costa Rica selected WDI indicators (contextual only). GDP per capita is constant 2015 US dollars. FDI is net inflows as a share of GDP."
 wdi |>
     filter(
         year %in%
@@ -413,22 +432,26 @@ wdi |>
         Gini = gini,
         `Life expectancy` = life_expectancy_years
     ) |>
-    kable(
-        caption = "Costa Rica selected WDI indicators (contextual only). GDP per capita is constant 2015 US dollars. FDI is net inflows as a share of GDP. Life expectancy is available through 2024. Gini: a preliminary 2025 estimate is available from the WB API but may be revised."
-    ) |>
+    knitr::kable() |>
     kable_styling(bootstrap_options = c("striped", "condensed"))
 ```
 
+The broader development indicators resist a simple success narrative. GDP per capita and life expectancy rose over the period, while the Gini coefficient indicates that income inequality increased into the early 2000s before declining in more recent observations. The 2025 Gini observation is preliminary; life expectancy data extend only through 2024. These indicators describe different dimensions of development and should not be collapsed into a single measure of progress.
+
 ---
 
-## G. IFC companion analysis
+## G. IFC: private-sector investment
 
-```{r fig7}
+The IFC portfolio provides a separate view of the World Bank Group's engagement with Costa Rica. Its disclosed investments are heavily concentrated in financial services: approximately $678 million, or 77.6% of the investment total represented in the sector data. Energy accounts for a further $100 million, largely represented by the Reventazón hydropower project, the largest disclosed investment outside financial services.
+
+```{r #fig-ifc-investments}
+#| fig-cap: "IFC investments by sector. Financial services dominate, followed by energy. Amounts are indicative and may not capture the full scope of IFC-supported capital mobilization."
 knitr::include_graphics(here("figures", "fig7_ifc_investments.png"))
 ```
 
-```{r ifc-sector-table}
+```{r tbl-ifc-sector}
 #| echo: false
+#| tbl-cap: "IFC investments by sector (indicative amounts, nominal USD)"
 ifc_sector |>
   mutate(
     share = total_m / sum(total_m) * 100,
@@ -441,21 +464,68 @@ ifc_sector |>
     `Total IFC investment` = total_m,
     `Share of total` = share
   ) |>
-  kable(
-    caption = "IFC investments by sector (indicative amounts, nominal USD)"
-  ) |>
+  knitr::kable() |>
   kable_styling(bootstrap_options = c("striped", "condensed"))
 ```
 
-For additional detail, see the [full list of IFC projects](#ifc-projects) in the Appendix.
+This is a different portfolio from IBRD sovereign lending. IFC investments are reported on an own-account basis in this analysis; syndicated B-loans and other unfunded guarantees are not included. Disclosure records are grouped by project, so multiple records for one project should not be treated as separate investments.
+
+The figures are indicative rather than a complete measure of IFC-supported capital mobilization. Many investment dates are projected rather than actual approval dates, and some projects have broader geographic scope or disclosure details that complicate attribution to Costa Rica. The IFC amounts should therefore be read as a companion portfolio, not added to IBRD commitments.
+
+*See @tbl-ifc-projects for the full list of IFC projects.*
+
+---
+
+## H. MIGA: political-risk guarantees
+
+MIGA's engagement is distinct again. Its guarantees support investment by covering specified political risks; the reported exposure is the maximum liability under the guarantee contracts, not the value of a loan, a disbursement, or the underlying project.
+
+```{r tbl-miga-summary}
+#| echo: false
+#| tbl-cap: "Selected indicators from MIGA's historical Costa Rica portfolio"
+
+tibble::tibble(
+    Indicator = c(
+        "Projects in historical extract",
+        "Largest identified gross exposure",
+        "Project",
+        "Peak exposure year"
+    ),
+    Finding = c(
+        "10",
+        "$158.5 million",
+        "Autopistas del Sol",
+        "FY2008"
+    )
+) |>
+    knitr::kable() |>
+    kableExtra::kable_styling(
+        bootstrap_options = c("striped", "condensed"),
+        full_width = FALSE
+    )
+```
+
+The Autopistas del Sol toll-road concession is the largest identified example in the historical records, with gross guarantee exposure of approximately $158.5 million in FY2008. MIGA's fiscal year runs from July through June. Earlier disclosures for the project should not be added together: they represent successive or cumulative records, not separate guarantees of equivalent value.
+
+The MIGA portfolio is small relative to the IBRD and IFC datasets and measures a different form of engagement. Its value here is institutional rather than directly comparable in financial scale: it shows another way the Group supported private investment in Costa Rica.
+
+*See @tbl-miga-projects for the full list of MIGA projects.*
+
+## Conclusion
+
+The evidence points to an uneven relationship shaped by changing instruments and a small number of large operations. Policy-based lending recurred across decades rather than giving way permanently to investment financing. The 2010s stand out for two large investment projects and no development policy loans; the 2020–2025 period stands out for both its scale and its balanced mix of policy and investment operations.
+
+Costa Rica's growing integration with international investment forms part of this wider context, while IFC and MIGA disclosures show the Group's distinct private-sector and risk-guarantee roles. But the records do not support a single, unified measure of World Bank Group financing, nor do they establish that the Group caused the country's economic and social changes.
+
+The strongest conclusion is therefore about the changing character of the relationship, not a simple story of more lending or steadily shifting priorities. Its scale was concentrated, its instruments recurrent but differently applied, and its sectoral and thematic record incomplete.
 
 ---
 
 ## Appendix
 
-### All in-scope IBRD projects {#ibrd-projects}
+### All in-scope IBRD projects
 
-```{r all-projects-table}
+```{r tbl-ibrd-projects}
 #| echo: false
 ibrd_html <- ibrd_scope |>
     arrange(approval_year) |>
@@ -481,7 +551,7 @@ ibrd_html <- ibrd_scope |>
 withTags({
   table(
     class = "table table-striped table-condensed",
-    caption = "All IBRD in-scope projects, 1980–2025 (nominal and real 2025 USD)",
+    caption("All IBRD in-scope projects, 1980–2025 (nominal and real 2025 USD)"),
     thead(
       tr(
         th("Project ID"),
@@ -517,23 +587,19 @@ withTags({
 
 ### Top 30 most frequent words in IBRD project abstracts {#top-30-words}
 
-```{r word-table}
+```{r tbl-abstract-words}
 #| echo: false
+#| tbl-cap: "Thirty most frequent words in project abstracts (stop words removed, in-scope projects only)"
 word_counts |>
     head(30) |>
     rename(Word = word, Frequency = n) |>
-    kable(
-        caption = "30 most frequent words in project abstracts (stop words removed, in-scope projects only)"
-    ) |>
-    kable_styling(
-        bootstrap_options = c("striped", "condensed"),
-        full_width = FALSE
-    )
+    knitr::kable() |>
+    kable_styling(bootstrap_options = c("striped", "condensed"))
 ```
 
-### All in-scope IFC investment projects {#ifc-projects}
+### All in-scope IFC investment projects
 
-```{r ifc-table}
+```{r tbl-ifc-projects}
 #| echo: false
 ifc_html <- ifc_proj |>
     filter(is_investment, in_scope, !is_pipeline) |>
@@ -560,7 +626,7 @@ ifc_html <- ifc_proj |>
 withTags({
   table(
     class = "table table-striped table-condensed",
-    caption = "IFC investments in Costa Rica (indicative dates; amounts in nominal USD)",
+    caption("IFC investments in Costa Rica (indicative dates; amounts in nominal USD)"),
     thead(
       tr(
         th("Project #"),
@@ -596,7 +662,7 @@ withTags({
 
 ### MIGA historical guarantees
 
-```{r miga-table}
+```{r tbl-miga-projects}
 #| echo: false
 names(miga) <- gsub("[^a-zA-Z0-9]", "_", tolower(names(miga)))
 names(miga) <- gsub("_+", "_", names(miga))
@@ -620,7 +686,7 @@ miga_html <- miga |>
 withTags({
   table(
     class = "table table-striped table-condensed",
-    caption = "MIGA historical guarantees in Costa Rica (deduplicated; project 3639 shown at FY2003 maximum). 'Peak exposure' = maximum MIGA liability under issued contracts, not a loan.",
+    caption("MIGA historical guarantees in Costa Rica. 'Peak exposure' = maximum MIGA liability under issued contracts, not a loan."),
     thead(
       tr(
         th("Proj. ID"),

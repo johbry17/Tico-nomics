@@ -73,7 +73,7 @@ From 1980 through 2025, the IBRD record contains **`r n_projects` projects** wit
 
 Approved principal is the amount recorded when the IBRD Board approved an operation. It is not the same as funds signed, disbursed, or spent. That distinction becomes especially important in the story of SAL III, when a large approved operation never became an effective loan.
 
-```{r fig1}
+```{r #fig-ibrd-timeline}
 #| fig-cap: "Annual IBRD lending to Costa Rica, 1980--2025. Bars show nominal original principal at Board approval and the same amounts adjusted to 2025 USD. Nominal and real values are separate representations of the same approved principal."
 knitr::include_graphics(here("figures", "fig1_ibrd_timeline.png"))
 ```
@@ -84,7 +84,7 @@ The timeline is the spine of this story. The country and the institution both ch
 
 ## The 1980s: debt crisis and structural adjustment
 
-```{r fig1-1980s}
+```{r #fig-1980s}
 #| fig-cap: "IBRD lending in the 1980s. The 1983 Export Development Loan, 1985 SAL I, and 1988 SAL II are highlighted against the full 1980--2025 timeline."
 knitr::include_graphics(here("figures", "fig1_timeline_1980s.png"))
 ```
@@ -103,7 +103,7 @@ This period was an early negotiation over priorities rather than a clean transfe
 
 ## The 1990s: a loan that never happened
 
-```{r fig1-1990s}
+```{r #fig-1990s}
 #| fig-cap: "IBRD lending in the 1990s. SAL III was approved in 1993 but was cancelled in 1995 and never became effective or disbursed."
 knitr::include_graphics(here("figures", "fig1_timeline_1990s.png"))
 ```
@@ -118,7 +118,7 @@ The failed effectiveness of SAL III also illustrates why “World Bank policy”
 
 ## The 1990s and 2000s: diversification and environmental finance
 
-```{r fig1-2000s}
+```{r #fig-2000s}
 #| fig-cap: "IBRD lending in the 2000s. Ecomarkets, the 2008 catastrophe contingent line, and the 2009 public finance and competitiveness DPL are highlighted."
 knitr::include_graphics(here("figures", "fig1_timeline_2000s.png"))
 ```
@@ -141,7 +141,7 @@ In FY2008, MIGA recorded gross guarantee exposure of **$158.5 million** for the 
 
 ## The 2010s: public institutions and private development
 
-```{r fig1-2010s}
+```{r #fig-2010s}
 #| fig-cap: "IBRD lending in the 2010s. The two approvals supported higher education and universal health insurance."
 knitr::include_graphics(here("figures", "fig1_timeline_2010s.png"))
 ```
@@ -158,7 +158,7 @@ IFC engaged through a different channel. Rather than financing government progra
 
 ## The 2020s: fiscal reform, climate, and pandemic
 
-```{r fig1-2020s}
+```{r #fig-2020s}
 #| fig-cap: "IBRD lending in the 2020s. The 2020, 2021, and 2023 Fiscal and Decarbonization Management DPLs are highlighted against the full timeline."
 knitr::include_graphics(here("figures", "fig1_timeline_2020s.png"))
 ```
@@ -185,7 +185,7 @@ The portfolio remained mixed even at the height of policy lending. Education, ag
 
 ## Costa Rica's development trajectory
 
-```{r fig6}
+```{r #fig-development-trajectory}
 #| fig-cap: "Costa Rica's development trajectory, 1980--2025. Real income and life expectancy improved substantially, while the Gini index reveals a less complete story of social success."
 knitr::include_graphics(here("figures", "fig6_development_trajectory.png"))
 ```
@@ -200,7 +200,7 @@ These patterns are context, not evidence that World Bank lending caused income g
 
 ## IBRD lending by instrument: the visual recap
 
-```{r fig2}
+```{r #fig-ibrd-instrument-mix}
 #| fig-cap: "IBRD lending by instrument type. Development Policy Loans provide budget support tied to policy commitments; Investment Project Financing supports identifiable programs and capital projects. Earlier policy-based operations are grouped with DPLs for a historical comparison."
 knitr::include_graphics(here("figures", "fig2_instrument_mix.png"))
 ```

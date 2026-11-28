@@ -275,7 +275,7 @@ knitr::include_graphics(here("figures", "fig2_instrument_mix.png"))
 
 ```{r tbl-instrument-mix}
 #| echo: false
-#| tbl-cap: "Instrument mix by period — DPL vs Investment Project Financing"
+#| tbl-cap: "Instrument mix by period — Development Policy Lending vs Investment Project Financing"
 instr_period |>
     group_by(period) |>
     mutate(pct = round(100 * total_principal / sum(total_principal), 0)) |>
